@@ -27,20 +27,20 @@ if [ ! -z "${2}" ]; then
   HOST="${2}"
 else
   HOST="127.0.0.1"
-  echo "--- INFO -- $0 $$ -- No host specified; assuming ${HOST}" &> /dev/stderr
+  if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- No host specified; assuming ${HOST}" &> /dev/stderr; fi
 fi
 
 if [ "${HOST%:*}" == "${HOST}" ]; then
   PORT=$(jq '.deployment.services|to_entries|first|.value.specific_ports|first|.HostPort' service.json | sed 's/[^:]*:\([^\/]*\).*/\1/')
   if [ -z "${PORT}" ] || [ "${PORT}" == 'null' ]; then
     PORT=$(jq -r '.ports?|to_entries|first|.key?' service.json | sed 's|\(.*\)/.*|\1|')
-    echo "--- INFO $0 $$ -- Using development port: ${PORT}" &> /dev/stderr
+    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- Using development port: ${PORT}" &> /dev/stderr; fi
   else
-    echo "--- INFO $0 $$ -- Using specific_port: ${PORT}" &> /dev/stderr
+    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- Using specific_port: ${PORT}" &> /dev/stderr; fi
   fi
   if [ -z "${PORT}" ] || [ "${PORT}" == 'null' ]; then
     PORT=80
-    echo "+++ WARN $0 $$ -- No port specified; assuming port ${PORT}" &> /dev/stderr
+    if [ "${DEBUG:-}" == 'true' ]; then echo "+++ WARN $0 $$ -- No port specified; assuming port ${PORT}" &> /dev/stderr; fi
   fi
   HOST="${HOST}:${PORT}"
 fi
@@ -49,21 +49,21 @@ if [[ ${HOST} =~ http* ]]; then
   if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- protocol specified" &> /dev/stderr; fi
 else
   PROT="http"
-  echo "+++ WARN $0 $$ -- No protocol specified; assuming ${PROT}" &> /dev/stderr
+  if [ "${DEBUG:-}" == 'true' ]; then echo "+++ WARN $0 $$ -- No protocol specified; assuming ${PROT}" &> /dev/stderr; fi
   HOST="${PROT}://${HOST}"
 fi
 
 if [ -z "${SERVICE_LABEL:-}" ]; then SERVICE_LABEL=${PWD##*/}; fi
 CMD="${PWD}/test-${SERVICE_LABEL}.sh"
 if [ -z $(command -v "${CMD}") ]; then
-  echo "+++ WARN -- $0 $$ -- no test script: ${CMD}" &> /dev/stderr
+  if [ "${DEBUG:-}" == 'true' ]; then echo "+++ WARN -- $0 $$ -- no test script: ${CMD}" &> /dev/stderr; fi
 else
   if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- using test script: ${CMD}" &> /dev/stderr; fi
 fi
 
 if [ -z ${TIMEOUT:-} ]; then TIMEOUT=2; fi
 
-echo "--- INFO -- $0 $$ -- Testing ${SERVICE_LABEL} in container ${CID} tagged: ${DOCKER_TAG} at" $(date) &> /dev/stderr
+if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- Testing ${SERVICE_LABEL} in container ${CID} tagged: ${DOCKER_TAG} at" $(date) &> /dev/stderr; fi
 
 I=0
 
@@ -84,7 +84,7 @@ while true; do
       TEST=$(echo "${OUT}" | jq -c '.!=null' 2> /dev/stderr)
     fi
     if [ "${TEST:-}" == 'true' ]; then
-        echo "!!! SUCCESS -- $0 $$ -- test ${CMD} returned ${TEST}" &> /dev/stderr
+        if [ "${DEBUG:-}" == 'true' ]; then echo "!!! SUCCESS -- $0 $$ -- test ${CMD} returned ${TEST}" &> /dev/stderr; fi
         echo "${TEST}"
         exit 0
     else
@@ -102,6 +102,6 @@ while true; do
     exit 1
   fi
   I=$((I+1))
-  echo '--- INFO -- $0 $$ -- iteration ${I}; sleeping ...' &> /dev/stderr
+  if [ "${DEBUG:-}" == 'true' ]; then echo '--- INFO -- $0 $$ -- iteration ${I}; sleeping ...' &> /dev/stderr; fi
   sleep 1
 done

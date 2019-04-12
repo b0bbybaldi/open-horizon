@@ -86,7 +86,7 @@ $(PRIVATE_KEY_FILE) $(PUBLIC_KEY_FILE):
 
 ${DIR}: service.json userinput.json $(APIKEY)
 	@rm -fr ${DIR}/ && mkdir -p ${DIR}/
-	@export HZN_ORG_ID=${HZN_ORG_ID} HZN_EXCHANGE_URL=${HEU} && hzn dev service new -d ${DIR}
+	@export HZN_ORG_ID=${HZN_ORG_ID} HZN_EXCHANGE_URL=${HEU} && hzn dev service new -d ${DIR} &> /dev/null
 	@jq '.org="'${HZN_ORG_ID}'"|.label="'${SERVICE_LABEL}'"|.arch="'${BUILD_ARCH}'"|.url="'${SERVICE_URL}'"|.deployment.services=([.deployment.services|to_entries[]|select(.key=="'${SERVICE_LABEL}'")|.key="'${SERVICE_LABEL}'"|.value.image="'${DOCKER_TAG}'"]|from_entries)' service.json > ${DIR}/service.definition.json
 	@export SERVICE_URL=${SERVICE_URL} HZN_ORG_ID=${HZN_ORG_ID} && cat userinput.json | envsubst > ${DIR}/userinput.json
 	@export HZN_EXCHANGE_URL=${HEU} TAG=${TAG} && ./sh/fixservice.sh ${DIR}
@@ -127,7 +127,7 @@ login: ~/.docker/config.json
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- login to $(DOCKER_SERVER)""${NC}" &> /dev/stderr
 	@echo $(DOCKER_PASSWORD) | docker login -u ${DOCKER_LOGIN} --password-stdin  ${DOCKER_SERVER} 2> /dev/null \
 	    || docker login 2> /dev/null \
-	    || echo "${RED}>>>${NC} MAKE **" $$(date +%T) "** docker login failed ${DOCKER_SERVER}""${NC}" &> /dev/stderr; \
+	    || echo "${YELLOW}>>>${NC} MAKE **" $$(date +%T) "** docker login failed ${DOCKER_SERVER}""${NC}" &> /dev/stderr; \
 
 push: build login
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- pushing container: ${DOCKER_TAG}""${NC}" &> /dev/stderr
@@ -150,11 +150,11 @@ BUILD_OUT = build.${BUILD_ARCH}_${SERVICE_URL}_${SERVICE_VERSION}.out
 
 build: Dockerfile build.json service.json rootfs Makefile
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- building service: ${SERVICE_NAME}; tag: ${DOCKER_TAG}""${NC}" &> /dev/stderr
-	@export DOCKER_TAG="${DOCKER_TAG}" && docker build --build-arg BUILD_REF=$$(git rev-parse --short HEAD) --build-arg BUILD_DATE=$$(date -u +"%Y-%m-%dT%H:%M:%SZ") --build-arg BUILD_ARCH="$(BUILD_ARCH)" --build-arg BUILD_FROM="$(BUILD_FROM)" --build-arg BUILD_VERSION="${SERVICE_VERSION}" . -t "$(DOCKER_TAG)" | tee ${BUILD_OUT} &> /dev/stderr
+	@export DOCKER_TAG="${DOCKER_TAG}" && docker build --build-arg BUILD_REF=$$(git rev-parse --short HEAD) --build-arg BUILD_DATE=$$(date -u +"%Y-%m-%dT%H:%M:%SZ") --build-arg BUILD_ARCH="$(BUILD_ARCH)" --build-arg BUILD_FROM="$(BUILD_FROM)" --build-arg BUILD_VERSION="${SERVICE_VERSION}" . -t "$(DOCKER_TAG)" &> ${BUILD_OUT}
 
 
 build-service: build
-	-@if [ ! -s "${BUILD_OUT}" ]; then echo "${RED}+++ WARN -- no build output: ${BUILD_OUT}${NC}" &> /dev/stderr; fi
+	-@if [ ! -s "${BUILD_OUT}" ]; then echo "${RED}+++ WARN -- no build output: ${BUILD_OUT}${NC}" &> /dev/stderr; else if [ "${DEBUG}" == 'true' ]; then cat ${BUILD_OUT}; fi; fi
 
 service-build:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- building service: ${SERVICE_NAME}; architectures: ${SERVICE_ARCH_SUPPORT}""${NC}" &> /dev/stderr
@@ -179,9 +179,12 @@ service-start: start-service
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- started service: ${SERVICE_NAME}; directory: $(DIR)/""${NC}" &> /dev/stderr
 
 start-service: remove stop-service depend
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- starting service: ${SERVICE_NAME}; directory: ${DIR}""${NC}" &> /dev/stderr
 	@./sh/checkvars.sh ${DIR}
-	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service verify -d ${DIR}
-	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service start -S -d ${DIR}
+	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service verify -d ${DIR} &> ${SERVICE_NAME}.verify.out
+	@if [ "${DEBUG}" == 'true' ]; then cat ${SERVICE_NAME}.verify.out; fi
+	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service start -S -d ${DIR} &> ${SERVICE_NAME}.start.out
+	@if [ "${DEBUG}" == 'true' ]; then cat ${SERVICE_NAME}.start.out; fi
 
 start:
 
@@ -190,12 +193,12 @@ service-stop: stop-service
 
 stop-service: 
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- stopping service: ${SERVICE_NAME}; directory: $(DIR)/""${NC}" &> /dev/stderr
-	-@if [ -d "${DIR}" ]; then export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service stop -d ${DIR}; fi
-	-@$(MAKE) DOCKER_NAME=$(DOCKER_NAME) stop
+	-@if [ -d "${DIR}" ]; then export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service stop -d ${DIR} &> /dev/null; fi
+	-@$(MAKE) DOCKER_NAME=$(DOCKER_NAME) stop &> /dev/null
 
 stop:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- stopping container: ${DOCKER_NAME}""${NC}" &> /dev/stderr
-	-@docker stop "${DOCKER_NAME}"
+	-@docker stop "${DOCKER_NAME}" &> /dev/null
 
 	
 ## test
@@ -208,8 +211,8 @@ service-test:
 
 test-service: start-service
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- testing service: ${SERVICE_NAME}; version: ${SERVICE_VERSION}; arch: $(BUILD_ARCH)""${NC}" &> /dev/stderr
-	-@$(MAKE) test > $(TEST_RESULT)
-	-@${MAKE} stop-service
+	-@$(MAKE) test > $(TEST_RESULT) 2> /dev/null && echo "${TC}!!! TEST --" $$(date +%T) "-- test result ${TEST_RESULT}:" $$(cat $(TEST_RESULT)) "${NC}" &> /dev/stderr
+	-@${MAKE} stop-service &> /dev/null
 
 test:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- testing container: ${DOCKER_TAG}""${NC}" &> /dev/stderr
@@ -239,7 +242,7 @@ verify-service: verify
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- verified service: $(SERVICE_NAME); architecture: ${BUILD_ARCH}""${NC}" &> /dev/stderr
 
 verify:$(APIKEY) $(KEYS)
-	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn exchange service verify --public-key-file ${PUBLIC_KEY_FILE} -o ${HZN_ORG_ID} -u iamapikey:$(shell cat $(APIKEY)) "${SERVICE_TAG}"
+	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn exchange service verify --public-key-file ${PUBLIC_KEY_FILE} -o ${HZN_ORG_ID} -u iamapikey:$(shell cat $(APIKEY)) "${SERVICE_TAG}" &> ${SERVICE_TAG}.verify.out
 
 ## clean local & exchange
 
@@ -351,6 +354,7 @@ distclean: service-clean
 ## COLORS
 ##
 MC=${LIGHT_CYAN}
+TC=${LIGHT_RED}
 NC=${NO_COLOR}
 
 NO_COLOR=\033[0m
