@@ -39,11 +39,12 @@ before_install:
 before_script:
   # check branch; no secrets for pulls
   - if [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_LOGIN}" --password-stdin && echo "${HZN_ORG_ID}" > HZN_ORG_ID && echo "${DOCKER_NAMESPACE}" > DOCKER_NAMESPACE && echo "${HZN_EXCHANGE_APIKEY}" > APIKEY && echo "${PRIVATE_KEY}" | base64 --decode > "${HZN_ORG_ID}.key" && echo "${PUBLIC_KEY}" | base64 --decode > "${HZN_ORG_ID}.pem"; fi
-  - if [ "${BRANCH}" = 'beta' ]; then export TAG=beta; fi
   - if [ "${BUILD_ARCH}" != 'amd64' ]; then export DEBUG=true QEMU=true; fi
 script:
   # enable QEMU emulation
   - if [ "${QEMU:-}" = 'true' ]; then sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
+  - if [ "${BRANCH}" = 'beta' ]; then export TAG='beta'; fi
+  - if [ "${BRANCH}" = 'master' ]; then export TAG=''; fi
   # do the build and iff successful; do the test
   - make build-service && make test-service
 
