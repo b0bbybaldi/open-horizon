@@ -99,15 +99,13 @@ if [ $(jq '.ports!=null' ${SERVICE}) == 'true' ]; then
     if [ -z "${PE}" ]; then PE=$(jq -r '.ports|to_entries[]|select(.key=="'${PS}'")|.value' "${SERVICE}"); fi
     OPTIONS="${OPTIONS:-}"' --publish='"${PE}"':'"${PS}"
   done
-else
- if [ "${DEBUG:-}" == 'true' ]; then echo "+++ WARN -- $0 $$ -- no ports" &> /dev/stderr; fi
-fi
-
-if [ ! -z "${SERVICE_PORT:-}" ]; then
+elif [ ! -z "${SERVICE_PORT:-}" ]; then
   if [ "${SERVICE_PORT}" == 'null' ]; then SERVICE_PORT=80; fi
   if [ -z "${DOCKER_PORT:-}" ]; then DOCKER_PORT=12345; fi
   if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- mapping service port ${SERVICE_PORT} to localhost port ${DOCKER_PORT}" &> /dev/stderr; fi
-  OPTIONS="${OPTIONS:-}"' --publish='"${SERVICE_PORT}"':'"${DOCKER_PORT}"
+  OPTIONS="${OPTIONS:-}"' --publish='"${DOCKER_PORT}"':'"${SERVICE_PORT}"
+else
+ if [ "${DEBUG:-}" == 'true' ]; then echo "+++ WARN -- $0 $$ -- no ports" &> /dev/stderr; fi
 fi
 
 if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- docker run -d --name ${DOCKER_NAME} ${OPTIONS} ${DOCKER_TAG}" &> /dev/stderr; fi

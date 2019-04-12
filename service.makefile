@@ -150,11 +150,11 @@ BUILD_OUT = build.${BUILD_ARCH}_${SERVICE_URL}_${SERVICE_VERSION}.out
 
 build: Dockerfile build.json service.json rootfs Makefile
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- $(SERVICE_LABEL) building: ${SERVICE_NAME}; tag: ${DOCKER_TAG}""${NC}" &> /dev/stderr
-	@export DOCKER_TAG="${DOCKER_TAG}" && docker build --build-arg BUILD_REF=$$(git rev-parse --short HEAD) --build-arg BUILD_DATE=$$(date -u +"%Y-%m-%dT%H:%M:%SZ") --build-arg BUILD_ARCH="$(BUILD_ARCH)" --build-arg BUILD_FROM="$(BUILD_FROM)" --build-arg BUILD_VERSION="${SERVICE_VERSION}" . -t "$(DOCKER_TAG)" > ${BUILD_OUT}
+	@export DOCKER_TAG="${DOCKER_TAG}" && docker build --build-arg BUILD_REF=$$(git rev-parse --short HEAD) --build-arg BUILD_DATE=$$(date -u +"%Y-%m-%dT%H:%M:%SZ") --build-arg BUILD_ARCH="$(BUILD_ARCH)" --build-arg BUILD_FROM="$(BUILD_FROM)" --build-arg BUILD_VERSION="${SERVICE_VERSION}" . -t "$(DOCKER_TAG)" | tee ${BUILD_OUT} &> /dev/stderr
 
 
 build-service: build
-	@if [ -s "${BUILD_OUT}" ]; then cat "${BUILD_OUT}"; else echo "${RED}*** ERROR -- no build output: ${BUILD_OUT}${NC}" &> /dev/stderr; fi
+	@if [ ! -s "${BUILD_OUT}" ]; then echo "${RED}*** ERROR -- no build output: ${BUILD_OUT}${NC}" &> /dev/stderr; fi
 
 service-build:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- building service: ${SERVICE_NAME}; architectures: ${SERVICE_ARCH_SUPPORT}""${NC}" &> /dev/stderr
@@ -185,15 +185,17 @@ start-service: remove stop-service depend
 
 start:
 
-service-stop:
+service-stop: stop-service
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- stopped service: ${SERVICE_NAME}; directory: $(DIR)/""${NC}" &> /dev/stderr
 
 stop-service: 
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- stopping service: ${SERVICE_NAME}; directory: $(DIR)/""${NC}" &> /dev/stderr
 	-@if [ -d "${DIR}" ]; then export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service stop -d ${DIR}; fi
 	-@$(MAKE) DOCKER_NAME=$(DOCKER_NAME) stop
 
 stop:
-	@docker stop "${DOCKER_NAME}"
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- stopping container: ${DOCKER_NAME}""${NC}" &> /dev/stderr
+	-@docker stop "${DOCKER_NAME}"
 
 	
 ## test
