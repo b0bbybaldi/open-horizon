@@ -239,7 +239,7 @@ make service-push
 ```
 
 ## Step 3
-**Publish services in the exchange**.  Requires pushing the local containers and publishing those references into the exchange.
+**Publish services in the exchange**. Automaticallly pushes the local containers and publishes those references into the exchange.
 
 ```
 make service-publish
