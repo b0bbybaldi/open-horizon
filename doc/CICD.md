@@ -238,7 +238,7 @@ All services and patterns have been published in the Open Horizon exchange and a
 
 For more information on building services, see [`SERVICE.md`][service-md].
 
-# C. Change
+# D. Change
 The build process is designed to process changes to the software and take actions, e.g. rebuilding a service container.  To manage change control this process utilizes the `git` command in conjunction with a SaaS (e.g. `github.com`).
 
 <hr>
@@ -339,14 +339,20 @@ If tests are successful, the services and patterns may be pushed for "stable" (a
 % rm ./open-horizon/TAG
 % git checkout master
 % git pull origin master
-% make service-build && make service-publish && make service-verify
-% make make pattern-publish. && make pattern-validate
+% make service-build && make service-test \
+  && make service-publish \
+  && make service-verify \
+  && pattern-publish \
+  && make pattern-validate \
+  && git commit -m "merge beta" . \
+  && git push \
+  || echo "FAILED"
 ```
 
 ## &#9989; Finished
 Services and pattern have been updated in both Docker registry and Open Horizon exchange.
 
-# D. Automate
+# C. Automate
 Automation of these steps utilizes the public [Travis-CI][travis-ci] system to run jobs in conjunction with changes to Git.  Please refer to [`TRAVIS.md`][travis-md] for more information.
 
 ## Step 1
