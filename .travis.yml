@@ -8,7 +8,7 @@ branches:
     - master
     - beta
 env:
-  - BUILD_ARCH=amd64 PUSH_OFF=true
+  - BUILD_ARCH=amd64 DEBUG=true PUSH_OFF=true
   - BUILD_ARCH=arm64 DEBUG=true BUILD_OFF= TEST_OFF=true PUSH_OFF=true PUBLISH_OFF=true
   - BUILD_ARCH=arm DEBUG=true BUILD_OFF= TEST_OFF=true PUSH_OFF=true PUBLISH_OFF=true
 addons:
