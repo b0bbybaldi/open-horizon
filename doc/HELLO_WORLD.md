@@ -39,8 +39,8 @@ The Open Horizon exchange and Docker registry defaults are utilized.
 
 It is expected that the development host has been configured as an Open Horizon node with the `hzn` command-line-interface (CLI) and local agent installed.  To utilize the localhost as a pattern test node, the user must have both `sudo` and `ssh` privileges for the development host.
 
-### &#63743; macOS computer ([adding devices](https://test.cloud.ibm.com/docs/edge-fabric?topic=edge-fabric-adding-devices))
-Install Open Horizon for the macOS using the following commands:
+### &#63743; macOS computer 
+Install Open Horizon for the **&#63743; mac** ([other devices](https://test.cloud.ibm.com/docs/edge-fabric?topic=edge-fabric-adding-devices)) using the following commands:
 
 ```
 curl http://pkg.bluehorizon.network/macos/certs/horizon-cli.crt -o horizon-cli.crt
@@ -107,7 +107,7 @@ ln -s ../service.makefile Makefile
 ```
 
 ## Step 5
-Create the **`hello/Dockerfile`** with the following contents
+Create the **`./Dockerfile`** with the following contents
 
 ```
 FROM ${BUILD_FROM}
@@ -119,7 +119,7 @@ CMD ["/usr/bin/run.sh"]
 ## Step 6
 Create `build.json` configuration file; specify `FROM` targets for Docker `build`; provide base container images for all supported architectures.
 
-**`hello/build.json`**
+**`./build.json`**
 
 ```
 {

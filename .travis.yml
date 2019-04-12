@@ -8,9 +8,9 @@ branches:
     - master
     - beta
 env:
-  - BUILD_ARCH=amd64
-  - BUILD_ARCH=arm64
-  - BUILD_ARCH=arm
+  - BUILD_ARCH=amd64 DEBUG=true PUSH_OFF=true
+  - BUILD_ARCH=arm64 DEBUG=true BUILD_OFF= TEST_OFF=true PUSH_OFF=true PUBLISH_OFF=true
+  - BUILD_ARCH=arm DEBUG=true BUILD_OFF= TEST_OFF=true PUSH_OFF=true PUBLISH_OFF=true
 addons:
   apt:
     update: true
@@ -31,6 +31,8 @@ addons:
     - dpkg-cross
 
 before_install:
+  # are we emulating or not
+  - if [ "${BUILD_ARCH}" != 'amd64' ]; then QEMU=true; fi
   # branch management
   - if [ ! -z "${TAG}" ]; then echo "${TAG}" > TAG; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then export BRANCH="${TRAVIS_BRANCH}"; else export BRANCH="${TRAVIS_PULL_REQUEST_BRANCH}"; fi
@@ -39,16 +41,17 @@ before_install:
 before_script:
   # check branch; no secrets for pulls
   - if [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_LOGIN}" --password-stdin && echo "${HZN_ORG_ID}" > HZN_ORG_ID && echo "${DOCKER_NAMESPACE}" > DOCKER_NAMESPACE && echo "${HZN_EXCHANGE_APIKEY}" > APIKEY && echo "${PRIVATE_KEY}" | base64 --decode > "${HZN_ORG_ID}.key" && echo "${PUBLIC_KEY}" | base64 --decode > "${HZN_ORG_ID}.pem"; fi
-  - if [ "${BRANCH}" = 'beta' ]; then export TAG=beta; fi
-  - if [ "${BUILD_ARCH}" != 'amd64' ]; then export DEBUG=true QEMU=true; fi
 script:
   # enable QEMU emulation
-  - if [ "${QEMU:-}" = 'true' ]; then sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
+  - if [ "${QEMU:-}" = 'true' ]; then export DEBUG=true && sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
+  - if [ "${BRANCH}" = 'beta' ]; then export TAG='beta'; fi
+  - if [ "${BRANCH}" = 'master' ]; then export TAG=; fi
   # do the build and iff successful; do the test
-  - make build-service && make test-service
-
+  - if [ "${BUILD_OFF:-}" != 'true' ]; then make build-service; fi
+  - if [ "${TEST_OFF:-}" != 'true' ]; then make test-service; fi
 after_success:
-  - make publish-service && make pattern-publish
+  - if [ "${PUSH_OFF:-}" != 'true' ]; then make push-service; fi
+  - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service && make pattern-publish; fi
 
 #
 #after_failure:

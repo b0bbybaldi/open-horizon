@@ -8,7 +8,7 @@ mkdir hello
 cd hello
 ln -s ../sh .
 ln -s ../service.makefile Makefile 
-echo 'FROM ubuntu:bionic' >> Dockerfile
+echo 'FROM ${BUILD_FROM}' >> Dockerfile
 echo 'RUN apt-get update && apt-get install -qq -y curl socat' >> Dockerfile
 echo 'COPY rootfs /' >> Dockerfile
 echo 'CMD ["/usr/bin/run.sh"]' >> Dockerfile
