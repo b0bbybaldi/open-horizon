@@ -45,7 +45,7 @@ E. MarkDown repository
  + Add TravisCI build status
  + Add Docker container status
  
-## Process
+# Process
 The CI/CD process utilizes the the following:
 
 **command-line-interface tools**
