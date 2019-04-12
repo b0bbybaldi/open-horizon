@@ -5,7 +5,7 @@ As with all software systems a simple example is required to on-board new users;
 
 In this example a new service, `hello`, will be created, built, tested, published, and run.
 
-**Using a  &#63743; macOS computer** with the following software installed:
+Using a  **&#63743; macOS computer** with the following software installed:
 
 + Open Horizon - the `hzn` command-line-interface (CLI) and (optional) local agent
 + Docker - the `docker` command-line-interface and service
@@ -29,20 +29,14 @@ The Open Horizon exchange and Docker registry defaults are utilized.
 
 It is expected that the development host has been configured as an Open Horizon node with the `hzn` command-line-interface (CLI) and local agent installed.  To utilize the localhost as a pattern test node, the user must have both `sudo` and `ssh` privileges for the development host.
 
-## &#63743; macOS (see [adding devices](https://test.cloud.ibm.com/docs/edge-fabric?topic=edge-fabric-adding-devices))
+## &#63743; macOS computer ([adding devices](https://test.cloud.ibm.com/docs/edge-fabric?topic=edge-fabric-adding-devices))
+Install Open Horizon for the macOS using the following commands:
 
 ```
 curl http://pkg.bluehorizon.network/macos/certs/horizon-cli.crt -o horizon-cli.crt
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain horizon-cli.crt
 curl http://pkg.bluehorizon.network/macos/horizon-cli-2.22.6.pkg -o horizon-cli-2.22.6.pkg
 sudo installer -pkg horizon-cli-2.22.6.pkg -target /
-```
-Start Open Horizon, copy SSH credentials to test devices, and check node status.
-
-```
-horizon-container start
-ssh-copy-id localhost
-ssh localhost hzn node list
 ```
 
 Create a symbolic links from `/usr/bin` to `/usr/local/bin` to enable remote access to `hzn` and `docker`:
@@ -51,6 +45,15 @@ Create a symbolic links from `/usr/bin` to `/usr/local/bin` to enable remote acc
 sudo ln -s /usr/local/bin/hzn /usr/bin
 sudo ln -s /usr/local/bin/docker /usr/bin
 ```
+
+Start Open Horizon, copy SSH credentials to test devices, and check node status.
+
+```
+horizon-container start
+ssh-copy-id localhost
+ssh localhost hzn node list
+```
+
 
 ## Step 1
 Create a new directory, and clone this [repository][repository]
