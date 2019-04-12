@@ -44,7 +44,7 @@ script:
   - make build-service && make test-service
 
 after_success:
-  - make make publish-service && make pattern-publish
+  - make publish-service && make pattern-publish
 
 #before_deploy:
 #  - make nodes-clean
