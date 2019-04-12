@@ -9,8 +9,8 @@ DATE=$(echo ${SECONDS} \/ ${NMAP_PERIOD} \* ${NMAP_PERIOD} | bc)
 # output target
 OUTPUT="/tmp/${0##*/}.${DATE}.json"
 # test if been-there-done-that
-if [ ! -e "${OUTPUT}" ]; then
-  if [ ! -s "${OUTPUT}" ]; then
+if [ ! -s "${OUTPUT}" ]; then
+  if [ ! -e "${OUTPUT}" ]; then
     if [ "${DEBUG:-}" == 'true' ]; then echo "+++ INFO -- $0 $$ -- running ${0%/*}/nmap.sh ${OUTPUT}" &> /dev/stderr; fi
     touch ${OUTPUT}
     ${0%/*}/nmap.sh "${OUTPUT}" &
