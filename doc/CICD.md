@@ -18,25 +18,6 @@ Please refer to [`TERMINOLOGY.md`][terminology-md] for important terms and defin
 
 # &#10004; What Will Be Learned
 
-The software engineer will learn how to perform the following:
-
-1. Use this repository
- + Copy, configure, and use a Git repository
- + Configure for Docker and Open Horizon
-2. Build and test services and patterns
- + Build, test, and publish  _service_: { `cpu`,`hal`,`wan`,`yolo`,`yolo2msghub` }
- + Publish and test _pattern_: `yolo2msgub`
-3. Change management practices
- + Setup a _branch_
- + Update a _service_
- + Update a _pattern_
- + Merge a _branch_
-4. Automate build process
- + Setup, configure, and use  Travis CI
-5. Update repository MarkDown
- + Add TravisCI build status
- + Add Docker container status
- 
 Within the following scenario:
 
 + A single developer
@@ -45,40 +26,29 @@ Within the following scenario:
 + Public [github.com](http://github.com), [docker.io](http://hub.docker.com), [travis-ci.org](http://travis-ci.org), and [microbadger.com][microbadger]
 + One (1) repository with two (2) branches: "dev" (`beta`) and “stable” (`master`)
 
-# Next Steps
-Create a new service, the "[hello world][helloworld-md]" example.
+The reader will learn how to perform the following:
 
-[helloworld-md]: https://github.com/dcmartin/open-horizon/blob/master/doc/HELLO_WORLD.md
-
-<hr>
-
-## A. Introduction
-
-The expectations of this process is to automate the development, testing, and deployment processes for edge fabric patterns and their services across a large number of devices.  The primary objective is to:
-
-+ __eliminate failure in the field__
-
-A node that is currently operational should not fail due to an automated CI/CD process result.
-
-The key success criteria are:
+A. Use this repository
+ + Copy, configure, and use a Git repository
+ + Configure for Docker and Open Horizon
+B. Build and test services and patterns
+ + Build, test, and publish  _service_: { `cpu`,`hal`,`wan`,`yolo`,`yolo2msghub` }
+ + Publish and test _pattern_: `yolo2msgub`
+C. Change management practices
+ + Setup a _branch_
+ + Update a _service_
+ + Update a _pattern_
+ + Merge a _branch_
+D. Automate build process
+ + Setup, configure, and use  Travis CI
+E. MarkDown repository 
+ + Add TravisCI build status
+ + Add Docker container status
  
-1. __stage everything__ - all changes to deployed systems should be staged for testing prior to release
-1. __enforce testing__ - all components should provide interfaces and cases for testing
-1. __automate everything__ - to the greatest degree possible, automate the process
+## Process
+The CI/CD process utilizes the the following:
 
-### Stage everything
-The change control system for this repository is Git which provides mechanisms to stage changes between various versions of a repository.  These versions are distinguished within a repository via branching from a parent (e.g. the trunk or _master_ branch) and then incorporating any changes through a _commit_ back to the parent.  The _push_ of the change back to the repository may be used to evaluate the state and determine if a _stage_ is ready for a build to be initiated.  
-
-### Enforce testing
-Staged changes require testing processes to automate the build process.  Each service should conform to a standard test harness with either a default or custom test script.  Standardization of the testing process enables replication and re-use of tests for the service and its required services, simplifying testing.  Additional standardization in testing should be extended to API coverage through utilization of Swagger (n.b. IBM API Connect).
-
-### Automate everything
-A combination of tools enables automation for almost every component in the CI/CD process.  However, certain activities remain the provenance of human review and oversite, including _pull requests_ and _release management_.  In addition, modification of a service _version_ is _not_ dependent on either the Git or Docker repository version information.
-
-## B. Design
-The process is designed to account for multiple branches, registries, and exchanges being utilized as part of the build, test, and release management process.  This [repository][repository] is built as an example implementation of this CI/CD process.  Each of the services is built using a similar [design][design-md] that utilizes a common set of `make` files and support scripts.
-
-The CI/CD process is centered around these primary tools accessed **through the command-line**:
+**command-line-interface tools**
 
 + `make` - control, build, test automation
 + `git` - software version and branch management
@@ -90,13 +60,13 @@ The CI/CD process is centered around these primary tools accessed **through the 
 + `envsubst` - environment variable substitution command (&#63743; `brew install gettext`)
 + `curl` - **curl** is a tool to transfer data from or to a server (see `man curl`)
 
-The CI/CD process requires configuration to operate properly; **relevant JSON configuration files**:
+**configuration files**
 
 1. `~/.docker/config.json` - Docker configuration, including registries and authentication
 2. `registry.json` - IBM Cloud Container Registry configuration (see [`REGISTRY.md`][registry-md])
 3. `apiKey.json` - IBM Cloud platform API key
 
-These files are utilized for the control attributes; they may also be specified as environment variables or files in the `open-horizon/` directory; **the control attributes are**: 
+**control attributes**
 
 + `DOCKER_NAMESPACE` - identifies the collection of repositories, e.g. `dcmartin`
 + `DOCKER_REGISTRY` - identifies the SaaS server, e.g. `docker.io`
@@ -106,17 +76,16 @@ These files are utilized for the control attributes; they may also be specified 
 + `HZN_EXCHANGE_URL` - identifies the SaaS server, e.g. `alpha.edge-fabric.com`
 + `HZN_EXCHANGE_APIKEY` - API key for exchange server, a.k.a. IBM Cloud Platform API key
 
-For more information refer to [`MAKEVARS.md`][makevars-md]
+The process is designed to account for multiple branches, registries, and exchanges being utilized as part of the build, test, and release management process.  This [repository][repository] is built as an example implementation of this CI/CD process.  Each of the services is built using a similar [design][design-md] that utilizes a common set of `make` files and support scripts.  For more information refer to [`MAKEVARS.md`][makevars-md]
 
 <hr>
 
-# 1. Use
+# A. Use
 
 ## Step 1
 With the assumption that `docker` has already been installed; if not refer to these [instructions][get-docker].
 
 ```
-cd $GD/open-horizon
 wget -qO - ibm.biz/get-horizon | sudo bash
 ```
 **Note**: only the `hzn` command-line-interface tool is installed for macOS
@@ -186,7 +155,7 @@ Refer to the [`REGISTRY.md`][registry-md] instructions for additional informatio
 
 [registry-md]: https://github.com/dcmartin/open-horizon/blob/master/doc/REGISTRY.md
 
-# 2. Build
+# B. Build
 Services are organized into subdirectories of `open-horizon/` directory and all share a common [design][design-md]. Please refer to [`BUILD.md`][build-md] for details on the build process. 
 
 Two base service containers are provided; one for Alpine with its minimal footprint, and one for Ubuntu with its support for a wide range of software packages.
@@ -240,7 +209,7 @@ make service-push
 ```
 
 ## Step 3
-**Publish services in the exchange**.  Requires pushing the local containers and publishing those references into the exchange.
+**Publish services in the exchange**. Automaticallly pushes the local containers and publishes those references into the exchange.
 
 ```
 make service-publish
@@ -269,7 +238,7 @@ All services and patterns have been published in the Open Horizon exchange and a
 
 For more information on building services, see [`SERVICE.md`][service-md].
 
-# 3. Change
+# C. Change
 The build process is designed to process changes to the software and take actions, e.g. rebuilding a service container.  To manage change control this process utilizes the `git` command in conjunction with a SaaS (e.g. `github.com`).
 
 <hr>
@@ -278,10 +247,11 @@ The build process is designed to process changes to the software and take action
 
 The namespace and version identifiers for Git do not represent the namespaces, identifiers, or versions used by either Docker or Open Horizon.  **To avoid conflicts in identification of containers, services, and patterns multiple Docker registries & namespaces and Open Horizon exchanges & organizations should be utilized.**
 
+
+**For a single developer using a single registry, namespace, exchange, and organization** it is necessary to distinguish between containers, services, and patterns.  The `TAG` value is used to modify the container, service, and pattern identifiers in the configuration templates and build files.  In addition, the `build.json` file values are also decorated with the `TAG` value when from the same Docker registry and namespace.
+
+
 ### &#9995; Use `TAG` 
-
-When using a single registry, namespace, exchange, and organization tt is necessary to distinguish between containers, services, and patterns.  The `TAG` value is used to modify the container, service, and pattern identifiers in the configuration templates and build files.  In addition, the `build.json` file values are also decorated with the `TAG` value when from the same Docker registry and namespace.
-
 The value may be used to indicate a branch or stage;  for example development (`beta`) or staging (`master`). An`open-horizon/TAG` that distinguishes the `beta` branch would be created with the following command:
 
 ```
@@ -376,7 +346,7 @@ If tests are successful, the services and patterns may be pushed for "stable" (a
 ## &#9989; Finished
 Services and pattern have been updated in both Docker registry and Open Horizon exchange.
 
-# 4. Automate
+# D. Automate
 Automation of these steps utilizes the public [Travis-CI][travis-ci] system to run jobs in conjunction with changes to Git.  Please refer to [`TRAVIS.md`][travis-md] for more information.
 
 ## Step 1
@@ -465,7 +435,7 @@ after_success:
 ## &#9989; Finished
 Travis has been configured to build the `open-horizon` repository; any commits to the `master` branch will trigger automated build, test, push, and publish for the services in this repository, should all make targets succeed.
 
-# 5. MarkDown
+# E. MarkDown
 To appropriately inform consumers of the repository status can be indicated by using _badges_.  There are two primary badges used to describe this repository.  **THIS ONLY WORKS FOR PUBLIC REPOSITORIES**
 
 + Travis build status - obtained from travis-ci.org (e.g. `https://travis-ci.org/dcmartin/open-horizon`)
@@ -492,6 +462,13 @@ Information about the container is available, but _only_ after the image has bee
 [![](https://images.microbadger.com/badges/image/dcmartin/amd64_com.github.dcmartin.open-horizon.cpu.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.cpu "Get your own image badge on microbadger.com")
 [![](https://images.microbadger.com/badges/version/dcmartin/amd64_com.github.dcmartin.open-horizon.cpu.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.cpu "Get your own version badge on microbadger.com")
 [![](https://img.shields.io/docker/pulls/dcmartin/amd64_com.github.dcmartin.open-horizon.cpu.svg)](https://hub.docker.com/r/dcmartin/amd64_com.github.dcmartin.open-horizon.cpu)
+
+<hr>
+
+# Next Step - `hello` world
+When this document has been read and understood, take the next step and create a new service, the "[hello world][helloworld-md]" example.
+
+[helloworld-md]: https://github.com/dcmartin/open-horizon/blob/master/doc/HELLO_WORLD.md
 
 <hr>
 

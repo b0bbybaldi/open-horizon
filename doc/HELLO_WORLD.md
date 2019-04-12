@@ -1,9 +1,19 @@
-# `HELLO_WORLD.md` - The `hello-world` example
+# `hello` - The `hello-world` example
 
 ## Introduction
 As with all software systems a simple example is required to on-board new users; this service is that example.
 
 In this example a new service, `hello`, will be created, built, tested, published, and run.
+
+The `hello` service emits a JavaScript Object Notation (JSON) response when it receives a request for its status; the `make` program is used to build, run, test, publish, and deploy; for example:
+
+```
+% make
+...
+{ "hello": "world" }
+```
+
+## Requirements
 
 Using a  **&#63743; macOS computer** with the following software installed:
 
@@ -25,11 +35,11 @@ The Open Horizon exchange and Docker registry defaults are utilized.
 + `HZN_EXCHANGE_URL` - `http://alpha.edge-fabric.com/v1/`
 + `DOCKER_REGISTRY` - `docker.io`
 
-### &#9995; Development host
+## &#9995; Development host
 
 It is expected that the development host has been configured as an Open Horizon node with the `hzn` command-line-interface (CLI) and local agent installed.  To utilize the localhost as a pattern test node, the user must have both `sudo` and `ssh` privileges for the development host.
 
-## &#63743; macOS computer ([adding devices](https://test.cloud.ibm.com/docs/edge-fabric?topic=edge-fabric-adding-devices))
+### &#63743; macOS computer ([adding devices](https://test.cloud.ibm.com/docs/edge-fabric?topic=edge-fabric-adding-devices))
 Install Open Horizon for the macOS using the following commands:
 
 ```
@@ -100,19 +110,46 @@ ln -s ../service.makefile Makefile
 Create the **`hello/Dockerfile`** with the following contents
 
 ```
-FROM ubuntu:bionic
+FROM ${BUILD_FROM}
 RUN apt-get update && apt-get install -qq -y socat
 COPY rootfs /
 CMD ["/usr/bin/run.sh"]
 ```
 
 ## Step 6
-Create directory `rootfs/usr/bin/`, and scripts `run.sh` & `service.sh`.
+Create `build.json` configuration file; specify `FROM` targets for Docker `build`; provide base container images for all supported architectures.
+
+**`hello/build.json`**
+
+```
+{
+  "build_from":{
+    "amd64":"ubuntu:bionic",
+    "arm": "arm32v7/ubuntu:bionic",
+    "arm64": "arm64v8/ubuntu:bionic"
+  }
+}
+```
+
+## Step 7
+Create `rootfs/` directory to store files that will be copied to the `/` directory of the container:
+
+```
+% mkdir rootfs
+```
+
+Then make the subdirectory for what will become`/usr/bin` on the container; scripts for this service will be stored there.
+
 ```
 mkdir -p rootfs/usr/bin
 ```
 
-**`hello/rootfs/usr/bin/run.sh`**
+## Step 8
+Create the following scripts.
+
+The `run.sh` script is called when the container is launched (n.b. `CMD` instruction in `Dockerfile).
+
+**`rootfs/usr/bin/run.sh`**
 
 ```
 #!/bin/sh
@@ -120,7 +157,9 @@ mkdir -p rootfs/usr/bin
 socat TCP4-LISTEN:81,fork EXEC:/usr/bin/service.sh
 ```
 
-**`hello/rootfs/usr/bin/service.sh`**
+The `service.sh` script is called by the `run.sh` script every time it receives a status request.
+
+**`rootfs/usr/bin/service.sh`**
 
 ```
 #!/bin/sh
@@ -137,10 +176,12 @@ chmod 755 rootfs/usr/bin/run.sh
 chmod 755 rootfs/usr/bin/service.sh
 ```
 
-## Step 7
-Create `service.json` configuration file; the variable values will be substituted during the build process.  Specify a value for `url` to replace default below.
+## Step 9
+Create JSON configuration files; the variable values will be substituted during the build process.  Specify a value for `url` to replace default below.
 
-**`hello/service.json`**
+The `service.json` file contains the `label` of the service which will be used for service identification.
+
+**`./service.json`**
 
 ```
 {
@@ -153,17 +194,16 @@ Create `service.json` configuration file; the variable values will be substitute
   "deployment": {
     "services": {
       "hello": {
-        "image": null,
-        "specific_ports": [ { "HostPort": "81:81/tcp", "HostIP": "0.0.0.0" }]
+        "image": null
       }
     }
   }
 }
 ```
 
-Create `userinput.json` configuration file; this file will be used for testing.
+Create `userinput.json` configuration file; this file will be used for testing the service in a pattern.
 
-**`userinput.json`**
+**`./userinput.json`**
 
 ```
 {
@@ -178,29 +218,14 @@ Create `userinput.json` configuration file; this file will be used for testing.
 }
 ```
 
-## Step 8
-Create `build.json` configuration file; specify `FROM` targets for Docker `build`.
-
-**`hello/build.json`**
-
-```
-{
-  "build_from":{
-    "amd64":"ubuntu:bionic",
-    "arm": "arm32v7/ubuntu:bionic",
-    "arm64": "arm64v8/ubuntu:bionic"
-  }
-}
-```
-
-## Step 9
+## Step 10 
 Configure environment for to map container service port (`81`) to an open port on the development host:
 
 ```
 export DOCKER_PORT=12345
 ```
 
-## Step 10
+## Step 11
 Build, run, and check the service container locally using the native (i.e. `amd64`) architecture.
 
 ```
@@ -216,7 +241,7 @@ amd64_dcmartin.hello-beta
 }
 ```
 
-## Step 11
+## Step 12
 Build all service containers for __all supported architectures__ (n.b. use `build-service` for single architecture).
 
 ```
@@ -228,10 +253,10 @@ Then test the service for __all supported architectures__; if successful, publis
 make service-test && make service-publish
 ```
 
-## Step 12
+## Step 13
 Create pattern configuration file to test the `yolo2msghub` service.  The variables will have values substituted during the build process.
 
-**`hello/pattern.json`**
+**`./pattern.json`**
 
 ```
 {
@@ -271,7 +296,7 @@ Create pattern configuration file to test the `yolo2msghub` service.  The variab
 }
 ```
 
-## Step 13
+## Step 14
 Publish pattern for `hello` service.
 
 ```
@@ -281,11 +306,14 @@ Updating hello in the exchange...
 Storing dcmartin@us.ibm.com.pem with the pattern in the exchange...
 ```
 
-## Step 14
-Register development host as a test device; multiple devices may be listed, one per line.
+## Step 15
+The development host is presumed to be the default test device if no `TEST_TMP_MACHINES` file exists; multiple devices may be listed, one per line.  For example, to create a test pool of three devices, including the localhost and two other devices identified by DNS name and IP address, respectively.
 
 ```
-% echo 'localhost' > TEST_TMP_MACHINES
+% echo 'localhost' >> ./TEST_TMP_MACHINES
+% echo 'my-test-rpi3.local' >> ./TEST_TMP_MACHINES
+% echo '192.168.1.57' >> ./TEST_TMP_MACHINES
+...
 ```
 Ensure remote access to test devices; copy SSH credentials from the the development host to all test devices; for example:
 
@@ -293,7 +321,7 @@ Ensure remote access to test devices; copy SSH credentials from the the developm
 % ssh-copy-id localhost
 ```
 
-## Step 15
+## Step 16
 Register test device(s) with `hello` pattern:
 
 ```
@@ -306,7 +334,7 @@ Register test device(s) with `hello` pattern:
 --- INFO -- ./sh/nodereg.sh 41808 -- localhost -- version: ; url: 
 ```
 
-## Step 16
+## Step 17
 Inspect nodes until fully configured; device output is collected from executing the following commands.
 
 + `hzn node list`
@@ -325,7 +353,7 @@ Inspect nodes until fully configured; device output is collected from executing 
 {"container":"horizon1"}
 ```
 
-## Step 17
+## Step 18
 Test nodes for correct output.
 
 ```
@@ -335,14 +363,14 @@ ELAPSED: 0
 {"hello":"world"}
 ```
 
-## Step 18
+## Step 19
 Clean nodes; unregister device from Open Horizon and remove all containers and images.
 
 ```
 % make nodes-clean
 ```
 
-## Step 19
+## Step 20 
 Clean service; remove all running containers and images for all architectures from the development host.
 
 ```
