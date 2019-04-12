@@ -116,7 +116,6 @@ For more information refer to [`MAKEVARS.md`][makevars-md]
 With the assumption that `docker` has already been installed; if not refer to these [instructions][get-docker].
 
 ```
-cd $GD/open-horizon
 wget -qO - ibm.biz/get-horizon | sudo bash
 ```
 **Note**: only the `hzn` command-line-interface tool is installed for macOS

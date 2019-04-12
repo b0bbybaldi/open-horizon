@@ -50,4 +50,19 @@ An _organization_ is a collection of exchange artifacts (e.g. node, service, pat
 ## 2.6 - _agreement_
 Documentation of a successful pattern registration service configuration; there is one agreement per service.
 
+## 3 - Architectures
+The Go Language specification is used to identify architectures.  The following architectures are recognized:
 
+Identifier|Description|`FROM`
+---|---|---
+`amd64`|AMD/Intel 64-bit - PC or VM|`multiarch/ubuntu-core:amd64-xenial`
+`arm`|ARMv7 - Raspberry Pi Model 3B+|`multiarch/ubuntu-core:armhf-bionic`
+`arm64`|ARMv8 - nVidia Jetson Nano, TX2, Xavier, ..|`multiarch/ubuntu-core:arm64-bionic`
+`386`|Intel 386 - Pentium SSE2+|`multiarch/ubuntu-core:i386-xenial`
+`ppc64le`|PowerPC 64-bit (little endian) - POWER8+|`multiarch/ubuntu-core:ppc64el-xenial`
+`mips64le`|MIPS 64-bit (little endian) - MIPS III+; 2E/2F|
+`ppc64`|PowerPC 64-bit (big endian) - POWER8+|
+`mips64`|MIPS 64-bit (big endian) - MIPS III+; MIPS64r2|
+`s390x`|System390 - z196+|
+`mips`|MIPS (big endian)|
+`mipsle`|MIPS (little endian)|
