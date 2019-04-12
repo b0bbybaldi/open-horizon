@@ -72,14 +72,14 @@ after_success:
   - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service && make pattern-publish; fi
 
 ## after failure; at least clean-up
-after_failure:
-  - if [ "${ROLLBACK_ON:-}" != 'true' ]; then echo "+++ WARN -- $0 $$ -- FAILED: rollback changes to ${BRANCH}"; else ./sh/rollback.sh ${BRANCH}; fi
-
-before_deploy:
-  - if [ "${DEPLOY_ON:-}" == 'true' ]; then make nodes-clean && make nodes-list; fi
-
-deploy:
-  - if [ "${DEPLOY_ON:-}" == 'true' ]; then make nodes; fi
-
-after_deploy:
-  - if [ "${DEPLOY_ON:-}" == 'true' ]; then make nodes && make nodes-list && make nodes-test; fi
+#after_failure:
+#  - if [ "${ROLLBACK_ON:-}" != 'true' ]; then echo "+++ WARN -- $0 $$ -- FAILED: rollback changes to ${BRANCH}"; else ./sh/rollback.sh ${BRANCH}; fi
+#
+#before_deploy:
+#  - if [ "${DEPLOY_ON:-}" == 'true' ]; then make nodes-clean && make nodes-list; fi
+#
+#deploy:
+#  - if [ "${DEPLOY_ON:-}" == 'true' ]; then make nodes; fi
+#
+#after_deploy:
+#  - if [ "${DEPLOY_ON:-}" == 'true' ]; then make nodes && make nodes-list && make nodes-test; fi
