@@ -277,10 +277,11 @@ The build process is designed to process changes to the software and take action
 
 The namespace and version identifiers for Git do not represent the namespaces, identifiers, or versions used by either Docker or Open Horizon.  **To avoid conflicts in identification of containers, services, and patterns multiple Docker registries & namespaces and Open Horizon exchanges & organizations should be utilized.**
 
+
+**For a single developer using a single registry, namespace, exchange, and organization** it is necessary to distinguish between containers, services, and patterns.  The `TAG` value is used to modify the container, service, and pattern identifiers in the configuration templates and build files.  In addition, the `build.json` file values are also decorated with the `TAG` value when from the same Docker registry and namespace.
+
+
 ### &#9995; Use `TAG` 
-
-When using a single registry, namespace, exchange, and organization tt is necessary to distinguish between containers, services, and patterns.  The `TAG` value is used to modify the container, service, and pattern identifiers in the configuration templates and build files.  In addition, the `build.json` file values are also decorated with the `TAG` value when from the same Docker registry and namespace.
-
 The value may be used to indicate a branch or stage;  for example development (`beta`) or staging (`master`). An`open-horizon/TAG` that distinguishes the `beta` branch would be created with the following command:
 
 ```
