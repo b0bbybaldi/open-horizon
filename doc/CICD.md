@@ -24,24 +24,39 @@ Within the following scenario:
 + One (1) Docker registry with one (1) namespace
 + One (1) Open Horizon exchange with one (1) organization
 + Public [github.com](http://github.com), [docker.io](http://hub.docker.com), [travis-ci.org](http://travis-ci.org), and [microbadger.com][microbadger]
-+ One (1) repository with two (2) branches: "dev" (`beta`) and “stable” (`master`)
++ One (1) repository with three (3) branches:
+
+	+ `master` - the stable and clean branch; push/publish to _production_ exchange and registry
+	+ `beta` - the integration and QA branch; push/publish to _staging_ exchange/registry
+	+ `exp` - the feature development and testing branch; private to developer; push/publish to _developer_ exchange/registry
+
 
 The reader will learn how to perform the following:
 
-A. Use this repository
+
+A. Setup environment
+
  + Copy, configure, and use a Git repository
  + Configure for Docker and Open Horizon
+
 B. Build and test services and patterns
+
  + Build, test, and publish  _service_: { `cpu`,`hal`,`wan`,`yolo`,`yolo2msghub` }
  + Publish and test _pattern_: `yolo2msgub`
+
 C. Change management practices
+
  + Setup a _branch_
  + Update a _service_
  + Update a _pattern_
  + Merge a _branch_
+
 D. Automate build process
+
  + Setup, configure, and use  Travis CI
+
 E. MarkDown repository 
+
  + Add TravisCI build status
  + Add Docker container status
  
@@ -80,7 +95,7 @@ The process is designed to account for multiple branches, registries, and exchan
 
 <hr>
 
-# A. Use
+# A. Setup
 
 ## Step 1
 With the assumption that `docker` has already been installed; if not refer to these [instructions][get-docker].
