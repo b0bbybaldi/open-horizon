@@ -2,20 +2,16 @@
 
 HZN_URL="http://pkg.bluehorizon.network/"
   
-if [ "${VENDOR:-}" != "apple" ] && [ "${OSTYPE:-}" != "darwin" ]; then
+if [ ! -z $(command -v "apt-get") ]; then
   TYPE=linux
-  if [ ! -z $(command -v "apt") ]; then
-    DIST=ubuntu
-    #RELEASE=$(lsb_release -cs)
-    RELEASE=xenial
-    REPO=updates
-    KEY=${HZN_URL}/bluehorizon.network-public.key
-    wget -qO - ${KEY} | sudo apt-key add -
-    sudo add-apt-repository "deb [arch=armhf,arm64,amd64,ppc64el] ${HZN_URL}/${TYPE}/${DIST} ${RELEASE}-${REPO} main"
-    sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommend bluehorizon
-  else
-    echo "Error: cannot locate apt command" &> /dev/stderr
-  fi
+  DIST=ubuntu
+  #RELEASE=$(lsb_release -cs)
+  RELEASE=xenial
+  REPO=updates
+  KEY=${HZN_URL}/bluehorizon.network-public.key
+  wget -qO - ${KEY} | sudo apt-key add -
+  sudo add-apt-repository "deb [arch=armhf,arm64,amd64,ppc64el] ${HZN_URL}/${TYPE}/${DIST} ${RELEASE}-${REPO} main"
+  sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommend bluehorizon
 else
   VERSION=$(curl -fsSL 'http://pkg.bluehorizon.network/macos/' | egrep 'horizon-cli' | sed 's/.*-cli-\(.*\)\.pkg<.*/\1/' | sort | uniq | tail -1)
 
