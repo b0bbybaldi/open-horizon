@@ -72,17 +72,17 @@ script:
   # ensure we're not TAG'd
   - if [ "${BRANCH}" = 'master' ]; then export TAG=; fi
   # check all services
-  - if [ "${CHECK_OFF:-}" != 'true' ]; then make; fi
+  - if [ "${CHECK_OFF:-}" != 'true' ]; then make TAG="${TAG}"; fi
   # do the build
-  - if [ "${BUILD_OFF:-}" != 'true' ]; then make build-service; fi
+  - if [ "${BUILD_OFF:-}" != 'true' ]; then make TAG="${TAG}" build-service; fi
   # do the test
-  - if [ "${TEST_OFF:-}" != 'true' ]; then make test-service; fi
+  - if [ "${TEST_OFF:-}" != 'true' ]; then make TAG="${TAG}" test-service; fi
 
 ## after successful performance, accept accolades and do the following:
 after_success:
   # push, publish: services and patterns
-  - if [ "${PUSH_ON:-}" = 'true' ]; then make push-service; fi
-  - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi
+  - if [ "${PUSH_ON:-}" = 'true' ]; then make TAG="${TAG}" push-service; fi
+  - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make TAG="${TAG}" publish-service; fi
   - if [ "${GIT_OFF}" != 'true' ] && [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'true' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git -a commit -m "merge beta" && git push origin master; fi
   - if [ "${GIT_OFF}" != 'true' ] && [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'true' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -a -m "merge exp" && git push origin beta; fi
 

@@ -9,7 +9,7 @@
 HZN_ORG_ID ?= $(if $(wildcard HZN_ORG_ID),$(shell cat HZN_ORG_ID),HZN_ORG_ID)
 
 # tag this build environment
-TAG ?= $(if ${TAG},${TAG},if $(wildcard TAG),$(shell cat TAG),)
+TAG ?= $(if $(wildcard TAG),$(shell cat TAG),)
 
 # hard code architecture for build environment
 BUILD_ARCH ?= $(if $(wildcard BUILD_ARCH),$(shell cat BUILD_ARCH),)
@@ -38,7 +38,7 @@ default: $(ALL)
 
 $(ALL):
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- making $@""${NC}" &> /dev/stderr
-	$(MAKE) TAG=$(TAG) HZN_ORG_ID=$(HZN_ORG_ID)  -C $@
+	$(MAKE) TAG=${TAG} HZN_ORG_ID=$(HZN_ORG_ID)  -C $@
 
 $(TARGETS):
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- making $@ in ${ALL}""${NC}" &> /dev/stderr
@@ -49,13 +49,13 @@ $(TARGETS):
 pattern-publish:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- publishing $(PATTERNS)""${NC}" &> /dev/stderr
 	@for dir in $(PATTERNS); do \
-	  $(MAKE) TAG=$(TAG) HZN_ORG_ID=$(HZN_ORG_ID)  -C $$dir $@; \
+	  $(MAKE) TAG=${TAG} HZN_ORG_ID=$(HZN_ORG_ID)  -C $$dir $@; \
 	done
 
 pattern-validate: 
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- validating $(PATTERNS)""${NC}" &> /dev/stderr
 	@for dir in $(PATTERNS); do \
-	  $(MAKE) TAG=$(TAG) HZN_ORG_ID=$(HZN_ORG_ID)  -C $$dir $@; \
+	  $(MAKE) TAG=${TAG} HZN_ORG_ID=$(HZN_ORG_ID)  -C $$dir $@; \
 	done
 
 .PHONY: ${ALL} default all build run check stop push publish verify clean start test sync
