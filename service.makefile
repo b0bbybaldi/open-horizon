@@ -110,27 +110,27 @@ logs:
 	@docker logs -f "${DOCKER_NAME}"
 
 run: remove stop-service
-	@echo "${MC}>>> MAKE --" $$(date +%T) "-- running container: ${DOCKER_TAG}; name: ${DOCKER_NAME}""${NC}" &> /dev/stderr
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- run: ${DOCKER_NAME}; tag: ${DOCKER_TAG}""${NC}" &> /dev/stderr
 	@export DOCKER_PORT=$(DOCKER_PORT) SERVICE_PORT=$(SERVICE_PORT) && ./sh/docker-run.sh "$(DOCKER_NAME)" "$(DOCKER_TAG)"
 	@sleep 2
 
 remove:
-	@echo "${MC}>>> MAKE --" $$(date +%T) "-- removing container named: ${DOCKER_NAME}""${NC}" &> /dev/stderr
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- remove: ${DOCKER_NAME}; tag: ${DOCKER_TAG}""${NC}" &> /dev/stderr
 	-@docker rm -f $(DOCKER_NAME) &> /dev/null
 
 check:
-	@echo "${MC}>>> MAKE --" $$(date +%T) "-- checking container: ${DOCKER_TAG}; URL: http://localhost:${DOCKER_PORT}""${NC}" &> /dev/stderr
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- check: ${DOCKER_NAME}; tag: ${DOCKER_TAG}; URL: http://localhost:${DOCKER_PORT}""${NC}" &> /dev/stderr
 	@rm -f check.json
 	@export JQ_FILTER="$(TEST_JQ_FILTER)" && curl -sSL "http://localhost:${DOCKER_PORT}" -o check.json && jq "$${JQ_FILTER}" check.json
 
 login: ~/.docker/config.json
-	@echo "${MC}>>> MAKE --" $$(date +%T) "-- login to $(DOCKER_SERVER)""${NC}" &> /dev/stderr
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- login: $(DOCKER_SERVER)""${NC}" &> /dev/stderr
 	@echo $(DOCKER_PASSWORD) | docker login -u ${DOCKER_LOGIN} --password-stdin  ${DOCKER_SERVER} 2> /dev/null \
 	    || docker login 2> /dev/null \
 	    || echo "${YELLOW}>>>${NC} MAKE **" $$(date +%T) "** docker login failed ${DOCKER_SERVER}""${NC}" &> /dev/stderr; \
 
 push: build login
-	@echo "${MC}>>> MAKE --" $$(date +%T) "-- pushing container: ${DOCKER_TAG}""${NC}" &> /dev/stderr
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- push: ${DOCKER_NAME}; tag: ${DOCKER_TAG}""${NC}" &> /dev/stderr
 	@docker push ${DOCKER_TAG}
 
 ##
@@ -148,16 +148,17 @@ TEST_OUTPUT = ./test.${BUILD_ARCH}_${SERVICE_URL}_${SERVICE_VERSION}.json
 
 BUILD_OUT = build.${BUILD_ARCH}_${SERVICE_URL}_${SERVICE_VERSION}.out
 
-build: Dockerfile build.json service.json rootfs Makefile
-	@echo "${MC}>>> MAKE --" $$(date +%T) "-- building service: ${SERVICE_NAME}; tag: ${DOCKER_TAG}""${NC}" &> /dev/stderr
+build: # Dockerfile build.json service.json rootfs Makefile
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- build: ${SERVICE_NAME}; tag: ${DOCKER_TAG}""${NC}" &> /dev/stderr
 	@export DOCKER_TAG="${DOCKER_TAG}" && docker build --build-arg BUILD_REF=$$(git rev-parse --short HEAD) --build-arg BUILD_DATE=$$(date -u +"%Y-%m-%dT%H:%M:%SZ") --build-arg BUILD_ARCH="$(BUILD_ARCH)" --build-arg BUILD_FROM="$(BUILD_FROM)" --build-arg BUILD_VERSION="${SERVICE_VERSION}" . -t "$(DOCKER_TAG)" 2>&1 | tee ${BUILD_OUT} &> /dev/null
 
 
 build-service: build
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- build-service: ${SERVICE_NAME}; architecture: ${BUILD_ARCH}""${NC}" &> /dev/stderr
 	@if [ "$${DEBUG:-}" = 'true' ]; then if [ -s "${BUILD_OUT}" ]; then cat ${BUILD_OUT}; else echo "${MC}>>> MAKE --" $$(date +%T) "-- no output: ${BUILD_OUT}""${NC}" &> /dev/stderr; fi; fi
 
 service-build:
-	@echo "${MC}>>> MAKE --" $$(date +%T) "-- building service: ${SERVICE_NAME}; architectures: ${SERVICE_ARCH_SUPPORT}""${NC}" &> /dev/stderr
+	@echo "${MC}>>> MAKE --" $$(date +%T) "-- service-build: ${SERVICE_NAME}; architectures: ${SERVICE_ARCH_SUPPORT}""${NC}" &> /dev/stderr
 	@for arch in $(SERVICE_ARCH_SUPPORT); do \
 	  $(MAKE) TAG=$(TAG) HZN_ORG_ID=$(HZN_ORG_ID) DOCKER_REPOSITORY=$(DOCKER_REPOSITORY) BUILD_ARCH="$${arch}" build-service; \
 	done
@@ -212,7 +213,7 @@ service-test:
 test-service: start-service
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; version: ${SERVICE_VERSION}; arch: $(BUILD_ARCH)""${NC}" &> /dev/stderr
 	-@$(MAKE) test > $(TEST_RESULT) 2> ${TEST_OUTPUT}
-	@if [ -s "${TEST_RESULT}" ] && [ $$(cat ${TEST_RESULT}) == 'true' ]; then TC="${TEST_GOOD}" && OP=$$(jq -c '.' ${TEST_OUTPUT});  else TC="${TEST_BAD}"; fi && echo "$${TC}"">>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; result:" $$(cat $(TEST_RESULT)) "; output: $${OP:-null}" "${NC}" &> /dev/stderr
+	@if [ -s "${TEST_RESULT}" ] && [ $$(cat ${TEST_RESULT}) == 'true' ]; then TC="${TEST_GOOD}"; OP=$$(jq -c '.' ${TEST_OUTPUT}); else TC="${TEST_BAD}"; fi && echo "$${TC}"">>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; result:" $$(cat $(TEST_RESULT)) "; output: $${OP:-null}" "${NC}" &> /dev/stderr
 	-@${MAKE} stop-service &> /dev/null
 
 test:
