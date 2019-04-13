@@ -1,4 +1,4 @@
-ARG BUILD_FROM=dcmartin/amd64_yolo:0.0.5
+ARG BUILD_FROM
 
 FROM $BUILD_FROM
 
