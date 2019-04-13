@@ -52,7 +52,7 @@ before_install:
 ## after installing, but BEFORE acting, do these things:
 before_script:
   # check branch & create files from secrets (not for pulls)
-  - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${GIHUB_TOKEN}" > GITHUB_TOKEN; fi
+  # - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${GIHUB_TOKEN}" > GITHUB_TOKEN; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${HZN_ORG_ID}" > HZN_ORG_ID; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${DOCKER_NAMESPACE}" > DOCKER_NAMESPACE; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${HZN_EXCHANGE_APIKEY}" > APIKEY; fi
