@@ -13,9 +13,9 @@ branches:
 
 ## environments in which we act
 env:
-  - BUILD_ARCH=amd64 DEBUG=true BUILD_OFF=false TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
-  - BUILD_ARCH=arm64 DEBUG=true BUILD_OFF=true TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
-  - BUILD_ARCH=arm   DEBUG=true BUILD_OFF=true TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
+  - BUILD_ARCH=amd64 DEBUG=true BUILD_OFF=false CHECK_OFF=false TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
+  - BUILD_ARCH=arm64 DEBUG=true BUILD_OFF=true CHECK_OFF=false TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
+  - BUILD_ARCH=arm   DEBUG=true BUILD_OFF=true CHECK_OFF=false TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
 
 ## addons required to act
 addons:
@@ -71,6 +71,8 @@ before_script:
 script:
   # ensure we're not TAG'd
   - if [ "${BRANCH}" = 'master' ]; then export TAG=; fi
+  # check all services
+  - if [ "${CHECK_OFF:-}" != 'true' ]; then make; fi
   # do the build
   - if [ "${BUILD_OFF:-}" != 'true' ]; then make build-service; fi
   # do the test
