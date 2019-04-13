@@ -84,7 +84,7 @@ while true; do
       TEST=$(echo "${OUT}" | jq -c '.!=null' 2> /dev/stderr)
     fi
     if [ "${TEST:-}" == 'true' ]; then
-        if [ "${DEBUG:-}" == 'true' ]; then echo "!!! SUCCESS -- $0 $$ -- test ${CMD} returned ${TEST}" &> /dev/stderr; fi
+        if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- test ${CMD} returned ${TEST}" &> /dev/stderr; fi
         echo "${TEST}"
         exit 0
     else
