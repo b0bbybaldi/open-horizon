@@ -180,7 +180,7 @@ service-push:
 service-start: start-service
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- started service: ${SERVICE_NAME}; directory: $(DIR)/""${NC}" &> /dev/stderr
 
-start-service: remove stop-service depend
+start-service: stop stop-service depend
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- starting service: ${SERVICE_NAME}; directory: ${DIR}""${NC}" &> /dev/stderr
 	@./sh/checkvars.sh ${DIR}
 	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service verify -d ${DIR} &> ${SERVICE_NAME}.verify.out
@@ -202,7 +202,6 @@ stop:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- stop: ${DOCKER_NAME}""${NC}" &> /dev/stderr
 	-@docker stop "${DOCKER_NAME}" &> /dev/null
 
-	
 ## test
 
 service-test:
