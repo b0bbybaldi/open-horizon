@@ -155,6 +155,7 @@ build: Dockerfile build.json service.json rootfs Makefile
 
 build-service: build
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- build-service: ${SERVICE_NAME}; architecture: ${BUILD_ARCH}""${NC}" &> /dev/stderr
+	@$(MAKE) build
 	@if [ "$${DEBUG:-}" = 'true' ]; then if [ -s "${BUILD_OUT}" ]; then cat ${BUILD_OUT}; else echo "${MC}>>> MAKE --" $$(date +%T) "-- no output: ${BUILD_OUT}""${NC}" &> /dev/stderr; fi; fi
 
 service-build:

@@ -13,9 +13,9 @@ branches:
 
 ## environments in which we act
 env:
-  - BUILD_ARCH=amd64 DEBUG=true CHECK_OFF=false BUILD_OFF=false TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
-  - BUILD_ARCH=arm64 DEBUG=true CHECK_OFF=true BUILD_OFF=true TEST_OFF=true PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
-  - BUILD_ARCH=arm   DEBUG=true CHECK_OFF=true BUILD_OFF=true TEST_OFF=true PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
+  - BUILD_ARCH=amd64 DEBUG=true CHECK_OFF=false BUILD_OFF=false TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true GIT_OFF=false
+  - BUILD_ARCH=arm64 DEBUG=true CHECK_OFF=true BUILD_OFF=true TEST_OFF=true PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true GIT_OFF=true
+  - BUILD_ARCH=arm   DEBUG=true CHECK_OFF=true BUILD_OFF=true TEST_OFF=true PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true GIT_OFF=true
 
 ## addons required to act
 addons:
@@ -63,9 +63,9 @@ before_script:
   # login docker
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_LOGIN}" --password-stdin; fi
   # test for beta
-  - if [ "${BRANCH}" = 'beta' ]; then git pull origin master; fi
+  - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'true' ]; then git pull origin master; fi
   # test for exp
-  - if [ "${BRANCH}" = 'exp' ]; then git pull origin beta; fi
+  - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'true' ]; then git pull origin beta; fi
 
 ### PERFORM THE ACT
 script:
@@ -83,6 +83,8 @@ after_success:
   # push, publish: services and patterns
   - if [ "${PUSH_ON:-}" = 'true' ]; then make push-service; fi
   - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi
+  - if [ "${GIT_OFF}" != 'true' ] && [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'true' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git -a commit -m "merge beta" && git push origin master; fi
+  - if [ "${GIT_OFF}" != 'true' ] && [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'true' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -a -m "merge exp" && git push origin beta; fi
 
 ## after failure; at least clean-up
 after_failure:
@@ -103,13 +105,13 @@ deploy:
   provider: script
   script:
     # update master on git
-    - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git -a commit -m "merge beta" && git push origin master; fi
+    - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'true' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git -a commit -m "merge beta" && git push origin master; fi
   on:
     branch: beta
   provider: script
   script:
     # update beta on git
-    - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -a -m "merge exp" && git push origin beta; fi
+    - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'true' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -a -m "merge exp" && git push origin beta; fi
   on:
     branch: exp
 
