@@ -1,4 +1,4 @@
-ARG BUILD_FROM=dcmartin/amd64_base-ubuntu:0.0.2
+ARG BUILD_FROM
 
 FROM $BUILD_FROM
 

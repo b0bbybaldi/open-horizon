@@ -45,7 +45,7 @@ E. MarkDown repository
  + Add TravisCI build status
  + Add Docker container status
  
-## Process
+# Process
 The CI/CD process utilizes the the following:
 
 **command-line-interface tools**
@@ -316,6 +316,7 @@ Your branch is up to date with 'origin/master'.
 % git pull origin master
 % git merge beta
 % make service-build && make service-test && && make service-publish
+% git commit -m "beta good" . && git push
 ```
 
 ## Step 5
@@ -336,11 +337,12 @@ make nodes-test
 If tests are successful, the services and patterns may be pushed for "stable" (aka `master`):
 
 ```
-% rm ./open-horizon/TAG
-% git checkout master
+% git checkout beta
 % git pull origin master
-% make service-build && make service-publish && make service-verify
-% make make pattern-publish. && make pattern-validate
+% make service-build && make service-test \
+  && git commit -m "merge beta" . \
+  && git push origin master \
+  || echo "FAILED"
 ```
 
 ## &#9989; Finished

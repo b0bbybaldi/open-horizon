@@ -1,4 +1,4 @@
-ARG BUILD_FROM=dcmartin/arm64_com.github.dcmartin.open-horizon.jetson-opencv:0.0.1
+ARG BUILD_FROM
 
 FROM $BUILD_FROM as darknet
 

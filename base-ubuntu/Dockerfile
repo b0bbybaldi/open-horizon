@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ubuntu:bionic
+ARG BUILD_FROM
 
 FROM $BUILD_FROM
 
