@@ -350,7 +350,7 @@ distclean: service-clean
 ## BOOKKEEPING
 ##
 
-.PHONY: default all build run check test push start-service stop-service service-start service-stop service-test test-service service-publish publish-service service-verify $(TEST_NODE_NAMES) clean distclean depend 
+.PHONY: default all depend build run check test push build-service test-service push-service publish-service verify-service start-service stop-service service-start service-stop service-test service-publish service-build service-verify pattern-publish pattern-verify nodes nodes-undo nodes-list nodes-clean nodes-purge $(TEST_NODE_NAMES) clean distclean
 
 ##
 ## COLORS
