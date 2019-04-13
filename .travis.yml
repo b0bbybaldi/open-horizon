@@ -64,10 +64,7 @@ before_script:
   # test for exp
   - if [ "${BRANCH}" = 'exp' ]; then git pull origin beta; fi
 
-###
 ### PERFORM THE ACT
-###
-
 script:
   # enable QEMU emulation
   - if [ "${QEMU:-}" = 'true' ]; then sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
@@ -81,23 +78,24 @@ script:
 ## after successful performance, accept accolades and do the following:
 after_success:
   # update master on git
-  - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -m "merge exp" && git push origin beta; fi
-  - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -m "merge beta" && git push origin master; fi
+  - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -a -m "merge exp" && git push origin beta; fi
+  - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git -a commit -m "merge beta" && git push origin master; fi
   # push, publish: services and patterns
   - if [ "${PUSH_ON:-}" = 'true' ]; then make push-service; fi
   - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi
   - if [ "${PATTERN_OFF:-}" != 'true' ]; then make pattern-publish; fi
   # update IBM Cloud Registry; ICR_PUBLISH: true
   - if [ "${BRANCH}" = 'master' ] && [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ] && [ "${ICR_PUBLISH:-}" == 'true' ]; then export DOCKER_LOGIN=token DOCKER_REGISTRY=${ICR_REGISTRY} DOCKER_NAMESPACE=${ICR_NAMESPACE} DOCKER_PASSWORD=${ICR_PRIVATE} DOCKER_PUBLICKEY=${ICR_PUBLIC}; if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi; if [ "${PATTERN_OFF:-}" != 'true' ]; then make pattern-publish; fi; fi
+
 ## after failure; at least clean-up
-#after_failure:
-#  - if [ "${ROLLBACK_ON:-}" != 'true' ]; then echo "+++ WARN -- $0 $$ -- FAILED: rollback changes to ${BRANCH}"; else ./sh/rollback.sh ${BRANCH}; fi
-#
+after_failure:
+  - if [ "${ROLLBACK_ON:-}" != 'true' ]; then echo "+++ WARN -- $0 $$ -- FAILED: rollback changes to ${BRANCH}"; else ./sh/rollback.sh ${BRANCH}; fi
+
 #before_deploy:
 #  - if [ "${DEPLOY_ON:-}" = 'true' ]; then make nodes-clean && make nodes-list; fi
-#
+
 #deploy:
 #  - if [ "${DEPLOY_ON:-}" = 'true' ]; then make nodes; fi
-#
+
 #after_deploy:
 #  - if [ "${DEPLOY_ON:-}" = 'true' ]; then make nodes && make nodes-list && make nodes-test; fi
