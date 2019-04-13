@@ -9,7 +9,7 @@
 HZN_ORG_ID ?= $(if $(wildcard HZN_ORG_ID),$(shell cat HZN_ORG_ID),HZN_ORG_ID)
 
 # tag this build environment
-TAG ?= $(if $(wildcard TAG),$(shell cat TAG),)
+TAG ?= $(if ${TAG},${TAG},if $(wildcard TAG),$(shell cat TAG),)
 
 # hard code architecture for build environment
 BUILD_ARCH ?= $(if $(wildcard BUILD_ARCH),$(shell cat BUILD_ARCH),)
