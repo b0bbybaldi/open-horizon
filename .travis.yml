@@ -14,8 +14,8 @@ branches:
 ## environments in which we act
 env:
   - BUILD_ARCH=amd64 DEBUG=true PUSH_ON=true PUBLISH_OFF=true PATTERN_OFF=true
-  - BUILD_ARCH=arm64 DEBUG=true BUILD_OFF= TEST_OFF=true PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
-  - BUILD_ARCH=arm DEBUG=true BUILD_OFF= TEST_OFF=true PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
+  - BUILD_ARCH=arm64 DEBUG=true BUILD_OFF= TEST_OFF= PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
+  - BUILD_ARCH=arm DEBUG=true BUILD_OFF= TEST_OFF= PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
 
 ## addons required to act
 addons:
@@ -83,12 +83,12 @@ after_success:
   # update master on git
   - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -m "merge exp" && git push origin beta; fi
   - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -m "merge beta" && git push origin master; fi
-  - if [ "${BRANCH}" = 'master' ] && [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "MASTER"; fi
   # push, publish: services and patterns
   - if [ "${PUSH_ON:-}" = 'true' ]; then make push-service; fi
   - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi
   - if [ "${PATTERN_OFF:-}" != 'true' ]; then make pattern-publish; fi
-
+  # update IBM Cloud Registry; ICR_PUBLISH: true
+  - if [ "${BRANCH}" = 'master' ] && [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ] && [ "${ICR_PUBLISH:-}" == 'true' ]; then export DOCKER_LOGIN=token DOCKER_REGISTRY=${ICR_REGISTRY} DOCKER_NAMESPACE=${ICR_NAMESPACE} DOCKER_PASSWORD=${ICR_PRIVATE} DOCKER_PUBLICKEY=${ICR_PUBLIC}; if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi; if [ "${PATTERN_OFF:-}" != 'true' ]; then make pattern-publish; fi; fi
 ## after failure; at least clean-up
 #after_failure:
 #  - if [ "${ROLLBACK_ON:-}" != 'true' ]; then echo "+++ WARN -- $0 $$ -- FAILED: rollback changes to ${BRANCH}"; else ./sh/rollback.sh ${BRANCH}; fi
