@@ -82,18 +82,9 @@ script:
 ## after successful performance, accept accolades and do the following:
 after_success:
   # update master on git
-  - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then \
-      git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; \
-      git remote add origin https://$(cat GITHUB_TOKEN)@github.com/${TRAVIS_REPO_SLUG}.git; \
-      git commit -m "merge exp" && git push origin beta; \
-    fi
-  - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then \
-      git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; \
-      git remote add origin https://$(cat GITHUB_TOKEN)@github.com/${TRAVIS_REPO_SLUG}.git; \
-      git commit -m "merge beta" && git push origin master; \
-    fi
-  - if [ "${BRANCH}" = 'master' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then \
-    fi
+  - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://$(cat GITHUB_TOKEN)@github.com/${TRAVIS_REPO_SLUG}.git; git commit -m "merge exp" && git push origin beta; fi
+  - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://$(cat GITHUB_TOKEN)@github.com/${TRAVIS_REPO_SLUG}.git; git commit -m "merge beta" && git push origin master; fi
+  - if [ "${BRANCH}" = 'master' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then echo "MASTER"; fi
   # push, publish: services and patterns
   - if [ "${PUSH_ON:-}" = 'true' ]; then make push-service; fi
   - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi
