@@ -43,41 +43,41 @@ before_install:
   # are we emulating or not (and if QEMU then DEBUG, for now)
   - if [ ${BUILD_ARCH} != "amd64" ]; then export QEMU=true DEBUG=true; fi
   # if beta then debug and TAG
-  - if [ ! -z "${BRANCH}" ] && [ ${BRANCH} != "master" ]; then echo ${BRANCH} > TAG; echo "--- INFO -- branch: ${BRANCH}"; else echo "*** ERROR -- no branch"; fi
-  - if [ -s ${TAG} ]; then echo "--- TRAVIS -- on branch: ${BRANCH}; TAG=" $(cat TAG); fi
-  #- if [ ${BRANCH} = "beta" ]; then echo "beta" > TAG && export DEBUG=true; fi
-  #- if [ ${BRANCH} = "exp" ]; then echo "exp" > TAG && export DEBUG=true VERBOSE=true; fi
+  - if [ ! -z "${BRANCH}" ] && [ ${BRANCH} != "master" ]; then echo ${BRANCH} > TAG; fi
+  - if [ -s ${TAG} ]; then echo "--- INFO -- branch: ${BRANCH}; TAG:" $(cat TAG); fi
+  - if [ ${BRANCH} = "beta" ]; then export DEBUG=true; fi
+  - if [ ${BRANCH} = "exp" ]; then export DEBUG=true VERBOSE=true; fi
   # branch management
-  - if [ ${TRAVIS_PULL_REQUEST:-} = "false" ]; then export BRANCH=${TRAVIS_BRANCH}; else export BRANCH=${TRAVIS_PULL_REQUEST_BRANCH}; fi
-  - if [ ${TRAVIS_PULL_REQUEST:-} = "false" ]; then export REPO_SLUG=${TRAVIS_REPO_SLUG}; else export REPO_SLUG=${TRAVIS_PULL_REQUEST_SLUG}; fi
+  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then export BRANCH=${TRAVIS_BRANCH}; else export BRANCH=${TRAVIS_PULL_REQUEST_BRANCH}; fi
+  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then export REPO_SLUG=${TRAVIS_REPO_SLUG}; else export REPO_SLUG=${TRAVIS_PULL_REQUEST_SLUG}; fi
 
 ## after installing, but BEFORE acting, do these things:
 before_script:
   # enable QEMU emulation
-  - if [ ${QEMU:-} = "true" ]; then sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
+  - if [ ${QEMU:-} = true ]; then sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
   # check branch & create files from secrets (not for pulls)
-  - if [ ${TRAVIS_PULL_REQUEST:-} = "false" ]; then echo ${HZN_ORG_ID} > HZN_ORG_ID; fi
-  - if [ ${TRAVIS_PULL_REQUEST:-} = "false" ]; then echo ${DOCKER_NAMESPACE} > DOCKER_NAMESPACE; fi
-  - if [ ${TRAVIS_PULL_REQUEST:-} = "false" ]; then echo ${HZN_EXCHANGE_APIKEY} > APIKEY; fi
-  - if [ ${TRAVIS_PULL_REQUEST:-} = "false" ]; then echo ${PRIVATE_KEY} | base64 --decode > "${HZN_ORG_ID}.key"; fi
-  - if [ ${TRAVIS_PULL_REQUEST:-} = "false" ]; then echo ${PUBLIC_KEY} | base64 --decode > "${HZN_ORG_ID}.pem"; fi
+  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${HZN_ORG_ID} > HZN_ORG_ID; fi
+  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${DOCKER_NAMESPACE} > DOCKER_NAMESPACE; fi
+  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${HZN_EXCHANGE_APIKEY} > APIKEY; fi
+  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${PRIVATE_KEY} | base64 --decode > ${HZN_ORG_ID}.key; fi
+  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${PUBLIC_KEY} | base64 --decode > ${HZN_ORG_ID}.pem; fi
   # login docker
-  - if [ ${TRAVIS_PULL_REQUEST:-} = "false" ]; then echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_LOGIN} --password-stdin; fi
+  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_LOGIN} --password-stdin; fi
   # test for beta
-  - if [ ${BRANCH} = "beta" ] && [ ${TRAVIS_PULL_REQUEST} = "true" ]; then git pull origin master; fi
+  - if [ ${BRANCH} = "beta" ] && [ ${TRAVIS_PULL_REQUEST} = true ]; then git pull origin master; fi
   # test for exp
-  - if [ ${BRANCH} = "exp" ] && [ ${TRAVIS_PULL_REQUEST} = "true" ]; then git pull origin beta; fi
+  - if [ ${BRANCH} = "exp" ] && [ ${TRAVIS_PULL_REQUEST} = true ]; then git pull origin beta; fi
 
 ### PERFORM THE ACT
 script:
   # ensure not TAG"d
-  - if [ ${BRANCH} = "master" ]; then export TAG=; fi
+  # - if [ ${BRANCH} = "master" ]; then export TAG=; fi
   # check all services
-  - if [ ${CHECK_OFF:-} != "true" ]; then make TAG=${TAG}; fi
+  - if [ ${CHECK_OFF:-} != true ]; then make TAG=${TAG}; fi
   # do the build
-  - if [ ${BUILD_OFF:-} != "true" ]; then make TAG=${TAG} build-service; fi
+  - if [ ${BUILD_OFF:-} != true ]; then make TAG=${TAG} build-service; fi
   # do the test
-  - if [ ${TEST_OFF:-} != "true" ]; then make TAG=${TAG} test-service; fi
+  - if [ ${TEST_OFF:-} != true ]; then make TAG=${TAG} test-service; fi
 
 ## after successful performance, accept accolades and do the following:
 after_success:
