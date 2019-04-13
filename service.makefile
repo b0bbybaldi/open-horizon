@@ -109,7 +109,7 @@ depend: $(APIKEY) ${DIR}
 logs:
 	@docker logs -f "${DOCKER_NAME}"
 
-run: remove stop-service
+run: stop stop-service
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- run: ${DOCKER_NAME}; tag: ${DOCKER_TAG}""${NC}" &> /dev/stderr
 	@export DOCKER_PORT=$(DOCKER_PORT) SERVICE_PORT=$(SERVICE_PORT) && ./sh/docker-run.sh "$(DOCKER_NAME)" "$(DOCKER_TAG)"
 	@sleep 2
