@@ -43,10 +43,10 @@ before_install:
   # are we emulating or not (and if we're QEMU we're DEBUG, for now)
   - if [ "${BUILD_ARCH}" != 'amd64' ]; then export QEMU=true DEBUG=true; fi
   # if we're beta we're debug and TAG
-  - if [ "${BRANCH}" = 'beta' ]; then export TAG='beta' DEBUG=true; fi
-  - if [ "${BRANCH}" = 'exp' ]; then export TAG='exp' DEBUG=true VERBOSE=true; fi
+  - if [ "${BRANCH}" != 'master' ]; then echo "${BRANCH}" > TAG && echo "--- TRAVIS -- working on branch: ${BRANCH}; TAG=" $(cat TAG) &> /dev/stderr; fi
+  #- if [ "${BRANCH}" = 'beta' ]; then echo 'beta' > TAG && export DEBUG=true; fi
+  #- if [ "${BRANCH}" = 'exp' ]; then echo 'exp' > TAG && export DEBUG=true VERBOSE=true; fi
   # branch management
-  - if [ ! -z "${TAG}" ]; then echo "${TAG}" > TAG; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then export BRANCH="${TRAVIS_BRANCH}"; else export BRANCH="${TRAVIS_PULL_REQUEST_BRANCH}"; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then export REPO_SLUG="${TRAVIS_REPO_SLUG}"; else export REPO_SLUG="${TRAVIS_PULL_REQUEST_SLUG}"; fi
 
