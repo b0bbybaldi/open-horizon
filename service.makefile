@@ -137,8 +137,6 @@ push: build login
 ## TEST
 ##
 
-TEST_RESULT = ./test.${BUILD_ARCH}_${SERVICE_URL}_${SERVICE_VERSION}.out
-TEST_OUTPUT = ./test.${BUILD_ARCH}_${SERVICE_URL}_${SERVICE_VERSION}.json
 
 ##
 ## SERVICES
@@ -204,6 +202,9 @@ stop:
 
 ## test
 
+TEST_RESULT = ./test.${BUILD_ARCH}_${SERVICE_URL}_${SERVICE_VERSION}.out
+TEST_OUTPUT = ./test.${BUILD_ARCH}_${SERVICE_URL}_${SERVICE_VERSION}.json
+
 service-test:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- service-test: ${SERVICE_NAME}; architectures: ${SERVICE_ARCH_SUPPORT}""${NC}" &> /dev/stderr
 	@for arch in $(SERVICE_ARCH_SUPPORT); do \
@@ -213,7 +214,7 @@ service-test:
 test-service: start-service
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; version: ${SERVICE_VERSION}; arch: $(BUILD_ARCH)""${NC}" &> /dev/stderr
 	-@$(MAKE) test > $(TEST_RESULT) 2> ${TEST_OUTPUT}
-	@if [ -s "${TEST_RESULT}" ] && [ $$(cat ${TEST_RESULT}) == 'true' ]; then TC="${TEST_GOOD}"; OP=$$(jq -c '.' ${TEST_OUTPUT}); else TC="${TEST_BAD}"; fi && echo "$${TC}"">>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; result:" $$(cat $(TEST_RESULT)) "; output: $${OP:-null}" "${NC}" &> /dev/stderr
+	@if [ -s "${TEST_RESULT}" ] && [ $$(cat ${TEST_RESULT}) == 'true' ]; then TC="${TEST_GOOD}"; else TC="${TEST_BAD}"; OP=$$(cat ${TEST_OUTPUT}); fi && echo "$${TC}"">>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; result:" $$(cat $(TEST_RESULT)) "; output: $${OP:-okay}" "${NC}" &> /dev/stderr
 	-@${MAKE} stop-service &> /dev/null
 
 test:
