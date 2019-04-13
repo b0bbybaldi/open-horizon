@@ -155,14 +155,12 @@ build: Dockerfile build.json service.json rootfs Makefile
 
 build-service: build
 	@if [ "$${DEBUG:-}" = 'true' ]; then if [ -s "${BUILD_OUT}" ]; then cat ${BUILD_OUT}; else echo "${MC}>>> MAKE --" $$(date +%T) "-- no output: ${BUILD_OUT}""${NC}" &> /dev/stderr; fi; fi
-	@if [ "$${DEBUG:-}" = 'true' ]; then echo "${MC}>>> MAKE --" $$(date +%T) "-- DONE: build-service: ${SERVICE_NAME}; tag: ${DOCKER_TAG}""${NC}" &> /dev/stderr; fi
 
 service-build:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- building service: ${SERVICE_NAME}; architectures: ${SERVICE_ARCH_SUPPORT}""${NC}" &> /dev/stderr
 	@for arch in $(SERVICE_ARCH_SUPPORT); do \
 	  $(MAKE) TAG=$(TAG) HZN_ORG_ID=$(HZN_ORG_ID) DOCKER_REPOSITORY=$(DOCKER_REPOSITORY) BUILD_ARCH="$${arch}" build-service; \
 	done
-	@if [ "$${DEBUG:-}" = 'true' ]; then echo "${MC}>>> MAKE --" $$(date +%T) "-- DONE: building service: ${SERVICE_NAME}; tag: ${DOCKER_TAG}""${NC}" &> /dev/stderr; fi
 
 ## push
 
