@@ -35,12 +35,12 @@ user_input=$(jq '.userInput|length' ${SERVICE_TEMPLATE})
 if [ ${user_input} -gt 0 ]; then
   if [ "${DEBUG:-}" = 'true' ]; then echo "--- INFO -- $0 $$ -- found ${user_input} userInput variables" &> /dev/stderr; fi
   for evar in $(jq -r '.userInput?[].name' "${SERVICE_TEMPLATE}"); do 
-    VAL=$(jq -r '.services?[]|select(.url=="'${SERVICE_URL}'").variables|to_entries?[]|select(.key=="'${evar}'").value' ${USERINPUT}) 
+    VAL=$(jq -r '.services[]?|select(.url=="'${SERVICE_URL}'").variables|to_entries[]?|select(.key=="'${evar}'").value' ${USERINPUT}) 
     if [ =z "${VAL:-}" ]; then echo "--- INFO -- $0 $$ -- no value found for variable ${evar}" &> /dev/stderr; continue; fi
     if [ ! -z "${DEBUG:-}" ]; then echo "--- INFO -- $0 $$ -- ${evar}: ${VAL}" &> /dev/stderr; fi
     if [ -s "${evar}" ]; then 
       VAL=$(cat "${evar}")
-      UI=$(jq -c '(.services[]|select(.url=="'${SERVICE_URL}'").variables.'${evar}')|='${VAL} "${USERINPUT}")
+      UI=$(jq -c '(.services[]?|select(.url=="'${SERVICE_URL}'").variables.'${evar}')|='${VAL} "${USERINPUT}")
       echo "${UI}" > "${USERINPUT}"
       if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- ${evar}=${VAL}" &> /dev/stderr; fi
     elif [ "${VAL}" == 'null' ]; then 
