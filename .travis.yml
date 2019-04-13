@@ -52,7 +52,6 @@ before_install:
 ## after installing, but BEFORE acting, do these things:
 before_script:
   # check branch & create files from secrets (not for pulls)
-  # - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${GIHUB_TOKEN}" > GITHUB_TOKEN; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${HZN_ORG_ID}" > HZN_ORG_ID; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${DOCKER_NAMESPACE}" > DOCKER_NAMESPACE; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${HZN_EXCHANGE_APIKEY}" > APIKEY; fi
@@ -82,8 +81,8 @@ script:
 ## after successful performance, accept accolades and do the following:
 after_success:
   # update master on git
-  - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://$(cat GITHUB_TOKEN)@github.com/${TRAVIS_REPO_SLUG}.git; git commit -m "merge exp" && git push origin beta; fi
-  - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://$(cat GITHUB_TOKEN)@github.com/${TRAVIS_REPO_SLUG}.git; git commit -m "merge beta" && git push origin master; fi
+  - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -m "merge exp" && git push origin beta; fi
+  - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -m "merge beta" && git push origin master; fi
   - if [ "${BRANCH}" = 'master' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then echo "MASTER"; fi
   # push, publish: services and patterns
   - if [ "${PUSH_ON:-}" = 'true' ]; then make push-service; fi
