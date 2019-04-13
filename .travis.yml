@@ -9,12 +9,13 @@ branches:
   only:
     - master
     - beta
+    - exp
 
 ## environments in which we act
 env:
-  - BUILD_ARCH=amd64 DEBUG=true PUSH_OFF=true
-  - BUILD_ARCH=arm64 DEBUG=true BUILD_OFF= TEST_OFF=true PUSH_OFF=true PUBLISH_OFF=true
-  - BUILD_ARCH=arm DEBUG=true BUILD_OFF= TEST_OFF=true PUSH_OFF=true PUBLISH_OFF=true
+  - BUILD_ARCH=amd64 DEBUG=true PUSH_ON=true PUBLISH_OFF=true PATTERN_OFF=true
+  - BUILD_ARCH=arm64 DEBUG=true BUILD_OFF= TEST_OFF=true PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
+  - BUILD_ARCH=arm DEBUG=true BUILD_OFF= TEST_OFF=true PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
 
 ## addons required to act
 addons:
@@ -41,19 +42,31 @@ before_install:
   # are we emulating or not (and if we're QEMU we're DEBUG, for now)
   - if [ "${BUILD_ARCH}" != 'amd64' ]; then export QEMU=true DEBUG=true; fi
   # if we're beta we're debug and TAG
-  - if [ "${BRANCH}" = 'beta' ]; then export DEBUG=true TAG='beta'; fi
+  - if [ "${BRANCH}" = 'beta' ]; then export TAG='beta' DEBUG=true; fi
+  - if [ "${BRANCH}" = 'exp' ]; then export TAG='exp' DEBUG=true VERBOSE=true; fi
   # branch management
   - if [ ! -z "${TAG}" ]; then echo "${TAG}" > TAG; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then export BRANCH="${TRAVIS_BRANCH}"; else export BRANCH="${TRAVIS_PULL_REQUEST_BRANCH}"; fi
-  - echo ${BRANCH}
+  - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then export REPO_SLUG="${TRAVIS_REPO_SLUG}"; else export REPO_SLUG="${TRAVIS_PULL_REQUEST_SLUG}"; fi
 
 ## after installing, but BEFORE acting, do these things:
 before_script:
-  # check branch; no secrets for pulls
-  - if [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_LOGIN}" --password-stdin && echo "${HZN_ORG_ID}" > HZN_ORG_ID && echo "${DOCKER_NAMESPACE}" > DOCKER_NAMESPACE && echo "${HZN_EXCHANGE_APIKEY}" > APIKEY && echo "${PRIVATE_KEY}" | base64 --decode > "${HZN_ORG_ID}.key" && echo "${PUBLIC_KEY}" | base64 --decode > "${HZN_ORG_ID}.pem"; fi
+  # check branch & create files from secrets (not for pulls)
+  - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${GIHUB_TOKEN}" > GITHUB_TOKEN; fi
+  - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${HZN_ORG_ID}" > HZN_ORG_ID; fi
+  - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${DOCKER_NAMESPACE}" > DOCKER_NAMESPACE; fi
+  - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${HZN_EXCHANGE_APIKEY}" > APIKEY; fi
+  - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${PRIVATE_KEY}" | base64 --decode > "${HZN_ORG_ID}.key"; fi
+  - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${PUBLIC_KEY}" | base64 --decode > "${HZN_ORG_ID}.pem"; fi
+  # login docker
+  - if [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_LOGIN}" --password-stdin"; fi
+  # test for beta
+  - if [ "${BRANCH}" = 'beta' ]; then git pull origin master; fi
+  # test for exp
+  - if [ "${BRANCH}" = 'exp' ]; then git pull origin beta; fi
 
 ###
-### PERFORMANCE
+### PERFORM THE ACT
 ###
 
 script:
@@ -68,18 +81,33 @@ script:
 
 ## after successful performance, accept accolades and do the following:
 after_success:
-  - if [ "${PUSH_OFF:-}" != 'true' ]; then make push-service; fi
-  - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service && make pattern-publish; fi
+  # update master on git
+  - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then \
+      git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; \
+      git remote add origin https://$(cat GITHUB_TOKEN)@github.com/${TRAVIS_REPO_SLUG}.git; \
+      git commit -m "merge exp" && git push origin beta; \
+    fi
+  - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then \
+      git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; \
+      git remote add origin https://$(cat GITHUB_TOKEN)@github.com/${TRAVIS_REPO_SLUG}.git; \
+      git commit -m "merge beta" && git push origin master; \
+    fi
+  - if [ "${BRANCH}" = 'master' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then \
+    fi
+  # push, publish: services and patterns
+  - if [ "${PUSH_ON:-}" = 'true' ]; then make push-service; fi
+  - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi
+  - if [ "${PATTERN_OFF:-}" != 'true' ]; then make pattern-publish; fi
 
 ## after failure; at least clean-up
 #after_failure:
 #  - if [ "${ROLLBACK_ON:-}" != 'true' ]; then echo "+++ WARN -- $0 $$ -- FAILED: rollback changes to ${BRANCH}"; else ./sh/rollback.sh ${BRANCH}; fi
 #
 #before_deploy:
-#  - if [ "${DEPLOY_ON:-}" == 'true' ]; then make nodes-clean && make nodes-list; fi
+#  - if [ "${DEPLOY_ON:-}" = 'true' ]; then make nodes-clean && make nodes-list; fi
 #
 #deploy:
-#  - if [ "${DEPLOY_ON:-}" == 'true' ]; then make nodes; fi
+#  - if [ "${DEPLOY_ON:-}" = 'true' ]; then make nodes; fi
 #
 #after_deploy:
-#  - if [ "${DEPLOY_ON:-}" == 'true' ]; then make nodes && make nodes-list && make nodes-test; fi
+#  - if [ "${DEPLOY_ON:-}" = 'true' ]; then make nodes && make nodes-list && make nodes-test; fi
