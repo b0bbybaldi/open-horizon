@@ -43,7 +43,8 @@ before_install:
   # are we emulating or not (and if we're QEMU we're DEBUG, for now)
   - if [ "${BUILD_ARCH}" != 'amd64' ]; then export QEMU=true DEBUG=true; fi
   # if we're beta we're debug and TAG
-  - if [ "${BRANCH}" != 'master' ]; then echo "${BRANCH}" > TAG && echo "--- TRAVIS -- working on branch: ${BRANCH}; TAG=" $(cat TAG) &> /dev/stderr; fi
+  - if [ ! -z "${BRANCH}" ] && [ "${BRANCH}" != 'master' ]; then echo "${BRANCH}" > TAG; echo "--- INFO -- branch: ${BRANCH}"; else echo "*** ERROR -- no branch"; fi
+  - if [ -s "${TAG}" ]; then echo "--- TRAVIS -- on branch: ${BRANCH}; TAG=" $(cat TAG); fi
   #- if [ "${BRANCH}" = 'beta' ]; then echo 'beta' > TAG && export DEBUG=true; fi
   #- if [ "${BRANCH}" = 'exp' ]; then echo 'exp' > TAG && export DEBUG=true VERBOSE=true; fi
   # branch management
