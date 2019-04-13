@@ -44,7 +44,7 @@ before_install:
   - if [ ${BUILD_ARCH} != "amd64" ]; then export QEMU=true DEBUG=true; fi
   # if beta then debug and TAG
   - if [ ! -z "${BRANCH}" ] && [ ${BRANCH} != "master" ]; then echo ${BRANCH} > TAG; fi
-  - if [ -s ${TAG} ]; then echo "--- INFO -- branch: ${BRANCH}; TAG:" $(cat TAG); fi
+  - if [ -s ${TAG} ]; then echo "--- INFO -- branch: ${BRANCH}"; fi
   - if [ ${BRANCH} = "beta" ]; then export DEBUG=true; fi
   - if [ ${BRANCH} = "exp" ]; then export DEBUG=true VERBOSE=true; fi
   # branch management
