@@ -58,7 +58,7 @@ before_script:
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${PRIVATE_KEY}" | base64 --decode > "${HZN_ORG_ID}.key"; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${PUBLIC_KEY}" | base64 --decode > "${HZN_ORG_ID}.pem"; fi
   # login docker
-  - if [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_LOGIN}" --password-stdin"; fi
+  - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_LOGIN}" --password-stdin"; fi
   # test for beta
   - if [ "${BRANCH}" = 'beta' ]; then git pull origin master; fi
   # test for exp
