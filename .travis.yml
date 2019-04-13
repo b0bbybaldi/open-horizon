@@ -14,8 +14,8 @@ branches:
 ## environments in which we act
 env:
   - BUILD_ARCH=amd64 DEBUG=true BUILD_OFF=false TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
-  - BUILD_ARCH=arm64 DEBUG=true BUILD_OFF=false TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
-  - BUILD_ARCH=arm   DEBUG=true BUILD_OFF=false TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
+  - BUILD_ARCH=arm64 DEBUG=true BUILD_OFF=true TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
+  - BUILD_ARCH=arm   DEBUG=true BUILD_OFF=true TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true
 
 ## addons required to act
 addons:
