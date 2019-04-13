@@ -38,7 +38,7 @@ default: $(ALL)
 
 $(ALL):
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- making $@""${NC}" &> /dev/stderr
-	@$(MAKE) TAG=$(TAG) HZN_ORG_ID=$(HZN_ORG_ID)  -C $@
+	$(MAKE) TAG=$(TAG) HZN_ORG_ID=$(HZN_ORG_ID)  -C $@
 
 $(TARGETS):
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- making $@ in ${ALL}""${NC}" &> /dev/stderr
