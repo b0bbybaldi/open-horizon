@@ -33,6 +33,7 @@ addons:
     - bluehorizon
     - docker-ce
     - qemu
+    - qemu-user
     - qemu-user-static
     - binfmt-support
     - dpkg-cross
@@ -51,6 +52,8 @@ before_install:
 
 ## after installing, but BEFORE acting, do these things:
 before_script:
+  # enable QEMU emulation
+  - if [ "${QEMU:-}" = 'true' ]; then sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
   # check branch & create files from secrets (not for pulls)
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${HZN_ORG_ID}" > HZN_ORG_ID; fi
   - if [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ]; then echo "${DOCKER_NAMESPACE}" > DOCKER_NAMESPACE; fi
@@ -66,8 +69,6 @@ before_script:
 
 ### PERFORM THE ACT
 script:
-  # enable QEMU emulation
-  - if [ "${QEMU:-}" = 'true' ]; then sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
   # ensure we're not TAG'd
   - if [ "${BRANCH}" = 'master' ]; then export TAG=; fi
   # do the build
@@ -77,15 +78,9 @@ script:
 
 ## after successful performance, accept accolades and do the following:
 after_success:
-  # update master on git
-  - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -a -m "merge exp" && git push origin beta; fi
-  - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git -a commit -m "merge beta" && git push origin master; fi
   # push, publish: services and patterns
   - if [ "${PUSH_ON:-}" = 'true' ]; then make push-service; fi
   - if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi
-  - if [ "${PATTERN_OFF:-}" != 'true' ]; then make pattern-publish; fi
-  # update IBM Cloud Registry; ICR_PUBLISH: true
-  - if [ "${BRANCH}" = 'master' ] && [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ] && [ "${ICR_PUBLISH:-}" == 'true' ]; then export DOCKER_LOGIN=token DOCKER_REGISTRY=${ICR_REGISTRY} DOCKER_NAMESPACE=${ICR_NAMESPACE} DOCKER_PASSWORD=${ICR_PRIVATE} DOCKER_PUBLICKEY=${ICR_PUBLIC}; if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi; if [ "${PATTERN_OFF:-}" != 'true' ]; then make pattern-publish; fi; fi
 
 ## after failure; at least clean-up
 after_failure:
@@ -94,8 +89,27 @@ after_failure:
 #before_deploy:
 #  - if [ "${DEPLOY_ON:-}" = 'true' ]; then make nodes-clean && make nodes-list; fi
 
-#deploy:
-#  - if [ "${DEPLOY_ON:-}" = 'true' ]; then make nodes; fi
+deploy:
+  provider: script
+  script:
+    - if [ "${PATTERN_OFF:-}" != 'true' ]; then make pattern-publish; fi
+    - if [ "${DEPLOY_ON:-}" = 'true' ]; then make nodes; fi
+    # update IBM Cloud Registry; ICR_PUBLISH: true
+    - if [ "${BRANCH}" = 'master' ] && [ "${TRAVIS_PULL_REQUEST:-}" = 'false' ] && [ "${ICR_PUBLISH:-}" == 'true' ]; then export DOCKER_LOGIN=token DOCKER_REGISTRY=${ICR_REGISTRY} DOCKER_NAMESPACE=${ICR_NAMESPACE} DOCKER_PASSWORD=${ICR_PRIVATE} DOCKER_PUBLICKEY=${ICR_PUBLIC}; if [ "${PUBLISH_OFF:-}" != 'true' ]; then make publish-service; fi; if [ "${PATTERN_OFF:-}" != 'true' ]; then make pattern-publish; fi; fi
+  on:
+    branch: master
+  provider: script
+  script:
+    # update master on git
+    - if [ "${BRANCH}" = 'beta' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git -a commit -m "merge beta" && git push origin master; fi
+  on:
+    branch: beta
+  provider: script
+  script:
+    # update beta on git
+    - if [ "${BRANCH}" = 'exp' ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]; then git config --global user.email 'travis@travis-ci.org' && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -a -m "merge exp" && git push origin beta; fi
+  on:
+    branch: exp
 
 #after_deploy:
 #  - if [ "${DEPLOY_ON:-}" = 'true' ]; then make nodes && make nodes-list && make nodes-test; fi
