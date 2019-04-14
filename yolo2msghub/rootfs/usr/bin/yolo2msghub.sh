@@ -3,6 +3,11 @@
 # TMPDIR
 if [ -d '/tmpfs' ]; then TMPDIR='/tmpfs'; else TMPDIR='/tmp'; fi
 
+# LOGTO
+if [ -z "${LOGTO:-}" ]; then LOGTO="${TMPDIR}/${0##*/}.log"; fi
+
+>> ${LOGTO} 2>&1
+
 ###
 ### FUNCTIONS
 ###
@@ -37,7 +42,7 @@ service_update "${OUTPUT_FILE}"
 # make topic
 TOPIC=$(curl -sSL -H 'Content-Type: application/json' -H "X-Auth-Token: ${YOLO2MSGHUB_APIKEY}" "${YOLO2MSGHUB_ADMIN_URL}/admin/topics" -d '{"name":"'${SERVICE_LABEL}'"}')
 if [ "$(echo "${TOPIC}" | jq '.errorCode!=null')" == 'true' ]; then
-  echo "+++ WARN $0 $$ -- topic ${SERVICE_LABEL} message:" $(echo "${TOPIC}" | jq -r '.errorMessage') &> /dev/stderr
+  echo "+++ WARN $0 $$ -- topic ${SERVICE_LABEL} message:" $(echo "${TOPIC}" | jq -r '.errorMessage') >> ${LOGTO} 2>&1
 fi
 
 ## configure service we're sending
@@ -66,13 +71,13 @@ while true; do
     # get the combined service output
     SERVICE_OUTPUT=$(mktemp)
     service_output ${SERVICE_OUTPUT}
-    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- service_output size:" $(wc -c ${SERVICE_OUTPUT}) &> /dev/stderr; fi
+    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- service_output size:" $(wc -c ${SERVICE_OUTPUT}) >> ${LOGTO} 2>&1; fi
     # process output
     if [ -s ${SERVICE_OUTPUT} ]; then
       # package output for Kafka (single-line)
       KAFKA_PAYLOAD=$(mktemp)
       jq -c '.' ${SERVICE_OUTPUT} > ${KAFKA_PAYLOAD}
-      if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- payload size:" $(wc -c ${KAFKA_PAYLOAD}) &> /dev/stderr; fi
+      if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- payload size:" $(wc -c ${KAFKA_PAYLOAD}) >> ${LOGTO} 2>&1; fi
       if [ -s ${KAFKA_PAYLOAD} ]; then 
         kafkacat "${KAFKA_PAYLOAD}" \
           -P \
@@ -84,15 +89,15 @@ while true; do
           -X sasl.password="${YOLO2MSGHUB_APIKEY:16}" \
           -t "${SERVICE_LABEL}"
       else
-        echo "+++ WARN $0 $$ -- zero-sized payload: ${KAFKA_PAYLOAD}" &> /dev/stderr
+        echo "+++ WARN $0 $$ -- zero-sized payload: ${KAFKA_PAYLOAD}" >> ${LOGTO} 2>&1
       fi
       rm -f ${KAFKA_PAYLOAD}
     else
-      echo "+++ WARN $0 $$ -- zero-sized service_output: ${SERVICE_OUTPUT}" &> /dev/stderr
+      echo "+++ WARN $0 $$ -- zero-sized service_output: ${SERVICE_OUTPUT}" >> ${LOGTO} 2>&1
     fi
     rm -f ${SERVICE_OUTPUT}
   else
-    echo "+++ WARN $0 $$ -- kafka invalid" &> /dev/stderr
+    echo "+++ WARN $0 $$ -- kafka invalid" >> ${LOGTO} 2>&1
   fi
 
   # wait for ..
