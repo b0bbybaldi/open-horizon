@@ -150,7 +150,7 @@ build: Dockerfile build.json service.json rootfs Makefile
 	@export DOCKER_TAG="${DOCKER_TAG}" && docker build --build-arg BUILD_REF=$$(git rev-parse --short HEAD) --build-arg BUILD_DATE=$$(date -u +"%Y-%m-%dT%H:%M:%SZ") --build-arg BUILD_ARCH="$(BUILD_ARCH)" --build-arg BUILD_FROM="$(BUILD_FROM)" --build-arg BUILD_VERSION="${SERVICE_VERSION}" . -t "$(DOCKER_TAG)" 2>&1 | tee ${BUILD_OUT} &> /dev/null
 
 
-build-service: build
+build-service: 
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- build-service: ${SERVICE_NAME}; architecture: ${BUILD_ARCH}""${NC}" &> /dev/stderr
 	@$(MAKE) build
 	@if [ "$${DEBUG:-}" = 'true' ]; then if [ -s "${BUILD_OUT}" ]; then cat ${BUILD_OUT}; else echo "${MC}>>> MAKE --" $$(date +%T) "-- no output: ${BUILD_OUT}""${NC}" &> /dev/stderr; fi; fi
