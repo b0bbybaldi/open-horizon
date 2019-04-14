@@ -29,17 +29,27 @@ branches:
 jobs:
   include:
     - stage: build
-      script: ./.travis/travis-build.sh
+      # environments in which we perform the script
+      env:
+	- BUILD_ARCH=amd64 DEBUG=true CHECK_ON=false BUILD_ON=true TEST_ON=true # PUSH_ON=false PUBLISH_ON=true PATTERN_ON=true
+	- BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+	- BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+      script: 
+        - ./.travis/travis-build.sh
     - stage: test
       script: ./.travis/travis-test.sh
+      # environments in which we perform the script
+      env:
+	- BUILD_ARCH=amd64 DEBUG=true CHECK_ON=true BUILD_ON=false TEST_ON=false PUSH_ON=false # PUBLISH_ON=true PATTERN_ON=true
+	- BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+	- BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
     - stage: deploy
       script: ./.travis/travis-deploy.sh
-
-## environments in which we act
-env:
-  - BUILD_ARCH=amd64 DEBUG=true CHECK_ON=true BUILD_ON=false TEST_ON=false PUSH_ON=false # PUBLISH_ON=true PATTERN_ON=true
-  - BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-  - BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+      # environments in which we perform the script
+      env:
+	- BUILD_ARCH=amd64 DEBUG=true PUSH_ON=false # PUBLISH_ON=true PATTERN_ON=true
+	- BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+	- BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 
 ## addons required to act
 addons:
