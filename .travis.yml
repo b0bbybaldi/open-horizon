@@ -12,22 +12,9 @@ branches:
 
 ## environments in which we act
 env:
-
-## jobs
-jobs:
-  include:
-    - # comment
-      if: branch = beta
-      env:
-        - TAG=beta BUILD_ARCH=amd64 DEBUG=true BUILD_ON=true TEST_ON=true PUSH_ON=false # PUBLISH_ON=true PATTERN_ON=true
-        - TAG=beta BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-        - TAG=beta BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-    - # comment
-      if: branch = master
-      env:
-	- BUILD_ARCH=amd64 DEBUG=true BUILD_ON=true TEST_ON=true PUSH_ON=false # PUBLISH_ON=true PATTERN_ON=true
-	- BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-	- BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - TAG=beta BUILD_ARCH=amd64 DEBUG=true BUILD_ON=true TEST_ON=true PUSH_ON=false # PUBLISH_ON=true PATTERN_ON=true
+  - TAG=beta BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - TAG=beta BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 
 ## addons required to act
 addons:
