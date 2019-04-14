@@ -18,10 +18,7 @@ else
   BRANCH=${TRAVIS_BRANCH:-}
 fi
 if [ -z "${BRANCH:-}" ]; then 
-  #BRANCH=$(git rev-parse --abbrev-ref HEAD)
-  #BRANCH=$(git branch | egrep '^\*' | awk '{ print $2 }')
-  BRANCH=beta
-  if [ "${DEBUG:-}" = true ]; then echo "+++ WARN -- $0 $$ - no branch; using git: ${BRANCH}" &> /dev/stderr; fi
+  if [ "${DEBUG:-}" = true ]; then echo "+++ WARN -- $0 $$ - no branch" &> /dev/stderr; fi
 fi
 if [ "${BRANCH}" != 'master' ]; then TAG="${BRANCH}" && echo "${TAG}" > TAG; fi
 

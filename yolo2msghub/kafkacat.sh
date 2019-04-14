@@ -44,18 +44,14 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
       echo "${REPLY}" > ${PAYLOAD}
       VALID=$(echo "${REPLY}" | ./test-yolo2msghub.sh 2> ${PAYLOAD%.*}.out)
     else
-      if [ "${DEBUG:-}" == 'true' ]; then echo "+++ WARN $0 $$ -- null payload" &> /dev/stderr; fi
+      if [ "${DEBUG:-}" == true ]; then echo "+++ WARN $0 $$ -- received null payload:" $(date +%T) &> /dev/stderr; fi
       continue
     fi
-    if [ "${VALID}" != 'true' ]; then
+    if [ "${VALID}" != true ]; then
       echo "+++ WARN $0 $$ -- invalid payload: ${VALID}" $(cat ${PAYLOAD%.*}.out) &> /dev/stderr
     else
-      if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- received bytes:" $(wc -c ${PAYLOAD}) &> /dev/stderr; fi
+      if [ "${DEBUG:-}" == true ]; then echo "--- INFO $0 $$ -- received bytes: $(wc -c ${PAYLOAD}); at: $(date +%T)" &> /dev/stderr; fi
     fi
-
-    WAN=$(jq '.wan' ${PAYLOAD}); if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- WAN:" $(echo "${WAN}" | jq -r '.wan.speedtest.download'); fi
-    CPU=$(jq '.cpu' ${PAYLOAD}); if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- CPU:" $(echo "${CPU}" | jq -r '.cpu.percent'); fi
-    HAL=$(jq '.hal' ${PAYLOAD}); if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- HAL:" $(echo "${HAL}" | jq -r '.hal.lshw.product'); fi
 
     ID=$(jq -r '.hzn.device_id' ${PAYLOAD})
     ENTITY=$(jq -r '.yolo2msghub.yolo.entity?' ${PAYLOAD})
@@ -63,10 +59,25 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
     DATE=$(jq -r '.yolo2msghub.yolo.date' ${PAYLOAD})
     NOW=$(date +%s)
     AGO=$((NOW-DATE))
-    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- device: ${ID}; entity: ${ENTITY:-none}; ago: ${AGO}" &> /dev/stderr; fi
+
+    if [ $(jq '.wan?!=null' ${PAYLOAD}) = true ]; then
+      WAN=$(jq '.wan' ${PAYLOAD})
+      DOWNLOAD=$(echo "${WAN}" | jq -r '.speedtest.download')
+    fi
+    if [ $(jq '.cpu?!=null' ${PAYLOAD}) = true ]; then
+      CPU=$(jq '.cpu' ${PAYLOAD})
+      PERCENT=$(echo "${CPU}" | jq -r '.percent')
+    fi
+    if [ $(jq '.hal?!=null' ${PAYLOAD}) = true ]; then
+      HAL=$(jq '.hal' ${PAYLOAD})
+      PRODUCT=$(echo "${HAL}" | jq -r '.lshw.product')
+    fi
+
+    if [ "${DEBUG:-}" == true ]; then echo "--- INFO $0 $$ -- device: ${ID}; entity: ${ENTITY:-}; ago: ${AGO}; download: ${DOWNLOAD:-}; percent: ${PERCENT:-}; product: ${PRODUCT:-}" &> /dev/stderr; fi
+
     THIS=$(echo "${DEVICES}" | jq '.[]|select(.id=="'${ID}'")')
     if [ -z "${THIS}" ] || [ "${THIS}" == 'null' ]; then
-      THIS='{"id":"'${ID}'","when":'${DATE}',"date":'${NOW}',"count":0,"ago":'${AGO}'}'
+      THIS='{"id":"'${ID}'","when":'${DATE}',"date":'${NOW}',"count":0,"ago":'${AGO}',"download":'${DOWNLOAD:-0}',"percent":'${PERCENT:-0}',"product":"'${PRODUCT:-unknown}'"}'
       DEVICES=$(echo "${DEVICES}" | jq '.+=['"${THIS}"']')
       TOTAL=0
       LAST=0
@@ -77,7 +88,7 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
 
     DEVICES=$(echo "${DEVICES}" | jq '(.[]|select(.id=="'${ID}'"))|='"${THIS}")
 
-    if [ $(jq '.yolo2msghub.yolo!=null' ${PAYLOAD}) == 'true' ]; then
+    if [ $(jq '.yolo2msghub.yolo!=null' ${PAYLOAD}) == true ]; then
       if [ $(jq -r '.yolo2msghub.yolo.mock' ${PAYLOAD}) == 'null' ]; then
         if [ ${DATE} -gt ${LAST} ]; then
           COUNT=$(jq -r '.yolo2msghub.yolo.count' ${PAYLOAD})
@@ -88,7 +99,7 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
             THIS=$(echo "${THIS}" | jq '.count='${TOTAL})
             # if [ ! -z $(command -v open) ]; then open ${0##*/}.$$.${ID}.jpeg; fi
           else
-            echo "+++ WARN $0 $$ -- ${ID} at ${DATE}: detected: ${ENTITIES:-none}" &> /dev/stderr
+            echo "+++ WARN $0 $$ -- ${ID} at ${DATE}: detected: ${ENTITIES:-nothing}" &> /dev/stderr
           fi
           THIS=$(echo "${THIS}" | jq '.date='${DATE})
           THIS=$(echo "${THIS}" | jq '.ago='${AGO})
@@ -101,6 +112,6 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
     else
       echo "+++ WARN $0 $$ -- ${ID} at ${DATE}: no yolo output" &> /dev/stderr
     fi
-    echo "${DEVICES}" | jq '.' &> /dev/stderr
+    echo "${DEVICES}" | jq -c '.[]' &> /dev/stderr
 done
 rm -f ${0##*/}.$$.*
