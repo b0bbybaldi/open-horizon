@@ -37,6 +37,8 @@ stages:
 
 # each stage
 stage: beta-pull-request
+env: 
+  - BUILD_ARCH=amd64 DEBUG=true BUILD_ON=true TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 script:
   # merge in branch
   - if [ ${GIT_MERGE:-false} = true ]; then ./.travis/git-merge.sh; fi
