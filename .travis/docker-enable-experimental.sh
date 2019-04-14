@@ -18,7 +18,7 @@ docker_config_experimental()
   if [ ! -z "${config:-}" ]; then
     echo "${config}" | jq '.experimental='${DOCKER_EXPERIMENTAL} | sudo tee ${DOCKER_DAEMON}
   else
-    echo '{"experimental":'${DOCKER_EXPERIMENTAL:-false}'}' | sudo tee /etc/docker/daemon.json | jq &> /dev/stderr
+    echo '{"experimental":'${DOCKER_EXPERIMENTAL:-false}'}' | sudo tee ${DOCKER_DAEMON}
   fi
   echo "${DOCKER_EXPERIMENTAL}"
 }

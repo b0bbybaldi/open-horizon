@@ -12,7 +12,9 @@ echo ${HZN_ORG_ID} > HZN_ORG_ID
 echo ${DOCKER_NAMESPACE} > DOCKER_NAMESPACE
 
 # on a branch
-if [ "${TRAVIS_PULL_REQUEST:-}" = false ]; then 
+if [ ! -z "${1:-}" ]; then 
+  BRANCH="${1}"
+elif [ "${TRAVIS_PULL_REQUEST:-}" = false ]; then 
   BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-}
 else
   BRANCH=${TRAVIS_BRANCH:-}

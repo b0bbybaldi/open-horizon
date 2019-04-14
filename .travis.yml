@@ -16,6 +16,13 @@ env:
   - BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
   - BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 
+## jobs
+jobs:
+  include:
+    - # comment
+      if: branch = beta
+      env: TAG=beta
+
 ## addons required to act
 addons:
   apt:
@@ -40,8 +47,9 @@ addons:
 
 ## before installing or doing anything else, do these things:
 before_install:
+  - if [ ${TRAVIS_PULL_REQUEST} = false ]; then export BRANCH=${TRAVIS_PULL_REQUEST_BRANCH}; else export BRANCH=${TRAVIS_BRANCH}; fi
   # create files from secrets (not for pulls)
-  - .travis/travis-setenv.sh
+  - .travis/travis-setenv.sh ${BRANCH}
   # enable experimental features in Docker
   - if [ ${EXP} = true ]; then ./.travis/docker-enable-experimental.sh; fi
   # enable QEMU emulation

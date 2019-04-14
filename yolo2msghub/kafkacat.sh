@@ -1,7 +1,12 @@
 #!/bin/bash
 BROKER="kafka05-prod02.messagehub.services.us-soutbluemix.net:9093,kafka01-prod02.messagehub.services.us-south.bluemix.net:9093,kafka03-prod02.messagehub.services.us-south.bluemix.net:9093,kafka04-prod02.messagehub.services.us-south.bluemix.net:9093,kafka02-prod02.messagehub.services.us-south.bluemix.net:9093"
 
-if [ -z "${1}" ]; then SERVICE="service.json"; echo "+++ WARN $0 $$ -- service configuration JSON not specified on command line; using ${SERVICE}" &> /dev/stderr; else SERVICE="${1}"; fi
+if [ ! -z "${1}" ]; then 
+ SERVICE="${1}"
+else
+  SERVICE="service.json"
+  if [ "${DEBUG:-}" = true ]; then echo "+++ WARN $0 $$ -- service configuration JSON not specified on command line; using ${SERVICE}" &> /dev/stderr; fi;
+fi
 if [ ! -s "${SERVICE}" ]; then echo "*** ERROR $0 $$ -- cannot locate service configuration JSON: ${SERVICE}; exiting" &> /dev/stderr; exit 1; fi
 
 LABEL=$(jq -r '.label' "${SERVICE}")
@@ -17,7 +22,7 @@ if [ ! -z "${ENVIRONMENT}" ] && [ "${ENVIRONMENT}" != 'null' ]; then
     echo "+++ WARN $0 $$ -- SERVICE_LABEL not defined in deployment.services.${SERVICE}.environment; using default ${SERVICE_LABEL}" &> /dev/stderr
   fi
 else
-  echo "+++ WARN $0 $$ -- no environment defined for service ${LABEL}; exiting" &> /dev/stderr
+  echo "*** ERROR $0 $$ -- no environment defined for service ${LABEL}; exiting" &> /dev/stderr
   exit 1
 fi
 
@@ -25,13 +30,13 @@ REQUIRED_VARIABLES=YOLO2MSGHUB_APIKEY
 for R in ${REQUIRED_VARIABLES}; do
   if [ ! -s "${R}" ]; then echo "*** ERROR $0 $$ -- required variable ${R} file not found; exiting" &> /dev/stderr; fi
   APIKEY=$(sed -e 's|^["]*\([^"]*\)["]*|\1|' "${R}")
-  echo "--- INFO $0 $$ -- set ${R} to ${APIKEY}" &> /dev/stderr
+  if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- set ${R} to ${APIKEY}" &> /dev/stderr; fi
 done
 
 TOPIC="yolo2msghub"
 DEVICES='[]'
 
-echo "--- INFO $0 $$ -- listening for topic ${TOPIC}" &> /dev/stderr
+if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- listening for topic ${TOPIC}" &> /dev/stderr; fi
 
 kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
   -X "security.protocol=sasl_ssl" \
@@ -99,7 +104,7 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
             THIS=$(echo "${THIS}" | jq '.count='${TOTAL})
             # if [ ! -z $(command -v open) ]; then open ${0##*/}.$$.${ID}.jpeg; fi
           else
-            echo "+++ WARN $0 $$ -- ${ID} at ${DATE}: detected: ${ENTITIES:-nothing}" &> /dev/stderr
+            if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- ${ID} at ${DATE}: detected: ${ENTITIES:-nothing}" &> /dev/stderr; fi
           fi
           THIS=$(echo "${THIS}" | jq '.date='${DATE})
           THIS=$(echo "${THIS}" | jq '.ago='${AGO})
@@ -112,6 +117,7 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
     else
       echo "+++ WARN $0 $$ -- ${ID} at ${DATE}: no yolo output" &> /dev/stderr
     fi
-    echo "${DEVICES}" | jq -c '.[]' &> /dev/stderr
+    echo ">>> $0 $$ -- $(date +%T)"
+    echo "${DEVICES}" | jq -c '.[]'
 done
 rm -f ${0##*/}.$$.*
