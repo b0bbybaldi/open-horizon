@@ -7,11 +7,7 @@ set -o errexit
 ### This script pushes the services containers to the IBM Container Registry
 ###
 
-if [ ${TRAVIS_PULL_REQUEST:-} != false ]; then 
-  exit 0
-fi
-
-case ${TRAVIS_BRANCH} in 
+case ${1} in 
   master)
 	export DOCKER_LOGIN=token
 	export DOCKER_REGISTRY=${ICR_REGISTRY}
@@ -27,6 +23,6 @@ case ${TRAVIS_BRANCH} in
 	if [ ${DEBUG:-} = true ]; then echo "--- INFO -- $0 $$ -- BETA: no action" &> /dev/stderr; fi
 	;;
   *)
-	if [ ${DEBUG:-} = true ]; then echo "+++ WARN -- $0 $$ -- unknown: ${TRAVIS_BRANCH}" &> /dev/stderr; fi
+	if [ ${DEBUG:-} = true ]; then echo "+++ WARN -- $0 $$ -- unknown: ${1}" &> /dev/stderr; fi
 	;;
 esac

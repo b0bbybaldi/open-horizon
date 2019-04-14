@@ -35,41 +35,57 @@ stages:
   - name: master-publish
     if: branch = master AND type != pull-request
 
-# each stage
+# beta pull-request
 stage: beta-pull-request
 env: 
-  - BUILD_ARCH=amd64 DEBUG=true BUILD_ON=true TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=amd64 DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm64 EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm   EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 script:
-  # merge in branch
-  - if [ ${GIT_MERGE:-false} = true ]; then ./.travis/git-merge.sh; fi
   - ./.travis/travis-pull-request.sh beta
-  - make build-service test-service
+  - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+
+# beta publish
 stage: beta-publish
+env: 
+  - BUILD_ARCH=amd64 DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm64 EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm   EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 script:
   - ./.travis/travis-publish.sh beta
-  - make TAG=beta BUILD_ARCH=amd64 build-service publish-service
-  - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
-  - export QEMU=true #&& make BUILD_ARCH=arm test-service
+  - if [ ${PUBLISH_ON:-false} = true ]; then make TAG=beta build-service test-service publish-service; fi
+
+# beta deploy
 stage: beta-deploy
 script:
   - ./.travis/travis-deploy.sh beta
-  - make TAG=beta pattern-publish
+  - if [ ${PATTERN_ON:-false} = true ]; then make TAG=beta pattern-publish; fi
+
+# master pull-request
 stage: master-pull-request
+env: 
+  - BUILD_ARCH=amd64 DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm64 EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm   EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 script:
   - ./.travis/travis-pull-request.sh
-  - make BUILD_ARCH=amd64 build-service test-service
-  - export QEMU=true #&& make BUILD_ARCH=arm64 build-service
-  - export QEMU=true #&& make BUILD_ARCH=arm build-service
+  - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+
+# master publish
 stage: master-publish
+env: 
+  - BUILD_ARCH=amd64 DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm64 EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm   EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 script:
   - ./.travis/travis-publish.sh
-  - make BUILD_ARCH=amd64 build-service publish-service
-  - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
-  - export QEMU=true #&& make BUILD_ARCH=arm test-service
+  - if [ ${PUBLISH_ON:-false} = true ]; then make build-service test-service publish-service; fi
+
+# master deploy
 stage: master-deploy
 script:
   - ./.travis/travis-deploy.sh
-  - make pattern-publish
+  - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
 
 ## addons required to act
 addons:
@@ -96,9 +112,8 @@ addons:
 
 ## before installing or doing anything else, do these things:
 before_install:
-  - if [ ${TRAVIS_PULL_REQUEST} = false ]; then export BRANCH=${TRAVIS_PULL_REQUEST_BRANCH}; else export BRANCH=${TRAVIS_BRANCH}; fi
   # create files from secrets (not for pulls)
-  - .travis/travis-setenv.sh ${BRANCH}
+  - if [ ${TRAVIS_BEFORE:=true} = true ]; then ./.travis/travis-before-install.sh; fi
   # enable experimental features in Docker
   - if [ ${EXP} = true ]; then ./.travis/docker-enable-experimental.sh; fi
   # enable QEMU emulation
@@ -109,43 +124,46 @@ before_script:
 
 ## PERFORM THE ACT
 script:
+  # anything or nothing at all
+  - if [ ${TRAVIS_SCRIPT:-false} = true ]; then ./.travis/travis-script.sh; fi
   # check all services
   - if [ ${CHECK_ON:-false} = true ]; then make; fi
   # do the build
   - if [ ${BUILD_ON:-false} = true ]; then make build-service; fi
   # do the test
-  - if [ ${TEST_ON:-false} = true ]; then make test-service; fi
+  - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
 
 ## after successful performance, accept accolades and do the following:
 after_success:
-  # push, publish: services and patterns
-  - if [ ${PUSH_ON:-false} = true ]; then make push-service; fi
-  - if [ ${PUBLISH_ON:-false} = true ]; then make publish-service; fi
+  # anything or nothing at all
+  - if [ ${TRAVIS_SUCCESS:-false} = true ]; then ./.travis/travis-after-success.sh; fi
 
 ## after failure; at least clean-up
 after_failure:
-  - if [ ${GIT_UNMERGE:-false} != true ]; then echo "+++ WARN -- $0 $$ -- FAILED: manually rollback changes"; else ./.travis/git-unmerge.sh; fi
+  - if [ ${TRAVIS_FAILURE:-false} = true ]; then ./.travis/travis-after-failure.sh; fi
 
 ## after the script (if anything)
 after_script:
+  - if [ ${TRAVIS_AFTER:-false} = true ]; then ./.travis/travis-after-script.sh; fi
 
+#
 #before_deploy:
 #  - if [ ${DEPLOY_ON:-false} = true ]; then make nodes-clean && make nodes-list; fi
-
-deploy:
-  provider: script
-  script:
-    - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
-    - if [ ${DEPLOY_ON:-false} = true ]; then ./.travis/travis-deploy-nodes.sh; fi
-  on:
-    branch: master
-
-  provider: script
-  script:
-    # update master on git
-    - if [ ${GIT_PUSH:-false} = true ]; then ./.travis/git-push.sh; fi
-  on:
-    branch: beta
-
-#after_deploy:
-#  - if [ ${DEPLOY_ON:-false} = true ]; then make nodes && make nodes-list && make nodes-test; fi
+#
+#deploy:
+#  provider: script
+#  script:
+#    - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
+#    - if [ ${DEPLOY_ON:-false} = true ]; then ./.travis/travis-deploy-nodes.sh; fi
+#  on:
+#    branch: master
+#
+#  provider: script
+#  script:
+#    # update master on git
+#    - if [ ${GIT_PUSH:-false} = true ]; then ./.travis/git-push.sh; fi
+#  on:
+#    branch: beta
+#
+##after_deploy:
+##  - if [ ${DEPLOY_ON:-false} = true ]; then make nodes && make nodes-list && make nodes-test; fi

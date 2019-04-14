@@ -3,12 +3,18 @@ set -o errexit
 
 ### git-push.sh
 
-if [ ${TRAVIS_PULL_REQUEST} = false ]; then
-  REPO_SLUG=${TRAVIS_PULL_REQUEST_SLUG}
-  BRANCH=${TRAVIS_PULL_REQUEST_BRANCH}
-else
+if [ -z "${1:-}" ]; then
+  echo "*** ERROR $0 $$ -- no branch specified" &> /dev/stderr
+  exit 1
+fi
+BRANCH="${1}"
+
+PULL_REQUEST=${2:=${TRAVIS_PULL_REQUEST}}
+
+if [ ${PULL_REQUEST} = false ]; then
   REPO_SLUG=${TRAVIS_REPO_SLUG}
-  BRANCH=${TRAVIS_BRANCH}
+else
+  REPO_SLUG=${TRAVIS_PULL_REQUEST_SLUG}
 fi
 
 if [ ${TRAVIS_PULL_REQUEST} = "true" ]; then 
