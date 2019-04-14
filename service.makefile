@@ -293,7 +293,7 @@ nodes-list:
 	    || echo "${RED}>>> MAKE **" $$(date +%T) "** not found $${machine}""${NC}" &> /dev/stderr; \
 	done
 
-nodes: ${DIR}/userinput.json
+nodes: ${DIR}
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- nodes: ${TEST_NODE_NAMES}""${NC}" &> /dev/stderr
 	@./sh/checkvars.sh ${DIR}
 	@for machine in $(TEST_NODE_NAMES); do \

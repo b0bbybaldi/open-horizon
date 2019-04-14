@@ -18,6 +18,9 @@ case ${BRANCH} in
   	git config --global user.name "Travis-CI"
   	git remote add origin "https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git"
   	git -a commit -m "merge beta" && git push origin master || exit 1
+        git config credential.helper "store --file=.git/credentials"
+        echo "https://${GH_TOKEN}:@github.com" > .git/credentials;
+        git tag ${SERVICE_VERSION}
 	;;
   beta)
     	git config --global user.email "travis@travis-ci.org"
