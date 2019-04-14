@@ -26,58 +26,58 @@ branches:
     - beta
 
 ## jobs
-jobs:
-  include:
-    - stage: beta-build
-      script:
-        - ./.travis/travis-build.sh beta
-        - make TAG=beta BUILD_ARCH=amd64 build-service
-        - export QEMU=true #&& make BUILD_ARCH=arm64 build-service
-        - export QEMU=true #&& make BUILD_ARCH=arm build-service
-    - stage: beta-test
-      script:
-        - ./.travis/travis-test.sh beta
-        - make TAG=beta BUILD_ARCH=amd64 test-service
-        - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
-        - export QEMU=true #&& make BUILD_ARCH=arm test-service
-    - stage: beta-publish
-      script:
-        - ./.travis/travis-publish.sh beta
-        - make TAG=beta BUILD_ARCH=amd64 publish-service
-        - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
-        - export QEMU=true #&& make BUILD_ARCH=arm test-service
-    - stage: beta-deploy
-      script:
-        - ./.travis/travis-deploy.sh beta
-        - make TAG=beta -C yolo2msghub/ pattern-publish
-    - stage: master-build
-      script:
-        - ./.travis/travis-build.sh
-        - make BUILD_ARCH=amd64 build-service
-        - export QEMU=true #&& make BUILD_ARCH=arm64 build-service
-        - export QEMU=true #&& make BUILD_ARCH=arm build-service
-    - stage: master-test
-      script:
-        - ./.travis/travis-test.sh
-        - make BUILD_ARCH=amd64 test-service
-        - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
-        - export QEMU=true #&& make BUILD_ARCH=arm test-service
-    - stage: master-publish
-      script:
-        - ./.travis/travis-publish.sh
-        - make BUILD_ARCH=amd64 publish-service
-        - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
-        - export QEMU=true #&& make BUILD_ARCH=arm test-service
-    - stage: master-deploy
-      script:
-        - ./.travis/travis-deploy.sh
-        - make -C yolo2msghub/ pattern-publish
+#jobs:
+#  include:
+#    - stage: beta-build
+#      script:
+#        - ./.travis/travis-build.sh beta
+#        - make TAG=beta BUILD_ARCH=amd64 build-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm64 build-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm build-service
+#    - stage: beta-test
+#      script:
+#        - ./.travis/travis-test.sh beta
+#        - make TAG=beta BUILD_ARCH=amd64 test-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm test-service
+#    - stage: beta-publish
+#      script:
+#        - ./.travis/travis-publish.sh beta
+#        - make TAG=beta BUILD_ARCH=amd64 publish-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm test-service
+#    - stage: beta-deploy
+#      script:
+#        - ./.travis/travis-deploy.sh beta
+#        - make TAG=beta -C yolo2msghub/ pattern-publish
+#    - stage: master-build
+#      script:
+#        - ./.travis/travis-build.sh
+#        - make BUILD_ARCH=amd64 build-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm64 build-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm build-service
+#    - stage: master-test
+#      script:
+#        - ./.travis/travis-test.sh
+#        - make BUILD_ARCH=amd64 test-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm test-service
+#    - stage: master-publish
+#      script:
+#        - ./.travis/travis-publish.sh
+#        - make BUILD_ARCH=amd64 publish-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
+#        - export QEMU=true #&& make BUILD_ARCH=arm test-service
+#    - stage: master-deploy
+#      script:
+#        - ./.travis/travis-deploy.sh
+#        - make -C yolo2msghub/ pattern-publish
 
-#stage: main
-#env:
-#  - BUILD_ARCH=amd64 DEBUG=true CHECK_ON=false # BUILD_ON=true TEST_ON=true # PUSH_ON=false PUBLISH_ON=true PATTERN_ON=true
-#  - BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-#  - BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+stage: main
+env:
+  - BUILD_ARCH=amd64 DEBUG=true CHECK_ON=false # BUILD_ON=true TEST_ON=true # PUSH_ON=false PUBLISH_ON=true PATTERN_ON=true
+  - BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 
 ## addons required to act
 addons:
