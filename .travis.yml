@@ -9,7 +9,6 @@ branches:
   only:
     - master
     - beta
-    - exp
 
 ## environments in which we act
 env:
@@ -51,44 +50,44 @@ before_install:
 ## after installing, but BEFORE acting, do these things:
 before_script:
   # merge in branch
-  - if [ ${GIT_MERGE:-} = true ]; then ./.travis/git-merge.sh; fi
+  - if [ ${GIT_MERGE:-false} = true ]; then ./.travis/git-merge.sh; fi
 
 ## PERFORM THE ACT
 script:
   # check all services
-  - if [ ${CHECK_ON:-} = true ]; then make; fi
+  - if [ ${CHECK_ON:-false} = true ]; then make; fi
   # do the build
-  - if [ ${BUILD_ON:-} = true ]; then make build-service; fi
+  - if [ ${BUILD_ON:-false} = true ]; then make build-service; fi
   # do the test
-  - if [ ${TEST_ON:-} = true ]; then make test-service; fi
+  - if [ ${TEST_ON:-false} = true ]; then make test-service; fi
 
 ## after successful performance, accept accolades and do the following:
 after_success:
   # push, publish: services and patterns
-  - if [ ${PUSH_ON:-} = true ]; then make push-service; fi
-  - if [ ${PUBLISH_ON:-} = true ]; then make publish-service; fi
+  - if [ ${PUSH_ON:-false} = true ]; then make push-service; fi
+  - if [ ${PUBLISH_ON:-false} = true ]; then make publish-service; fi
 
 ## after failure; at least clean-up
 after_failure:
-  - if [ ${GIT_UNMERGE:-} != true ]; then echo "+++ WARN -- $0 $$ -- FAILED: manually rollback changes"; else ./.travis/git-unmerge.sh; fi
+  - if [ ${GIT_UNMERGE:-false} != true ]; then echo "+++ WARN -- $0 $$ -- FAILED: manually rollback changes"; else ./.travis/git-unmerge.sh; fi
 
 #before_deploy:
-#  - if [ ${DEPLOY_ON:-} = true ]; then make nodes-clean && make nodes-list; fi
+#  - if [ ${DEPLOY_ON:-false} = true ]; then make nodes-clean && make nodes-list; fi
 
 deploy:
   provider: script
   script:
-    - if [ ${PATTERN_ON:-} = true ]; then make pattern-publish; fi
-    - if [ ${DEPLOY_ON:-} = true ]; then ./.travis/travis-deploy-nodes.sh; fi
+    - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
+    - if [ ${DEPLOY_ON:-false} = true ]; then ./.travis/travis-deploy-nodes.sh; fi
   on:
     branch: master
 
   provider: script
   script:
     # update master on git
-    - if [ ${GIT_PUSH:-} = true ]; then ./.travis/git-push.sh; fi
+    - if [ ${GIT_PUSH:-false} = true ]; then ./.travis/git-push.sh; fi
   on:
     branch: beta
 
 #after_deploy:
-#  - if [ ${DEPLOY_ON:-} = true ]; then make nodes && make nodes-list && make nodes-test; fi
+#  - if [ ${DEPLOY_ON:-false} = true ]; then make nodes && make nodes-list && make nodes-test; fi
