@@ -146,8 +146,8 @@ build: Dockerfile build.json service.json rootfs Makefile remove
 
 build-service: build
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- build-service: ${SERVICE_NAME}; architecture: ${BUILD_ARCH}""${NC}" &> /dev/stderr
-	@export ID="${DOCKER_NAME}" && IMAGES=$$(mktemp) && docker images | egrep "$${ID}" > $${IMAGES} && COUNT=$$(cat $${IMAGES} | wc -l) && LATEST=$$(head -1 $${IMAGES} | awk '{ print $$2,$$3,$$4,$$5,$$6 }') && if [ -z "$${LATEST}" ]; then echo "${RED}>>> MAKE --" $$(date +%T) "-- failed; no image found; id: $${ID}""${NC}"; else echo "${GREEN}>>> MAKE --" $$(date +%T) "-- built; $${COUNT} image(s) found; id: $${ID}; latest: $${LATEST}""${NC}"; fi
-	if [ "$${DEBUG:-}" = 'true' ]; then if [ -s "${BUILD_OUT}" ]; then cat ${BUILD_OUT}; else echo "${MC}>>> MAKE --" $$(date +%T) "-- no output: ${BUILD_OUT}""${NC}" &> /dev/stderr; fi; fi
+	-@export ID="${DOCKER_NAME}" && IMAGES=$$(mktemp) && docker images | egrep "$${ID}" > $${IMAGES} && COUNT=$$(cat $${IMAGES} | wc -l) && LATEST=$$(head -1 $${IMAGES} | awk '{ print $$2,$$3,$$4,$$5,$$6 }') && if [ -z "$${LATEST}" ]; then echo "${RED}>>> MAKE --" $$(date +%T) "-- failed; no image found; id: $${ID}""${NC}"; else echo "${GREEN}>>> MAKE --" $$(date +%T) "-- built; $${COUNT} image(s) found; id: $${ID}; latest: $${LATEST}""${NC}"; fi
+	-@if [ "$${DEBUG:-}" = 'true' ]; then if [ -s "${BUILD_OUT}" ]; then cat ${BUILD_OUT}; else echo "${MC}>>> MAKE --" $$(date +%T) "-- no output: ${BUILD_OUT}""${NC}" &> /dev/stderr; fi; fi
 
 service-build:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- service-build: ${SERVICE_NAME}; architectures: ${SERVICE_ARCH_SUPPORT}""${NC}" &> /dev/stderr
