@@ -5,18 +5,15 @@ Open Horizon edge fabric provides method and apparatus to run multiple Docker co
 
 <hr>
 
-#  &#10071; Intended Audience
-It is presumed that the reader is a software engineer with familiarity with the following:
+##  &#10071; Intended Audience
+It is presumed that the reader is a software engineer with familiarity in the following:
 
 + **LINUX** - The free, open-source, UNIX-like, operating system, e.g. [Ubuntu][get-ubuntu] or [Raspbian][get-raspbian]
 + **HTTP** - The HyperText Transfer Protocol and tooling; see [here][curl-intro] and [here][socat-intro]
-+ **Git** - Software management -AAS
++ **Make** - Build pipeline automation; see [here][gnu-make]
++ **Git** - Software change management; [github.com](http://github.com)
++ **Travis** - Continuous integration and deployment; [travis-ci.org](http://travis-ci.org)
 + **JSON** - JavaScript Object Notation and tooling
-+ **Make** - and other standard LINUX build tools; see [here][gnu-make]
-
-Please refer to [`TERMINOLOGY.md`][terminology-md] for important terms and definitions.
-
-# &#10004; What Will Be Learned
 
 Within the following scenario:
 
@@ -27,9 +24,12 @@ Within the following scenario:
 + One (1) repository with three (3) branches:
 
 	+ `master` - the stable and clean branch; push/publish to _production_ exchange and registry
-	+ `beta` - the integration and QA branch; push/publish to _staging_ exchange/registry
+	+ `develop` - the integration and QA branch; push/publish to _staging_ exchange/registry
 	+ `exp` - the feature development and testing branch; private to developer; push/publish to _developer_ exchange/registry
 
+Please refer to [`TERMINOLOGY.md`][terminology-md] for important terms and definitions.
+
+## &#10004; What Will Be Learned
 
 The reader will learn how to perform the following:
 
@@ -59,6 +59,8 @@ E. MarkDown repository
 
  + Add TravisCI build status
  + Add Docker container status
+
+<hr>
  
 # Process
 The CI/CD process utilizes the the following:
@@ -68,12 +70,13 @@ The CI/CD process utilizes the the following:
 + `make` - control, build, test automation
 + `git` - software version and branch management
 + `docker` - Docker registries, repositories, and images
-+ `travis` - release change management
 + `hzn` - Open Horizon command-line-interface
 + `ssh` - Secure Shell 
-+ `jq` - JSON query processing command (&#63743; `brew install jq`)
-+ `envsubst` - environment variable substitution command (&#63743; `brew install gettext`)
++ `travis` - release change management (&#63743; `brew install travis`; &#128039; `apt-get install -y travis`)
++ `git-flow` - Automated GIT flow command extensions (&#63743; `brew install git-flow`; &#128039; `apt-get install -y git-flow`)
++ `jq` - JSON query processing command (&#63743; `brew install jq`; &#128039; `apt-get install -y jq`)
 + `curl` - **curl** is a tool to transfer data from or to a server (see `man curl`)
++ `envsubst` - environment variable substitution command (&#63743; `brew install gettext`; &#128039; `apt-get install -y gettext`)
 
 **configuration files**
 
@@ -267,10 +270,10 @@ The namespace and version identifiers for Git do not represent the namespaces, i
 
 
 ### &#9995; Use `TAG` 
-The value may be used to indicate a branch or stage;  for example development (`beta`) or staging (`master`). An`open-horizon/TAG` that distinguishes the `beta` branch would be created with the following command:
+The value may be used to indicate a branch or stage;  for example development (`develop`) or staging (`master`). An`open-horizon/TAG` that distinguishes the `develop` branch would be created with the following command:
 
 ```
-echo 'beta' > $GD/open-horizon/TAG
+echo 'develop' > $GD/open-horizon/TAG
 ```
 
 <hr>
@@ -278,36 +281,36 @@ echo 'beta' > $GD/open-horizon/TAG
 ## Step 1
 The the most basic CI/CD process consists of the following activities (see [Git Basics][git-basics]):
 
-1. Create branch (e.g. `beta`) of _parent_ (e.g. `master`)
-1. Develop on `beta` branch
-1. Merge `master` into `beta` and test
-2. Commit `beta`
-2. Merge `beta` into `master` and test
+1. Create branch (e.g. `develop`) of _parent_ (e.g. `master`)
+1. Develop on `develop` branch
+1. Merge `master` into `develop` and test
+2. Commit `develop`
+2. Merge `develop` into `master` and test
 1. Commit `master`
 2. Build, test, and deliver `master`
 
 **Create branch.**  A branch requires a _name_ for identification; provide a string with no whitespace or special characters:
 
 ```
-git branch beta
+git branch develop
 ```
 
 **Identify branch** A branch can be identified using the `git branch` command; an asterisk (`*`) indicates the current branch.
 ```
 % git branch
-  beta
+  develop
 * master
 ```
 
 **Switch branch** Switch between branches using `git checkout` command:
 
 ```
-% git checkout beta
+% git checkout develop
 
-Switched to branch 'beta'
+Switched to branch 'develop'
 Your branch is up to date with 'origin/master'.
 % git branch
-* beta
+* develop
   master
 ```
 
@@ -315,23 +318,23 @@ Your branch is up to date with 'origin/master'.
 **Change the service**.  Create a change in one of the repository's services and then build, test, and repeat until the change works as intended.
 
 ## Step 3
-**Merge `master` branch into `beta`**.  Prior to merging a branch into a parent, any updates to the parent should be pulled into the branch and merge appropriately.  Build and test processes may then be applied either manually or automatically.
+**Merge `master` branch into `develop`**.  Prior to merging a branch into a parent, any updates to the parent should be pulled into the branch and merge appropriately.  Build and test processes may then be applied either manually or automatically.
 
 ```
-% git checkout beta
+% git checkout develop
 % git pull origin master
 % make service-build && make service-test
 ```
 
 ## Step 4
-**Merge `beta` branch into `master`**.  Once the branch has been successfully tested (and approved if submitted through _pull request_), the branch may be merged.  For example, merging the `beta` branch back into `master`:
+**Merge `develop` branch into `master`**.  Once the branch has been successfully tested (and approved if submitted through _pull request_), the branch may be merged.  For example, merging the `develop` branch back into `master`:
 
 ```
 % git checkout master
 % git pull origin master
-% git merge beta
+% git merge develop
 % make service-build && make service-test && && make service-publish
-% git commit -m "beta good" . && git push
+% git commit -m "develop good" . && git push
 ```
 
 ## Step 5
@@ -352,10 +355,10 @@ make nodes-test
 If tests are successful, the services and patterns may be pushed for "stable" (aka `master`):
 
 ```
-% git checkout beta
+% git checkout develop
 % git pull origin master
 % make service-build && make service-test \
-  && git commit -m "merge beta" . \
+  && git commit -m "merge develop" . \
   && git push origin master \
   || echo "FAILED"
 ```
