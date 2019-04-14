@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "${VENDOR}" != "apple" ] && [ "${OSTYPE}" != "darwin" ]; then
+if [ ! -z $(command -v "apt-get") ]; then
   echo "This script is for macOS only" >&2
   exit 1
 fi

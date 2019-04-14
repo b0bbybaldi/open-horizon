@@ -49,13 +49,21 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
     fi
     if [ "${VALID}" != 'true' ]; then
       echo "+++ WARN $0 $$ -- invalid payload: ${VALID}" $(cat ${PAYLOAD%.*}.out) &> /dev/stderr
+    else
+      if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- received bytes:" $(wc -c ${PAYLOAD}) &> /dev/stderr; fi
     fi
+
+    WAN=$(jq '.wan' ${PAYLOAD}); if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- WAN:" $(echo "${WAN}" | jq -r '.wan.speedtest.download'); fi
+    CPU=$(jq '.cpu' ${PAYLOAD}); if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- CPU:" $(echo "${CPU}" | jq -r '.cpu.percent'); fi
+    HAL=$(jq '.hal' ${PAYLOAD}); if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- HAL:" $(echo "${HAL}" | jq -r '.hal.lshw.product'); fi
+
     ID=$(jq -r '.hzn.device_id' ${PAYLOAD})
-    ENTITY=$(jq -r '.yolo2msghub.yolo.entity' ${PAYLOAD})
+    ENTITY=$(jq -r '.yolo2msghub.yolo.entity?' ${PAYLOAD})
+    ENTITIES=($(jq -r '.yolo2msghub.yolo.detected[].entity' ${PAYLOAD}))
     DATE=$(jq -r '.yolo2msghub.yolo.date' ${PAYLOAD})
     NOW=$(date +%s)
     AGO=$((NOW-DATE))
-    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- device: ${ID}; entity: ${ENTITY}; ago: ${AGO}" &> /dev/stderr; fi
+    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- device: ${ID}; entity: ${ENTITY:-none}; ago: ${AGO}" &> /dev/stderr; fi
     THIS=$(echo "${DEVICES}" | jq '.[]|select(.id=="'${ID}'")')
     if [ -z "${THIS}" ] || [ "${THIS}" == 'null' ]; then
       THIS='{"id":"'${ID}'","when":'${DATE}',"date":'${NOW}',"count":0,"ago":'${AGO}'}'
@@ -80,7 +88,7 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
             THIS=$(echo "${THIS}" | jq '.count='${TOTAL})
             # if [ ! -z $(command -v open) ]; then open ${0##*/}.$$.${ID}.jpeg; fi
           else
-            echo "+++ WARN $0 $$ -- ${ID} at ${DATE}: no ${ENTITY}" &> /dev/stderr
+            echo "+++ WARN $0 $$ -- ${ID} at ${DATE}: detected: ${ENTITIES:-none}" &> /dev/stderr
           fi
           THIS=$(echo "${THIS}" | jq '.date='${DATE})
           THIS=$(echo "${THIS}" | jq '.ago='${AGO})

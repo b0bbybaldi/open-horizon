@@ -58,20 +58,23 @@ while true; do
   fi
   rm -f ${PAYLOAD}
   echo '}' >> ${OUTPUT_FILE}
-  # output
+  # update the output file
   service_update "${OUTPUT_FILE}"
 
   # send via kafka
   if [ $(command -v kafkacat) ] && [ ! -z "${YOLO2MSGHUB_BROKER}" ] && [ ! -z "${YOLO2MSGHUB_APIKEY}" ]; then
-      PAYLOAD=$(mktemp)
-      echo "${HZN:-}" > ${PAYLOAD}
-      PAYLOAD_DATA=$(mktemp)
-      echo '{"date":'$(date +%s)',"'${SERVICE_LABEL}'":' > ${PAYLOAD_DATA}
-      cat "${TMPDIR}/${SERVICE_LABEL}.json" >> ${PAYLOAD_DATA}
-      echo '}' >> ${PAYLOAD_DATA}
-      jq -s add ${PAYLOAD} ${PAYLOAD_DATA} | jq -c '.' > ${PAYLOAD}.$$ && mv -f ${PAYLOAD}.$$ ${PAYLOAD}
-      if [ "${DEBUG:-}" == 'true' ]; then echo "??? DEBUG $0 $$ -- payload:" $(jq -c '.yolo2msghub.yolo|.image=null' ${PAYLOAD}) &> /dev/stderr; fi
-      kafkacat "${PAYLOAD}" \
+    # get the combined service output
+    SERVICE_OUTPUT=$(mktemp)
+    service_output ${SERVICE_OUTPUT}
+    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- service_output size:" $(wc -c ${SERVICE_OUTPUT}) &> /dev/stderr; fi
+    # process output
+    if [ -s ${SERVICE_OUTPUT} ]; then
+      # package output for Kafka (single-line)
+      KAFKA_PAYLOAD=$(mktemp)
+      jq -c '.' ${SERVICE_OUTPUT} > ${KAFKA_PAYLOAD}
+      if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- payload size:" $(wc -c ${KAFKA_PAYLOAD}) &> /dev/stderr; fi
+      if [ -s ${KAFKA_PAYLOAD} ]; then 
+        kafkacat "${KAFKA_PAYLOAD}" \
           -P \
           -b "${YOLO2MSGHUB_BROKER}" \
           -X api.version.request=true \
@@ -80,7 +83,14 @@ while true; do
           -X sasl.username=${YOLO2MSGHUB_APIKEY:0:16}\
           -X sasl.password="${YOLO2MSGHUB_APIKEY:16}" \
           -t "${SERVICE_LABEL}"
-      rm -f ${PAYLOAD} ${PAYLOAD_DATA}
+      else
+        echo "+++ WARN $0 $$ -- zero-sized payload: ${KAFKA_PAYLOAD}" &> /dev/stderr
+      fi
+      rm -f ${KAFKA_PAYLOAD}
+    else
+      echo "+++ WARN $0 $$ -- zero-sized service_output: ${SERVICE_OUTPUT}" &> /dev/stderr
+    fi
+    rm -f ${SERVICE_OUTPUT}
   else
     echo "+++ WARN $0 $$ -- kafka invalid" &> /dev/stderr
   fi

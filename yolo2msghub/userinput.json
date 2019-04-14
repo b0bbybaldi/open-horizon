@@ -5,7 +5,7 @@
       "org": "${HZN_ORG_ID}",
       "url": "com.github.dcmartin.open-horizon.yolo2msghub",
       "versionRange": "[0.0.0,INFINITY)",
-      "variables": { "YOLO2MSGHUB_APIKEY": "specify-api-key", "LOG_LEVEL": "info", "DEBUG": false }
+      "variables": { "YOLO2MSGHUB_APIKEY": "specify-api-key", "LOG_LEVEL": "info", "DEBUG": true }
     },
     {
       "org": "${HZN_ORG_ID}",

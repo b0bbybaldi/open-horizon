@@ -2,7 +2,7 @@ sudo: true
 language: bash
 services: 
   - docker
-dist: xenial
+dist: bionic
 
 ## branches on which we act
 branches:
@@ -13,9 +13,9 @@ branches:
 
 ## environments in which we act
 env:
-  - BUILD_ARCH=amd64 DEBUG=true CHECK_OFF=false BUILD_OFF=false TEST_OFF=false PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true GIT_OFF=false
-  - BUILD_ARCH=arm64 DEBUG=true CHECK_OFF=true BUILD_OFF=true TEST_OFF=true PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true GIT_OFF=true
-  - BUILD_ARCH=arm   DEBUG=true CHECK_OFF=true BUILD_OFF=true TEST_OFF=true PUSH_ON=false PUBLISH_OFF=true PATTERN_OFF=true GIT_OFF=true
+  - BUILD_ARCH=amd64 DEBUG=true BUILD_ON=true TEST_ON=true PUSH_ON=false # PUBLISH_ON=true PATTERN_ON=true
+  - BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 
 ## addons required to act
 addons:
@@ -26,6 +26,7 @@ addons:
       key_url: "http://pkg.bluehorizon.network/bluehorizon.network-public.key"
     packages:
     - make
+    - git-flow
     - curl
     - jq
     - ca-certificates
@@ -40,81 +41,54 @@ addons:
 
 ## before installing or doing anything else, do these things:
 before_install:
-  # are we emulating or not (and if QEMU then DEBUG, for now)
-  - if [ ${BUILD_ARCH} != "amd64" ]; then export QEMU=true DEBUG=true; fi
-  # if beta then debug and TAG
-  - if [ ! -z "${BRANCH}" ] && [ ${BRANCH} != "master" ]; then echo ${BRANCH} > TAG; fi
-  - 'if [ -s ${TAG} ]; then echo "--- INFO -- branch: ${BRANCH}"; fi'
-  - if [ ${BRANCH} = "beta" ]; then export DEBUG=true; fi
-  - if [ ${BRANCH} = "exp" ]; then export DEBUG=true VERBOSE=true; fi
-  # branch management
-  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then export BRANCH=${TRAVIS_BRANCH}; else export BRANCH=${TRAVIS_PULL_REQUEST_BRANCH}; fi
-  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then export REPO_SLUG=${TRAVIS_REPO_SLUG}; else export REPO_SLUG=${TRAVIS_PULL_REQUEST_SLUG}; fi
+  # create files from secrets (not for pulls)
+  - .travis/travis-setenv.sh
+  # enable experimental features in Docker
+  - if [ ${EXP} = true ]; then ./.travis/docker-enable-experimental.sh; fi
+  # enable QEMU emulation
+  - if [ ${QEMU} = true ]; then ./.travis/docker-enable-qemu.sh; fi
 
 ## after installing, but BEFORE acting, do these things:
 before_script:
-  # enable QEMU emulation
-  - if [ ${QEMU:-} = true ]; then sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset; fi
-  # check branch & create files from secrets (not for pulls)
-  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${HZN_ORG_ID} > HZN_ORG_ID; fi
-  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${DOCKER_NAMESPACE} > DOCKER_NAMESPACE; fi
-  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${HZN_EXCHANGE_APIKEY} > APIKEY; fi
-  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${PRIVATE_KEY} | base64 --decode > ${HZN_ORG_ID}.key; fi
-  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${PUBLIC_KEY} | base64 --decode > ${HZN_ORG_ID}.pem; fi
-  # login docker
-  - if [ ${TRAVIS_PULL_REQUEST:-} = false ]; then echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_LOGIN} --password-stdin; fi
-  # test for beta
-  - if [ ${BRANCH} = "beta" ] && [ ${TRAVIS_PULL_REQUEST} = true ]; then git pull origin master; fi
-  # test for exp
-  - if [ ${BRANCH} = "exp" ] && [ ${TRAVIS_PULL_REQUEST} = true ]; then git pull origin beta; fi
+  # merge in branch
+  - if [ ${GIT_MERGE:-} = true ]; then ./.travis/git-merge.sh; fi
 
-### PERFORM THE ACT
+## PERFORM THE ACT
 script:
-  # ensure not TAG"d
-  # - if [ ${BRANCH} = "master" ]; then export TAG=; fi
   # check all services
-  - if [ ${CHECK_OFF:-} != true ]; then make; fi
+  - if [ ${CHECK_ON:-} = true ]; then make; fi
   # do the build
-  - if [ ${BUILD_OFF:-} != true ]; then make build-service; fi
+  - if [ ${BUILD_ON:-} = true ]; then make build-service; fi
   # do the test
-  - if [ ${TEST_OFF:-} != true ]; then make test-service; fi
+  - if [ ${TEST_ON:-} = true ]; then make test-service; fi
 
 ## after successful performance, accept accolades and do the following:
 after_success:
   # push, publish: services and patterns
-  - if [ ${PUSH_ON:-} = "true" ]; then make push-service; fi
-  - if [ ${PUBLISH_OFF:-} != "true" ]; then make publish-service; fi
-  - if [ ${GIT_OFF} != "true" ] && [ ${BRANCH} = "beta" ] && [ ${TRAVIS_PULL_REQUEST} = "true" ]; then git config --global user.email "travis@travis-ci.org" && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git -a commit -m "merge beta" && git push origin master; fi
-  - if [ ${GIT_OFF} != "true" ] && [ ${BRANCH} = "exp" ] && [ ${TRAVIS_PULL_REQUEST} = "true" ]; then git config --global user.email "travis@travis-ci.org" && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -a -m "merge exp" && git push origin beta; fi
+  - if [ ${PUSH_ON:-} = true ]; then make push-service; fi
+  - if [ ${PUBLISH_ON:-} = true ]; then make publish-service; fi
 
 ## after failure; at least clean-up
 after_failure:
-  - if [ ${ROLLBACK_ON:-} != "true" ]; then echo "+++ WARN -- $0 $$ -- FAILED: rollback changes to ${BRANCH}"; else ./sh/rollback.sh ${BRANCH}; fi
+  - if [ ${GIT_UNMERGE:-} != true ]; then echo "+++ WARN -- $0 $$ -- FAILED: manually rollback changes"; else ./.travis/git-unmerge.sh; fi
 
 #before_deploy:
-#  - if [ ${DEPLOY_ON:-} = "true" ]; then make nodes-clean && make nodes-list; fi
+#  - if [ ${DEPLOY_ON:-} = true ]; then make nodes-clean && make nodes-list; fi
 
 deploy:
   provider: script
   script:
-    - if [ ${PATTERN_OFF:-} != "true" ]; then make pattern-publish; fi
-    - if [ ${DEPLOY_ON:-} = "true" ]; then make nodes; fi
-    # update IBM Cloud Registry; ICR_PUBLISH: true
-    - if [ ${BRANCH} = "master" ] && [ ${TRAVIS_PULL_REQUEST:-} = "false" ] && [ ${ICR_PUBLISH:-} == "true" ]; then export DOCKER_LOGIN=token DOCKER_REGISTRY=${ICR_REGISTRY} DOCKER_NAMESPACE=${ICR_NAMESPACE} DOCKER_PASSWORD=${ICR_PRIVATE} DOCKER_PUBLICKEY=${ICR_PUBLIC}; if [ ${PUBLISH_OFF:-} != "true" ]; then make publish-service; fi; if [ ${PATTERN_OFF:-} != "true" ]; then make pattern-publish; fi; fi
+    - if [ ${PATTERN_ON:-} = true ]; then make pattern-publish; fi
+    - if [ ${DEPLOY_ON:-} = true ]; then ./.travis/travis-deploy-nodes.sh; fi
   on:
     branch: master
+
   provider: script
   script:
     # update master on git
-    - if [ ${BRANCH} = "beta" ] && [ ${TRAVIS_PULL_REQUEST} = "true" ]; then git config --global user.email "travis@travis-ci.org" && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git -a commit -m "merge beta" && git push origin master; fi
+    - if [ ${GIT_PUSH:-} = true ]; then ./.travis/git-push.sh; fi
   on:
     branch: beta
-  provider: script
-  script:
-    # update beta on git
-    - if [ ${BRANCH} = "exp" ] && [ ${TRAVIS_PULL_REQUEST} = "true" ]; then git config --global user.email "travis@travis-ci.org" && git config --global user.name "Travis-CI"; git remote add origin https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git; git commit -a -m "merge exp" && git push origin beta; fi
-  on:
-    branch: exp
 
 #after_deploy:
-#  - if [ ${DEPLOY_ON:-} = "true" ]; then make nodes && make nodes-list && make nodes-test; fi
+#  - if [ ${DEPLOY_ON:-} = true ]; then make nodes && make nodes-list && make nodes-test; fi
