@@ -90,6 +90,7 @@ addons:
     - make
     - git-flow
     - curl
+    - gettext
     - jq
     - ca-certificates
     - gnupg
