@@ -174,10 +174,10 @@ service-start: start-service
 start-service: stop stop-service depend
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- starting service: ${SERVICE_NAME}; directory: ${DIR}""${NC}" &> /dev/stderr
 	@./sh/checkvars.sh ${DIR}
-	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service verify -d ${DIR} &> ${SERVICE_NAME}.verify.out
-	@if [ "$${DEBUG}" == 'true' ]; then cat ${SERVICE_NAME}.verify.out; fi
-	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service start -S -d ${DIR} &> ${SERVICE_NAME}.start.out
-	@if [ "$${DEBUG}" == 'true' ]; then cat ${SERVICE_NAME}.start.out; fi
+	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service verify -d ${DIR} # &> ${SERVICE_NAME}.verify.out
+	#@if [ "$${DEBUG}" == 'true' ]; then cat ${SERVICE_NAME}.verify.out; fi
+	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && hzn dev service start -S -d ${DIR} # &> ${SERVICE_NAME}.start.out
+	#@if [ "$${DEBUG}" == 'true' ]; then cat ${SERVICE_NAME}.start.out; fi
 
 start:
 
