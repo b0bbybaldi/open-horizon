@@ -5,7 +5,6 @@ notifications:
     - dcmartin@us.ibm.com
     on_success: change
     on_failure: always
-
 ## this is going to take sudo powers
 sudo: true
 
@@ -25,6 +24,7 @@ branches:
     - master
     - beta
 
+## stages
 stages:
   - name: beta-pull-request
     if: branch = beta AND type = pull-request
@@ -35,45 +35,39 @@ stages:
   - name: master-publish
     if: branch = master AND type != pull-request
 
-env:
-  - BUILD_ARCH=amd64 DEBUG=true CHECK_ON=false BUILD_ON=true TEST_ON=true # PUSH_ON=false PUBLISH_ON=true PATTERN_ON=true
-  - BUILD_ARCH=arm64 DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-  - BUILD_ARCH=arm   DEBUG=true EXP=true QEMU=true # BUILD_ON=true TEST_ON=true PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-
-# jobs
-jobs:
-  include:
-    - stage: beta-pull-request
-      script:
-        - ./.travis/travis-pull-request.sh beta
-        - make build-service test-service
-    - stage: beta-publish
-      script:
-        - ./.travis/travis-publish.sh beta
-        - make TAG=beta BUILD_ARCH=amd64 build-service publish-service
-        - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
-        - export QEMU=true #&& make BUILD_ARCH=arm test-service
-    - stage: beta-deploy
-      script:
-        - ./.travis/travis-deploy.sh beta
-        - make TAG=beta pattern-publish
-    - stage: master-pull-request
-      script:
-        - ./.travis/travis-pull-request.sh
-        - make BUILD_ARCH=amd64 build-service test-service
-        - export QEMU=true #&& make BUILD_ARCH=arm64 build-service
-        - export QEMU=true #&& make BUILD_ARCH=arm build-service
-    - stage: master-publish
-      script:
-        - ./.travis/travis-publish.sh
-        - make BUILD_ARCH=amd64 build-service publish-service
-        - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
-        - export QEMU=true #&& make BUILD_ARCH=arm test-service
-    - stage: master-deploy
-      env:
-      script:
-        - ./.travis/travis-deploy.sh
-        - make pattern-publish
+# each stage
+stage: beta-pull-request
+script:
+  # merge in branch
+  - if [ ${GIT_MERGE:-false} = true ]; then ./.travis/git-merge.sh; fi
+  - ./.travis/travis-pull-request.sh beta
+  - make build-service test-service
+stage: beta-publish
+script:
+  - ./.travis/travis-publish.sh beta
+  - make TAG=beta BUILD_ARCH=amd64 build-service publish-service
+  - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
+  - export QEMU=true #&& make BUILD_ARCH=arm test-service
+stage: beta-deploy
+script:
+  - ./.travis/travis-deploy.sh beta
+  - make TAG=beta pattern-publish
+stage: master-pull-request
+script:
+  - ./.travis/travis-pull-request.sh
+  - make BUILD_ARCH=amd64 build-service test-service
+  - export QEMU=true #&& make BUILD_ARCH=arm64 build-service
+  - export QEMU=true #&& make BUILD_ARCH=arm build-service
+stage: master-publish
+script:
+  - ./.travis/travis-publish.sh
+  - make BUILD_ARCH=amd64 build-service publish-service
+  - export QEMU=true #&& make BUILD_ARCH=arm64 test-service
+  - export QEMU=true #&& make BUILD_ARCH=arm test-service
+stage: master-deploy
+script:
+  - ./.travis/travis-deploy.sh
+  - make pattern-publish
 
 ## addons required to act
 addons:
@@ -110,8 +104,6 @@ before_install:
 
 ## after installing, but BEFORE acting, do these things:
 before_script:
-  # merge in branch
-  - if [ ${GIT_MERGE:-false} = true ]; then ./.travis/git-merge.sh; fi
 
 ## PERFORM THE ACT
 script:
