@@ -2,7 +2,7 @@ sudo: true
 language: bash
 services: 
   - docker
-dist: bionic
+dist: xenial
 
 ## branches on which we act
 branches:
