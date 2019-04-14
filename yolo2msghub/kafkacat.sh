@@ -64,6 +64,9 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
     DATE=$(jq -r '.yolo2msghub.yolo.date' ${PAYLOAD})
     NOW=$(date +%s)
     AGO=$((NOW-DATE))
+    DOWNLOAD=
+    PERCENT=
+    PRODUCT=
 
     if [ $(jq '.wan?!=null' ${PAYLOAD}) = true ]; then
       WAN=$(jq '.wan' ${PAYLOAD})
