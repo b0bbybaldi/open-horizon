@@ -75,8 +75,6 @@ jobs:
         - ./.travis/travis-deploy.sh
         - make pattern-publish
 
-stage: main
-
 ## addons required to act
 addons:
   apt:
