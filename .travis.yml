@@ -42,8 +42,8 @@ stages:
     if: branch = master AND type != pull-request
 env: 
   - BUILD_ARCH=amd64 DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-  - BUILD_ARCH=arm64 EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-  - BUILD_ARCH=arm   EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm64 EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=false # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+  - BUILD_ARCH=arm   EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=false # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
 jobs:
   include:
     # beta pull-request
