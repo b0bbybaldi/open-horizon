@@ -225,7 +225,7 @@ publish-service: publish
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- publish-service: $(SERVICE_NAME); architecture: ${BUILD_ARCH}""${NC}" &> /dev/stderr
 
 publish: ${DIR} $(APIKEY) $(KEYS)
-	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && if [ ! -z "$(DOCKER_PUBLICKEY)" ]; then ARGS="-r $(DOCKER_REGISTRY):iamapikey:$(DOCKER_PUBLICKEY)"; fi && hzn exchange service publish  -k ${PRIVATE_KEY_FILE} -K ${PUBLIC_KEY_FILE} -f ${DIR}/service.definition.json -o ${HZN_ORG_ID} -u iamapikey:$(shell cat $(APIKEY)) $${ARGS:-}
+	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && if [ ! -z "$(DOCKER_PUBLICKEY)" ]; then ARGS="-r $(DOCKER_REGISTRY):iamapikey:$(DOCKER_PUBLICKEY)"; fi && hzn exchange service publish -O -k ${PRIVATE_KEY_FILE} -K ${PUBLIC_KEY_FILE} -f ${DIR}/service.definition.json -o ${HZN_ORG_ID} -u iamapikey:$(shell cat $(APIKEY)) $${ARGS:-}
 
 service-verify: 
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- service-verify : ${SERVICE_NAME}; architectures: ${SERVICE_ARCH_SUPPORT}""${NC}" &> /dev/stderr
