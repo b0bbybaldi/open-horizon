@@ -50,7 +50,7 @@ jobs:
   include:
     # beta pull-request
     stage: beta-pull-request
-    env: TAG=beta DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+    # env: TAG=beta DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
     script:
       - ./.travis/travis-pull-request.sh beta
       - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
