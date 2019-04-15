@@ -206,7 +206,7 @@ service-test:
 
 test-service: start-service test
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; version: ${SERVICE_VERSION}; arch: $(BUILD_ARCH)""${NC}" &> /dev/stderr
-	@if [ -s "${TEST_RESULT}" ] && [ $$(cat ${TEST_RESULT}) == 'true' ]; then TC="${TEST_GOOD}"; else TC="${TEST_BAD}"; OP=$$(cat ${TEST_OUTPUT}); fi && echo "$${TC}"">>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; result:" $$(cat $(TEST_RESULT)) "; output: $${OP:-okay}" "${NC}" &> /dev/stderr
+	#@if [ -s "${TEST_RESULT}" ] && [ $$(cat ${TEST_RESULT}) == 'true' ]; then TC="${TEST_GOOD}"; else TC="${TEST_BAD}"; OP=$$(cat ${TEST_OUTPUT}); fi && echo "$${TC}"">>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; result:" $$(cat $(TEST_RESULT)) "; output: $${OP:-okay}" "${NC}" &> /dev/stderr
 	-@${MAKE} stop-service &> /dev/null
 
 test:
