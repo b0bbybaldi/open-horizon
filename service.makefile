@@ -204,15 +204,14 @@ service-test:
 	  $(MAKE) TAG=$(TAG) HZN_ORG_ID=$(HZN_ORG_ID) DOCKER_REPOSITORY=$(DOCKER_REPOSITORY) BUILD_ARCH="$${arch}" test-service; \
 	done
 
-test-service: start-service
+test-service: start-service test
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; version: ${SERVICE_VERSION}; arch: $(BUILD_ARCH)""${NC}" &> /dev/stderr
-	-@$(MAKE) test > $(TEST_RESULT) 2> ${TEST_OUTPUT}
 	@if [ -s "${TEST_RESULT}" ] && [ $$(cat ${TEST_RESULT}) == 'true' ]; then TC="${TEST_GOOD}"; else TC="${TEST_BAD}"; OP=$$(cat ${TEST_OUTPUT}); fi && echo "$${TC}"">>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; result:" $$(cat $(TEST_RESULT)) "; output: $${OP:-okay}" "${NC}" &> /dev/stderr
 	-@${MAKE} stop-service &> /dev/null
 
 test:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- test: ${DOCKER_TAG}""${NC}" &> /dev/stderr
-	@./sh/test.sh "${DOCKER_TAG}"
+	@./sh/test.sh "${DOCKER_TAG}" 1> ${TEST_RESULT} 2> ${TEST_OUTPUT}
  
 ## publish & verify
 
