@@ -54,11 +54,11 @@ env:
 ## before installing or doing anything else, do these things:
 before_install:
   # create files from secrets (not for pulls)
-  - if [ ${TRAVIS_BEFORE:=true} = true ]; then ./.travis/travis-before-install.sh; fi
+  - if [ ${TRAVIS_BEFORE:-true} = true ]; then ./.travis/travis-before-install.sh; fi
   # enable experimental features in Docker
-  - if [ ${EXP} = true ]; then ./.travis/docker-enable-experimental.sh; fi
+  - if [ ${EXP:-false} = true ]; then ./.travis/docker-enable-experimental.sh; fi
   # enable QEMU emulation
-  - if [ ${QEMU} = true ]; then ./.travis/docker-enable-qemu.sh; fi
+  - if [ ${QEMU:-false} = true ]; then ./.travis/docker-enable-qemu.sh; fi
 # branches on which we act
 branches:
   only:
