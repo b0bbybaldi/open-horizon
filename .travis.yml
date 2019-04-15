@@ -89,12 +89,14 @@ jobs:
     # beta pull-request
     - stage: beta-pull-request
       env:
+        - STAGE=beta-pull-request
         - TAG=beta 
       script:
         - ./.travis/travis-pull-request.sh beta
     # beta amd64 build
     - stage: test-amd64-beta
       env:
+        - STAGE=test-amd64-beta
         - TAG=beta 
         - BUILD_ARCH=amd64
       script:
@@ -102,6 +104,7 @@ jobs:
     # beta arm64 build
     - stage: test-arm64-beta
       env:
+        - STAGE=test-arm64-beta
         - TAG=beta 
         - BUILD_ARCH=arm64
       script:
@@ -109,6 +112,7 @@ jobs:
     # beta arm build
     - stage: test-arm-beta
       env:
+        - STAGE=test-arm-beta
         - TAG=beta 
         - BUILD_ARCH=arm
       script:
@@ -123,6 +127,7 @@ jobs:
     # beta publish
     - stage: beta-publish
       env:
+        - STAGE=beta-publish
         - TAG=beta 
         - BUILD_ARCH=amd64
       script:
@@ -131,6 +136,7 @@ jobs:
     # beta deploy
     - stage: beta-deploy
       env:
+        - STAGE=beta-deploy
         - TAG=beta 
         - REGISTRY_TARGET=docker.io
         - EXCHANGE_TARGET=staging.edge-fabric.com
@@ -158,6 +164,7 @@ jobs:
     # master pull-request
     - stage: master-pull-request
       env:
+        - STAGE=master-pull-request
         - TAG=
       script:
         - ./.travis/travis-pull-request.sh
@@ -165,6 +172,7 @@ jobs:
     # master publish
     - stage: master-publish
       env:
+        - STAGE=master-publish
         - TAG=
       script:
         - ./.travis/travis-publish.sh
@@ -172,6 +180,7 @@ jobs:
     # master deploy
     - stage: master-deploy
       env:
+        - STAGE=master-deploy
         - TAG=
         - REGISTRY_TARGET=icr.io
         - EXCHANGE_TARGET=alpha.edge-fabric.com
