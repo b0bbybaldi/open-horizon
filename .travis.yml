@@ -30,13 +30,13 @@ branches:
 stages:
   - name: beta-pull-request
     if: branch = beta AND type = pull-request
-    env: TAG=beta DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+#    env: TAG=beta DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
   - name: beta-publish
     if: branch = beta AND type != pull-request
-    env: TAG=beta DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+#    env: TAG=beta DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
   - name: beta-deploy
     if: branch = master AND type != pull-request
-    env: TAG=beta DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
+#    env: TAG=beta DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
   - name: master-pull-request
     if: branch = master AND type = pull-request
   - name: master-publish
