@@ -30,46 +30,50 @@ stages:
     if: branch = beta AND type = pull-request
   - name: beta-publish
     if: branch = beta AND type != pull-request
+  - name: beta-deploy
+    if: branch = master AND type != pull-request
   - name: master-pull-request
     if: branch = master AND type = pull-request
   - name: master-publish
     if: branch = master AND type != pull-request
-
+  - name: master-deploy
+    if: branch = master AND type != pull-request
 env: 
   - BUILD_ARCH=amd64 DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
   - BUILD_ARCH=arm64 EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
   - BUILD_ARCH=arm   EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-
-# beta pull-request
-stage: beta-pull-request
-script:
-  - ./.travis/travis-pull-request.sh beta
-  - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
-# beta publish
-stage: beta-publish
-script:
-  - ./.travis/travis-publish.sh beta
-  - if [ ${PUBLISH_ON:-false} = true ]; then make TAG=beta build-service test-service publish-service; fi
-# beta deploy
-stage: beta-deploy
-script:
-  - ./.travis/travis-deploy.sh beta
-  - if [ ${PATTERN_ON:-false} = true ]; then make TAG=beta pattern-publish; fi
-# master pull-request
-stage: master-pull-request
-script:
-  - ./.travis/travis-pull-request.sh
-  - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
-# master publish
-stage: master-publish
-script:
-  - ./.travis/travis-publish.sh
-  - if [ ${PUBLISH_ON:-false} = true ]; then make build-service test-service publish-service; fi
-# master deploy
-stage: master-deploy
-script:
-  - ./.travis/travis-deploy.sh
-  - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
+jobs:
+  include:
+    # beta pull-request
+    stage: beta-pull-request
+    script:
+      - ./.travis/travis-pull-request.sh beta
+      - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+    # beta publish
+    stage: beta-publish
+    script:
+      - ./.travis/travis-publish.sh beta
+      - if [ ${PUBLISH_ON:-false} = true ]; then make TAG=beta build-service test-service publish-service; fi
+    # beta deploy
+    stage: beta-deploy
+    script:
+      - ./.travis/travis-deploy.sh beta
+      - if [ ${PATTERN_ON:-false} = true ]; then make TAG=beta pattern-publish; fi
+    # master pull-request
+    stage: master-pull-request
+    script:
+      - ./.travis/travis-pull-request.sh
+      - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+    # master publish
+    stage: master-publish
+    script:
+      - ./.travis/travis-publish.sh
+      - if [ ${PUBLISH_ON:-false} = true ]; then make build-service test-service publish-service; fi
+    # master deploy
+    stage: master-deploy
+    script:
+      - ./.travis/travis-deploy.sh
+      - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
 
 ## addons required to act
 addons:
