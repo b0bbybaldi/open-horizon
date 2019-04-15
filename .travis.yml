@@ -51,7 +51,6 @@ env:
     - EXCHANGE_TARGET=alpha.edge-fabric.com
     - EXCHANGE_TARGET_VERSION=v1
     - TEST_NODES_LIST=localhost
-
 ## before installing or doing anything else, do these things:
 before_install:
   # create files from secrets (not for pulls)
@@ -60,18 +59,11 @@ before_install:
   - if [ ${EXP} = true ]; then ./.travis/docker-enable-experimental.sh; fi
   # enable QEMU emulation
   - if [ ${QEMU} = true ]; then ./.travis/docker-enable-qemu.sh; fi
-
-## branches on which we act
-#branches:
-#  only:
-#    - master
-#    - beta
-
-## environments we need
-#  - BUILD_ARCH=amd64 DEBUG=true BUILD_ON=false TEST_ON=true # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-#  - BUILD_ARCH=arm64 EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=false # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-#  - BUILD_ARCH=arm   EXP=true QEMU=true DEBUG=true BUILD_ON=false TEST_ON=false # PUSH_ON=false PUBLISH_ON=false PATTERN_ON=true
-
+# branches on which we act
+branches:
+  only:
+    - master
+    - beta
 ## stages
 stages:
   - name: beta-pull-request
@@ -95,96 +87,95 @@ stages:
 jobs:
   include:
     # beta pull-request
-    stage: beta-pull-request
-    env:
-      - TAG=beta 
-    script:
-      - ./.travis/travis-pull-request.sh beta
+    - stage: beta-pull-request
+      env:
+        - TAG=beta 
+      script:
+        - ./.travis/travis-pull-request.sh beta
     # beta amd64 build
-    stage: test-amd64-beta
-    env:
-      - TAG=beta 
-      - BUILD_ARCH=amd64
-    script:
-      - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+    - stage: test-amd64-beta
+      env:
+        - TAG=beta 
+        - BUILD_ARCH=amd64
+      script:
+        - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
     # beta arm64 build
-    stage: test-arm64-beta
-    env:
-      - TAG=beta 
-      - BUILD_ARCH=arm64
-    script:
-      - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+    - stage: test-arm64-beta
+      env:
+        - TAG=beta 
+        - BUILD_ARCH=arm64
+      script:
+        - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
     # beta arm build
-    stage: test-arm-beta
-    env:
-      - TAG=beta 
-      - BUILD_ARCH=arm
-    script:
-      - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
-    after_script:
-      - if [ ${TRAVIS_AFTER:-false} = true ]; then ./.travis/travis-after-script.sh; fi
-    after_success:
-      # anything or nothing at all
-    after_failure:
-      - if [ ${TRAVIS_FAILURE:-false} = true ]; then ./.travis/travis-after-failure.sh; fi
-          - if [ ${TRAVIS_SUCCESS:-false} = true ]; then ./.travis/travis-after-success.sh; fi
+    - stage: test-arm-beta
+      env:
+        - TAG=beta 
+        - BUILD_ARCH=arm
+      script:
+        - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+      after_script:
+        - if [ ${TRAVIS_AFTER:-false} = true ]; then ./.travis/travis-after-script.sh; fi
+      after_success:
+        # anything or nothing at all
+        - if [ ${TRAVIS_SUCCESS:-false} = true ]; then ./.travis/travis-after-success.sh; fi
+      after_failure:
+        - if [ ${TRAVIS_FAILURE:-false} = true ]; then ./.travis/travis-after-failure.sh; fi
     # beta publish
-    stage: beta-publish
-    env:
-      - TAG=beta 
-      - BUILD_ARCH=amd64
-    script:
-      - ./.travis/travis-publish.sh beta
-      - if [ ${PUBLISH_ON:-false} = true ]; then make build-service publish-service; fi
+    - stage: beta-publish
+      env:
+        - TAG=beta 
+        - BUILD_ARCH=amd64
+      script:
+        - ./.travis/travis-publish.sh beta
+        - if [ ${PUBLISH_ON:-false} = true ]; then make build-service publish-service; fi
     # beta deploy
-    stage: beta-deploy
-    env:
-      - TAG=beta 
-      - REGISTRY_TARGET=docker.io
-      - EXCHANGE_TARGET=staging.edge-fabric.com
-      - EXCHANGE_TARGET_VERSION=v1
-    script:
-      - ./.travis/travis-deploy.sh beta
-      - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
-#    before_deploy:
-#      provider: script
-#      script:
-#      - if [ ${DEPLOY_ON:-false} = true ]; then make nodes-clean && make nodes-list; fi
-#    deploy:
-#      provider: script
-#      script:
-#      # update master on git
-#        - if [ ${GIT_PUSH:-false} = true ]; then ./.travis/git-push.sh; fi
-#      provider: script
-#      script:
-#        - if [ ${DEPLOY_ON:-false} = true ]; then ./.travis/travis-deploy-nodes.sh; fi
-#        - if [ ${DEPLOY_ON:-false} = true ]; then make nodes; fi
-#    after_deploy:
-#      provider: script
-#      script:
-#        - if [ ${DEPLOY_ON:-false} = true ]; then make nodes-list && make nodes-test; fi
+    - stage: beta-deploy
+      env:
+        - TAG=beta 
+        - REGISTRY_TARGET=docker.io
+        - EXCHANGE_TARGET=staging.edge-fabric.com
+        - EXCHANGE_TARGET_VERSION=v1
+      script:
+        - ./.travis/travis-deploy.sh beta
+        - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
+#      before_deploy:
+#        provider: script
+#        script:
+#        - if [ ${DEPLOY_ON:-false} = true ]; then make nodes-clean && make nodes-list; fi
+#      deploy:
+#        provider: script
+#        script:
+#        # update master on git
+#          - if [ ${GIT_PUSH:-false} = true ]; then ./.travis/git-push.sh; fi
+#        provider: script
+#        script:
+#          - if [ ${DEPLOY_ON:-false} = true ]; then ./.travis/travis-deploy-nodes.sh; fi
+#          - if [ ${DEPLOY_ON:-false} = true ]; then make nodes; fi
+#      after_deploy:
+#        provider: script
+#        script:
+#          - if [ ${DEPLOY_ON:-false} = true ]; then make nodes-list && make nodes-test; fi
     # master pull-request
-    stage: master-pull-request
-    env:
-      - TAG=
-    script:
-      - ./.travis/travis-pull-request.sh
-      - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+    - stage: master-pull-request
+      env:
+        - TAG=
+      script:
+        - ./.travis/travis-pull-request.sh
+        - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
     # master publish
-    stage: master-publish
-    env:
-      - TAG=
-    script:
-      - ./.travis/travis-publish.sh
-      - if [ ${PUBLISH_ON:-false} = true ]; then make build-service test-service publish-service; fi
+    - stage: master-publish
+      env:
+        - TAG=
+      script:
+        - ./.travis/travis-publish.sh
+        - if [ ${PUBLISH_ON:-false} = true ]; then make build-service test-service publish-service; fi
     # master deploy
-    stage: master-deploy
-    env:
-      - TAG=
-      - REGISTRY_TARGET=icr.io
-      - EXCHANGE_TARGET=alpha.edge-fabric.com
-      - EXCHANGE_TARGET_VERSION=v1
-    script:
-      - ./.travis/travis-deploy.sh
-      - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
-
+    - stage: master-deploy
+      env:
+        - TAG=
+        - REGISTRY_TARGET=icr.io
+        - EXCHANGE_TARGET=alpha.edge-fabric.com
+        - EXCHANGE_TARGET_VERSION=v1
+      script:
+        - ./.travis/travis-deploy.sh
+        - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
