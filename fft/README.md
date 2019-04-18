@@ -38,10 +38,12 @@ Monitors attached microphone using `record` service and provides FFT functionali
 + `version` - `0.0.1`
 
 ## Service Variables
-+ `FFT_VARIABLE_STRING` - specify X for Y; default: `"A"`; options { `"A"`, `"B"`, `"C"` }
-+ `FFT_VARIABLE_FLOAT` - specify X for Y; default: `0.1`; options: \[0.0,100.0\)
-+ `FFT_VARIABLE_BOOLEAN` - specify X for Y; default: `false`; options: true, false, null
-+ `FFT_VARIABLE_INTEGER` - specify X for Y; default: `0`; options: \(0,100\]
++ `FFT_BIN_COUNT` - number of bins; default: `0`; options: \{16,32,64,128,256\}
++ `FFT_SAMPLE_MIN` - minimum number of samples required for trend analysis; default: `5`; range: \(1,`MAX`\]
++ `FFT_SAMPLE_MAX` - maximum number of samples used for trend analysis; default: `20`; range: \(1,1000\]
++ `FFT_ANOMALY_LEVEL` - level indicating anomaly; default: `0.2`; range: \[0.0,1.0\)
++ `FFT_ANOMALY_TYPE` - type of anomaly; default: `"foo"`; options: { `"foo"`,`"var"`,`"foobar"` }
++ `FFT_ANOMALY_MOCK` - generate mock anomaly; default: `false`; options: `true`, `false`
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - default: `false`
 
@@ -78,11 +80,11 @@ The `fft` value will initially be incomplete until the service completes its ini
   "hzn": { "agreementid": "ca200f9e5620cde9ad9d36384de52c0fcd307e8f0b22428a2f55da71ef4ac403", "arch": "arm", "cpus": 1, "device_id": "test-cpu-2", "exchange_url": "https://alpha.edge-fabric.com/v1/", "host_ips": [ "127.0.0.1", "192.168.1.52", "172.17.0.1", "172.18.0.1", "169.254.179.194" ], "organization": "dcmartin@us.ibm.com", "ram": 0, "pattern": "fft" },
   "service": { "label": "fft", "version": "0.0.1", "port": "9192" },
   "config": {
-    "log_level": "info",
-    "device": "/dev/video0",
-    "period": 10,
-    "seconds": 5,
-    "sample_rate": 19200,
+    "bins": 64,
+    "min": 20,
+    "max": 100,
+    "type": "foo",
+    "mock": false,
     "record": { "device": "/dev/video0", "period": 10, "seconds": 5 },
     "services": [ { "name": "record", "url": "http://record" } ]
   },  

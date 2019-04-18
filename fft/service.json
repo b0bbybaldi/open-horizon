@@ -10,24 +10,14 @@
   "sharable": "singleton",
   "requiredServices": [],
   "userInput": [
-    {
-      "name": "HERALD_PERIOD",
-      "label": "seconds between update",
-      "type": "int",
-      "defaultValue": "30"
-    },
-    {
-      "name": "LOG_LEVEL",
-      "label": "specify logging level",
-      "type": "string",
-      "defaultValue": "info"
-    },
-    {
-      "name": "DEBUG",
-      "label": "debug on/off",
-      "type": "boolean",
-      "defaultValue": "false"
-    }
+    { "name": "FFT_BIN_COUNT", "label": "", "type": "int", "defaultValue": "64" },
+    { "name": "FFT_SAMPLE_MIN", "label": "minimum samples required for analysis", "type": "int", "defaultValue": "5" },
+    { "name": "FFT_SAMPLE_MAX", "label": "maximum number of samples", "type": "int", "defaultValue": "100" },
+    { "name": "FFT_ANOMALY_LEVEL", "label": "anomaly level; default: 0.2; range: (0,1]", "type": "float", "defaultValue": "0.2" },
+    { "name": "FFT_ANOMALY_TYPE", "label": "anomaly type; default: foo; options: foo,bar,foobar", "type": "string", "defaultValue": "foo" },
+    { "name": "FFT_ANOMALY_MOCK", "label": "generate mock anomaly; default: false", "type": "boolean", "defaultValue": "false" },
+    { "name": "LOG_LEVEL", "label": "specify logging level", "type": "string", "defaultValue": "info" },
+    { "name": "DEBUG", "label": "debug on/off", "type": "boolean", "defaultValue": "false" }
   ],
   "deployment": {
     "services": {
