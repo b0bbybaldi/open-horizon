@@ -124,6 +124,10 @@ should result in a partial service payload:
 }
 ```
 
+**EXAMPLE**
+
+<img src="http://pibat.afraidofsunlight.co.uk/wp-content/uploads/2016/04/bird002_9-22s_full.png">
+
 ## Changelog & Releases
 
 Releases are based on Semantic Versioning, and use the format
