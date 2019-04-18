@@ -1,4 +1,4 @@
-# &#128249; `fft` - perform FFT anomaly analysis
+# &#8497; `fft` - perform FFT anomaly analysis
 
 Monitors attached microphone using `record` service and provides FFT functionality as micro-service, processing WAV data and producing JSON and PNG output.  This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.
 

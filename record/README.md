@@ -1,4 +1,4 @@
-# &#128249; `record` - record sound periodically
+# &#127908; `record` - record sound periodically
 
 Monitors attached microphone and provides `arecord` functionality as micro-service, providing WAV data.  This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.
 
