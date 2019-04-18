@@ -104,6 +104,7 @@ The `fft` value will initially be incomplete until the service completes its ini
   }
 }
 ```
+<img src="sample/square.png">
 
 ## Changelog & Releases
 

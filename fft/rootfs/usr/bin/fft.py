@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 
 ###
 ### requirements: matplotlib numpy scipy pydub
@@ -8,14 +8,14 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+## initialize matplotlib to use Agg rendering to a Tk canvas (requires TkInter)
+matplotlib.use('TkAgg')
+
 ## packages
 from scipy import signal
 from scipy.io import wavfile
 from scipy.fftpack import fft, fftfreq
 from pydub import AudioSegment
-
-## initialize matplotlib to use Agg rendering to a Tk canvas (requires TkInter)
-matplotlib.use('TkAgg')
 
 ###
 ### MAIN
@@ -31,7 +31,8 @@ limit = int((total_samples /2)-1)
 fft_abs = abs(fft(data))
 freqs = fftfreq(total_samples,1/samplerate)
 
-plt.plot(freqs[:limit], fft_abs[:limit]) # comment out if you dont want both before and after to display
+# comment out if you dont want both before and after to display
+# plt.plot(freqs[:limit], fft_abs[:limit])
 
 ## do high-pass butterworth filter (order, ??); returns a?, b?
 b, a = signal.butter(3, 0.05)

@@ -73,6 +73,22 @@ Copy this [repository][repository], change to the `motion2mqtt` directory, then 
 % make
 ...
 {
+  "hal": null,
+  "mqtt": null,
+  "cpu": null,
+  "motion2mqtt": {
+    "date": "1555611614",
+    "cpu": false,
+    "motion": {
+      "event": {
+        "base64": false
+      },
+      "image": {
+        "base64": false
+      }
+    }
+  },
+  "date": 1555611614,
   "hzn": {
     "agreementid": "",
     "arch": "",
@@ -83,22 +99,51 @@ Copy this [repository][repository], change to the `motion2mqtt` directory, then 
       ""
     ],
     "organization": "",
-    "pattern": "",
-    "ram": 0
+    "ram": 0,
+    "pattern": null
   },
-  "date": 1550509113,
-  "service": "motion2mqtt",
-  "pattern": null,
-  "motion2mqtt": {
-    "cpu": false,
-    "motion": {
-      "event": {
-        "base64": false
+  "config": {
+    "log_level": "info",
+    "debug": true,
+    "group": "newman",
+    "device": "",
+    "timezone": "/usr/share/zoneinfo/America/Los_Angeles",
+    "services": [
+      {
+        "name": "cpu",
+        "url": "http://cpu"
       },
-      "image": {
-        "base64": false
+      {
+        "name": "mqtt",
+        "url": "http://mqtt"
+      },
+      {
+        "name": "hal",
+        "url": "http://hal"
       }
+    ],
+    "mqtt": {
+      "host": "192.168.1.40",
+      "port": 1883,
+      "username": "",
+      "password": ""
+    },
+    "motion": {
+      "post_pictures": "center",
+      "locate_mode": "off",
+      "event_gap": 30,
+      "framerate": 2,
+      "threshold": 5000,
+      "threshold_tune": false,
+      "noise_level": 32,
+      "noise_tune": true,
+      "log_level": 6,
+      "log_type": "all"
     }
+  },
+  "service": {
+    "label": "motion2mqtt",
+    "version": "0.0.13.14"
   }
 }
 ```
@@ -106,126 +151,93 @@ Copy this [repository][repository], change to the `motion2mqtt` directory, then 
 The `motion2mqtt` value will initially be incomplete until the service completes its initial execution.  Subsequent tests should return a completed payload, see below:
 
 ```
-% curl -sSL http://localhost:8082
+% make check
 ```
-
-should result in a partial service payload:
 
 ```
 {
+  "hal": {
+    "date": 1555611264,
+    "lshw": { "id": "8ecb617fb0f2", "class": "system", "claimed": true, "description": "Computer", "product": "Raspberry Pi 3 Model B Rev 1.2", "serial": "00000000c4a26fd9", "width": 32, "children": [ { "id": "core", "class": "bus", "claimed": true, "description": "Motherboard", "physid": "0", "capabilities": { "raspberrypi_3-model-b": true, "brcm_bcm2837": true }, "children": [ { "id": "cpu:0", "class": "processor", "claimed": true, "description": "CPU", "product": "cpu", "physid": "0", "businfo": "cpu@0", "units": "Hz", "size": 1200000000, "capacity": 1200000000, "capabilities": { "cpufreq": "CPU Frequency scaling" } }, { "id": "cpu:1", "class": "processor", "disabled": true, "claimed": true, "description": "CPU", "product": "cpu", "physid": "1", "businfo": "cpu@1", "units": "Hz", "size": 1200000000, "capacity": 1200000000, "capabilities": { "cpufreq": "CPU Frequency scaling" } }, { "id": "cpu:2", "class": "processor", "disabled": true, "claimed": true, "description": "CPU", "product": "cpu", "physid": "2", "businfo": "cpu@2", "units": "Hz", "size": 1200000000, "capacity": 1200000000, "capabilities": { "cpufreq": "CPU Frequency scaling" } }, { "id": "cpu:3", "class": "processor", "disabled": true, "claimed": true, "description": "CPU", "product": "cpu", "physid": "3", "businfo": "cpu@3", "units": "Hz", "size": 1200000000, "capacity": 1200000000, "capabilities": { "cpufreq": "CPU Frequency scaling" } }, { "id": "memory", "class": "memory", "claimed": true, "description": "System memory", "physid": "4", "units": "bytes", "size": 972234752 } ] }, { "id": "network", "class": "network", "claimed": true, "description": "Ethernet interface", "physid": "1", "logicalname": "eth0", "serial": "02:42:ac:13:00:02", "units": "bit/s", "size": 10000000000, "configuration": { "autonegotiation": "off", "broadcast": "yes", "driver": "veth", "driverversion": "1.0", "duplex": "full", "ip": "172.19.0.2", "link": "yes", "multicast": "yes", "port": "twisted pair", "speed": "10Gbit/s" }, "capabilities": { "ethernet": true, "physical": "Physical interface" } } ] },
+    "lsusb": [ { "bus_number": "001", "device_id": "001", "device_bus_number": "1d6b", "manufacture_id": "Bus 001 Device 001: ID 1d6b:0002", "manufacture_device_name": "Bus 001 Device 001: ID 1d6b:0002" }, { "bus_number": "001", "device_id": "003", "device_bus_number": "0424", "manufacture_id": "Bus 001 Device 003: ID 0424:ec00", "manufacture_device_name": "Bus 001 Device 003: ID 0424:ec00" }, { "bus_number": "001", "device_id": "002", "device_bus_number": "0424", "manufacture_id": "Bus 001 Device 002: ID 0424:9514", "manufacture_device_name": "Bus 001 Device 002: ID 0424:9514" }, { "bus_number": "001", "device_id": "004", "device_bus_number": "1415", "manufacture_id": "Bus 001 Device 004: ID 1415:2000", "manufacture_device_name": "Bus 001 Device 004: ID 1415:2000" } ],
+    "lscpu": { "Architecture": "armv7l", "Byte_Order": "Little Endian", "CPUs": "4", "On_line_CPUs_list": "0-3", "Threads_per_core": "1", "Cores_per_socket": "4", "Sockets": "1", "Vendor_ID": "ARM", "Model": "4", "Model_name": "Cortex-A53", "Stepping": "r0p4", "CPU_max_MHz": "1200.0000", "CPU_min_MHz": "600.0000", "BogoMIPS": "76.80", "Flags": "half thumb fastmult vfp edsp neon vfpv3 tls vfpv4 idiva idivt vfpd32 lpae evtstrm crc32" },
+    "lspci": null,
+    "lsblk": [ { "name": "mmcblk0", "maj:min": "179:0", "rm": "0", "size": "29.7G", "ro": "0", "type": "disk", "mountpoint": null, "children": [ { "name": "mmcblk0p1", "maj:min": "179:1", "rm": "0", "size": "43.9M", "ro": "0", "type": "part", "mountpoint": null }, { "name": "mmcblk0p2", "maj:min": "179:2", "rm": "0", "size": "29.7G", "ro": "0", "type": "part", "mountpoint": "/etc/hosts" } ] } ],
+    "lsdf": [ { "mount": "/dev/root", "spacetotal": "30G", "spaceavail": "24G" } ]
+  },
+  "mqtt": {
+    "date": 1555611271,
+    "pid": 29,
+    "version": "mosquitto version 1.4.15",
+    "broker": { "bytes": { "received": 3238860, "sent": 2029471 }, "clients": { "connected": 2 }, "load": { "messages": { "sent": { "one": 119.53, "five": 124.37, "fifteen": 126.82 }, "received": { "one": 117.78, "five": 123.82, "fifteen": 126.59 } } }, "publish": { "messages": { "received": 0, "sent": 39625, "dropped": 0 } }, "subscriptions": { "count": 2 } }
+  },
+  "cpu": {
+    "date": 1555611265,
+    "percent": 54.95
+  },
   "motion2mqtt": {
-    "date": 1551144408,
-    "log_level": "info",
-    "debug": true,
-    "db": "newman",
-    "name": "davidsimac.local",
-    "timezone": "America/Los_Angeles",
-    "mqtt": {
-      "host": "horizon.dcmartin.com",
-      "port": "1883",
-      "username": "username",
-      "password": "password"
-    },
-    "motion": {
-      "post": "center"
-    },
-    "period": 30,
-    "services": [
-      "cpu"
-    ],
-    "pid": 34,
-    "cpu": {
-      "date": 1551144406,
-      "log_level": "info",
-      "debug": false,
-      "period": 60,
-      "interval": 1,
-      "percent": 66.32
-    }
-  },
+    "date": "1555554900",
+    "motion": 
+       { "event": { "device": "", "camera": "default", "event": "94", "start": 1555585716, "image": { "device": "", "camera": "default", "type": "jpeg", "date": 1555585731, "seqno": "00", "event": "94", "id": "20190418110851-94-00", "center": { "x": 347, "y": 159 }, "width": 62, "height": 154, "size": 8805, "noise": 33 }, "elapsed": 48, "end": 1555585764, "date": 1555611162, "images": [ "20190418110836-94-00", "20190418110836-94-01", "20190418110837-94-00", "20190418110837-94-01", "20190418110838-94-00", "20190418110838-94-01", "20190418110839-94-00", "20190418110839-94-01", "20190418110840-94-00", "20190418110840-94-01", "20190418110841-94-00", "20190418110841-94-01", "20190418110842-94-00", "20190418110842-94-01", "20190418110843-94-00", "20190418110843-94-01", "20190418110844-94-00", "20190418110844-94-01", "20190418110845-94-00", "20190418110845-94-01", "20190418110846-94-00", "20190418110846-94-01", "20190418110847-94-00", "20190418110847-94-01", "20190418110848-94-00", "20190418110848-94-01", "20190418110849-94-00", "20190418110849-94-01", "20190418110850-94-00", "20190418110850-94-01", "20190418110851-94-00", "20190418110851-94-01", "20190418110852-94-00", "20190418110852-94-01", "20190418110853-94-00", "20190418110853-94-01", "20190418110854-94-00", "20190418110854-94-01", "20190418110912-94-01", "20190418110913-94-00", "20190418110913-94-01", "20190418110914-94-00", "20190418110914-94-01", "20190418110915-94-00", "20190418110915-94-01", "20190418110916-94-00", "20190418110916-94-01", "20190418110917-94-00", "20190418110917-94-01", "20190418110918-94-00", "20190418110918-94-01", "20190418110919-94-00", "20190418110919-94-01", "20190418110920-94-00", "20190418110920-94-01", "20190418110921-94-00", "20190418110921-94-01", "20190418110922-94-00", "20190418110922-94-01", "20190418110923-94-00", "20190418110923-94-01", "20190418110924-94-00" ], "base64": "<redacted>" },
+      "image": { "device": "", "camera": "default", "type": "jpeg", "date": 1555585731, "seqno": "00", "event": "94", "id": "20190418110851-94-00", "center": { "x": 347, "y": 159 }, "width": 62, "height": 154, "size": 8805, "noise": 33, "base64": "<redacted>" } } },
+  "date": 1555554894,
   "hzn": {
-    "agreementid": "99c2448bfcd40495ee7acdeaea2906e660c19d6b4019a8e37c80b6a7c9fc7db7",
-    "arch": "amd64",
-    "cpus": 1,
-    "device_id": "davidsimac.local",
-    "exchange_url": "https://alpha.edge-fabric.com/v1",
-    "host_ips": [
-      "127.0.0.1",
-      "192.168.1.27",
-      "192.168.1.26",
-      "9.80.93.5"
-    ],
-    "organization": "dcmartin@us.ibm.com",
-    "pattern": "",
-    "ram": 1024
-  },
-  "date": 1551144407,
-  "service": "motion2mqtt",
-  "pattern": null
-}
-```
-
-When deployed as a pattern, additional information is provided (n.b. `base64` encoded JPEG and GIF images have been redacted):
-
-```
-{
-  "hzn": {
-    "agreementid": "2cc1007a8a285e4075d58ee7bc31d2b24750aea8bb15a715f159fc93bc74b5a9",
+    "agreementid": "3bc1379429803027b5060865bc5d1f3cc7d58bc25b093efad5c34898d065b4fe",
     "arch": "arm",
     "cpus": 1,
     "device_id": "test-sdr-4",
     "exchange_url": "https://alpha.edge-fabric.com/v1/",
-    "host_ips": [ "127.0.0.1", "169.254.184.120", "192.168.0.1", "192.168.1.47", "172.17.0.1" ],
+    "host_ips": [
+      "127.0.0.1",
+      "192.168.1.71",
+      "192.168.1.70",
+      "172.17.0.1"
+    ],
     "organization": "dcmartin@us.ibm.com",
-    "pattern": "dcmartin@us.ibm.com/motion2mqtt",
-    "ram": 0
-  },
-  "date": 1550451493,
-  "service": "motion2mqtt",
-  "pattern": {
-    "key": "dcmartin@us.ibm.com/motion2mqtt",
-    "value": {
-      "owner": "dcmartin@us.ibm.com/dcmartin@us.ibm.com",
-      "label": "motion2mqtt",
-      "description": "motion2mqtt as a pattern",
-      "public": true,
-      "services": [
-        { "serviceUrl": "com.github.dcmartin.open-horizon.motion2mqtt", "serviceOrgid": "dcmartin@us.ibm.com", "serviceArch": "amd64", "serviceVersions": [ { "version": "0.0.1", "deployment_overrides": "", "deployment_overrides_signature": "", "priority": {}, "upgradePolicy": {} } ], "dataVerification": { "metering": {} }, "nodeHealth": { "missing_heartbeat_interval": 600, "check_agreement_status": 120 } },
-        { "serviceUrl": "com.github.dcmartin.open-horizon.motion2mqtt", "serviceOrgid": "dcmartin@us.ibm.com", "serviceArch": "arm", "serviceVersions": [ { "version": "0.0.1", "deployment_overrides": "", "deployment_overrides_signature": "", "priority": {}, "upgradePolicy": {} } ], "dataVerification": { "metering": {} }, "nodeHealth": { "missing_heartbeat_interval": 600, "check_agreement_status": 120 } },
-        { "serviceUrl": "com.github.dcmartin.open-horizon.motion2mqtt", "serviceOrgid": "dcmartin@us.ibm.com", "serviceArch": "arm64", "serviceVersions": [ { "version": "0.0.1", "deployment_overrides": "", "deployment_overrides_signature": "", "priority": {}, "upgradePolicy": {} } ], "dataVerification": { "metering": {} }, "nodeHealth": { "missing_heartbeat_interval": 600, "check_agreement_status": 120 } } ],
-      "agreementProtocols": [ { "name": "Basic" } ],
-      "lastUpdated": "2019-02-16T15:34:16.133Z[UTC]"
+    "ram": 0,
+    "pattern": { "key": "dcmartin@us.ibm.com/motion2mqtt-beta", "value": { "owner": "dcmartin@us.ibm.com/dcmartin@us.ibm.com", "label": "motion2mqtt-beta", "description": "motion2mqtt as a pattern", "public": true, "services": [ { "serviceUrl": "com.github.dcmartin.open-horizon.motion2mqtt-beta", "serviceOrgid": "dcmartin@us.ibm.com", "serviceArch": "amd64", "serviceVersions": [ { "version": "0.0.13", "deployment_overrides": "", "deployment_overrides_signature": "", "priority": {}, "upgradePolicy": {} } ], "dataVerification": { "metering": {} }, "nodeHealth": { "missing_heartbeat_interval": 600, "check_agreement_status": 120 } }, { "serviceUrl": "com.github.dcmartin.open-horizon.motion2mqtt-beta", "serviceOrgid": "dcmartin@us.ibm.com", "serviceArch": "arm", "serviceVersions": [ { "version": "0.0.13", "deployment_overrides": "", "deployment_overrides_signature": "", "priority": {}, "upgradePolicy": {} } ], "dataVerification": { "metering": {} }, "nodeHealth": { "missing_heartbeat_interval": 600, "check_agreement_status": 120 } }, { "serviceUrl": "com.github.dcmartin.open-horizon.motion2mqtt-beta", "serviceOrgid": "dcmartin@us.ibm.com", "serviceArch": "arm64", "serviceVersions": [ { "version": "0.0.13", "deployment_overrides": "", "deployment_overrides_signature": "", "priority": {}, "upgradePolicy": {} } ], "dataVerification": { "metering": {} }, "nodeHealth": { "missing_heartbeat_interval": 600, "check_agreement_status": 120 } }, { "serviceUrl": "com.github.dcmartin.open-horizon.mqtt2kafka-beta", "serviceOrgid": "dcmartin@us.ibm.com", "serviceArch": "amd64", "serviceVersions": [ { "version": "0.0.1", "deployment_overrides": "", "deployment_overrides_signature": "", "priority": {}, "upgradePolicy": {} } ], "dataVerification": { "metering": {} }, "nodeHealth": { "missing_heartbeat_interval": 600, "check_agreement_status": 120 } }, { "serviceUrl": "com.github.dcmartin.open-horizon.mqtt2kafka-beta", "serviceOrgid": "dcmartin@us.ibm.com", "serviceArch": "arm", "serviceVersions": [ { "version": "0.0.1", "deployment_overrides": "", "deployment_overrides_signature": "", "priority": {}, "upgradePolicy": {} } ], "dataVerification": { "metering": {} }, "nodeHealth": { "missing_heartbeat_interval": 600, "check_agreement_status": 120 } }, { "serviceUrl": "com.github.dcmartin.open-horizon.mqtt2kafka-beta", "serviceOrgid": "dcmartin@us.ibm.com", "serviceArch": "arm64", "serviceVersions": [ { "version": "0.0.1", "deployment_overrides": "", "deployment_overrides_signature": "", "priority": {}, "upgradePolicy": {} } ], "dataVerification": { "metering": {} }, "nodeHealth": { "missing_heartbeat_interval": 600, "check_agreement_status": 120 } } ], "agreementProtocols": [ { "name": "Basic" } ], "lastUpdated": "2019-03-27T18:06:58.164Z[UTC]" } } },
+  "config": {
+    "log_level": "info",
+    "debug": true,
+    "group": "newman",
+    "device": "test-sdr-4",
+    "timezone": "/usr/share/zoneinfo/America/Los_Angeles",
+    "services": [
+      {
+        "name": "cpu",
+        "url": "http://cpu"
+      },
+      {
+        "name": "mqtt",
+        "url": "http://mqtt"
+      },
+      {
+        "name": "hal",
+        "url": "http://hal"
+      }
+    ],
+    "mqtt": {
+      "host": "192.168.1.40",
+      "port": 1883,
+      "username": "",
+      "password": ""
+    },
+    "motion": {
+      "post_pictures": "center",
+      "locate_mode": "off",
+      "event_gap": 30,
+      "framerate": 2,
+      "threshold": 5000,
+      "threshold_tune": false,
+      "noise_level": 32,
+      "noise_tune": true,
+      "log_level": 6,
+      "log_type": "all"
     }
   },
-  "pid": 18,
-  "motion2mqtt": {
-    "date": 1550508626,
-    "log_level": "info",
-    "debug": false,
-    "db": "newman",
-    "name": "test-sdr-4",
-    "timezone": "GMT",
-    "mqtt": { "host": "horizon.dcmartin.com", "port": "1883", "username": "", "password": "" },
-    "motion": {
-      "post": "best",
-      "event": {
-        "device": "test-sdr-4",
-        "camera": "default",
-        "event": "59",
-        "start": 1550508445,
-        "image": { "device": "test-sdr-4", "camera": "default", "type": "jpeg", "date": 1550508446, "seqno": "03", "event": "59", "id": "20190218164726-59-03", "center": { "x": 600, "y": 262 }, "width": 64, "height": 120, "size": 5362, "noise": 17 },
-        "elapsed": 3,
-        "end": 1550508448,
-        "date": 1550508574,
-        "images": [ "20190218164725-59-00", "20190218164725-59-01", "20190218164725-59-02", "20190218164725-59-03", "20190218164726-59-00", "20190218164726-59-01", "20190218164726-59-02", "20190218164726-59-03", "20190218164727-59-00", "20190218164727-59-01", "20190218164728-59-00" ],
-        "base64": "<redacted>"
-      },
-      "image": { "device": "test-sdr-4", "camera": "default", "type": "jpeg", "date": 1550508446, "seqno": "03", "event": "59", "id": "20190218164726-59-03", "center": { "x": 600, "y": 262 }, "width": 64, "height": 120, "size": 5362, "noise": 17, "base64": "<redacted>" }
-    },
-    "period": 300,
-    "services": [ "cpu" ],
-    "pid": 37,
-    "cpu": { "date": 1550508327, "log_level": "info", "debug": false, "period": 60, "interval": 1, "percent": 58.32 }
+  "service": {
+    "label": "motion2mqtt",
+    "version": "0.0.13.13"
   }
 }
 ```
