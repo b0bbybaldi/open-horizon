@@ -51,12 +51,16 @@ Monitors attached microphone and provides `sox` functionality as micro-service, 
 + `NOIZE_THRESHOLD` - default: `none`; specify KHz
 + `NOIZE_LEVEL_TUNE` - default: `false`
 + `NOIZE_THRESHOLD_TUNE` - default: `false`
++ `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
++ `DEBUG` - default: `false`
+
+## Required Services
+
+### [`mqtt`](https://github.com/dcmartin/open-horizon/blob/beta/mqtt/README.md)
 + `MQTT_HOST` - IP or FQDN for mqtt host; default `mqtt`
 + `MQTT_PORT` - port number; defaults to `1883`
 + `MQTT_USERNAME` - MQTT username; defaults to ""
 + `MQTT_PASSWORD` - MQTT password; defaults to ""
-+ `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
-+ `DEBUG` - default: `false`
 
 ## How To Use
 Copy this [repository][repository], change to the `noize` directory, then use the **make** command; see below:
