@@ -1,4 +1,6 @@
-# &#128249; `apache` - detect motion and send to MQTT
+# `apache` - web server
+
+<img src="https://www.apache.org/foundation/press/kit/asf_logo_url.png" width="256"> 
 
 Provides a base service for an [Apache](https://httpd.apache.org/) web server.  This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.
 
