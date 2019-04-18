@@ -45,9 +45,9 @@ Monitors attached microphone using `record` service and provides FFT functionali
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - default: `false`
 
-## Pattern Variables
+## Required Services
 
-### `record` service
+### [`record`](https://github.com/dcmartin/open-horizon/blob/beta/record/README.md)
 + `RECORD_DEVICE` - device to record sound; default: `PS3 Eye camera microphone identifier`
 + `RECORD_PERIOD` - interval to poll audio device; default: `10.0` seconds
 + `RECORD_SECONDS` - amount of time to record; default: `5.0` seconds
