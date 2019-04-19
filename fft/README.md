@@ -41,8 +41,8 @@ Monitors attached microphone using `record` service and provides FFT functionali
 + `FFT_BIN_COUNT` - number of bins; default: `0`; options: \{16,32,64,128,256\}
 + `FFT_SAMPLE_MIN` - minimum number of samples required for trend analysis; default: `5`; range: \(1,`MAX`\]
 + `FFT_SAMPLE_MAX` - maximum number of samples used for trend analysis; default: `20`; range: \(1,1000\]
-+ `FFT_ANOMALY_LEVEL` - level indicating anomaly; default: `0.2`; range: \[0.0,1.0\)
-+ `FFT_ANOMALY_TYPE` - type of anomaly; default: `"foo"`; options: { `"foo"`,`"var"`,`"foobar"` }
++ `FFT_ANOMALY_TYPE` - type of anomaly; default: `"butter-3"`; options: { `"butter-3"`,`"var"`,`"foobar"` }
++ `FFT_ANOMALY_LEVEL` - level indicating anomaly; default: `0.05`; range: \[0.0,1.0\)
 + `FFT_ANOMALY_MOCK` - generate mock anomaly; default: `false`; options: `true`, `false`
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - default: `false`
@@ -83,22 +83,21 @@ The `fft` value will initially be incomplete until the service completes its ini
     "bins": 64,
     "min": 20,
     "max": 100,
-    "type": "foo",
+    "type": "butter-3",
+    "level": 0.05,
     "mock": false,
+    "period": 5,
     "record": { "device": "/dev/video0", "period": 10, "seconds": 5 },
     "services": [ { "name": "record", "url": "http://record" } ]
   },  
-  "record": {
-    "type": "WAV",
-    "start": 1555541712,
-    "finish": 1555541717,
-    "id": "test-cpu-1-20190417225512",
-    "audio": "<base64 encoded WAV file>",
-  }
   "fft": {
-    "type": "WAV",
-    "start": 1555541712,
-    "finish": 1555541717,
+    "record": {
+      "type": "WAV",
+      "start": 1555541712,
+      "finish": 1555541717,
+      "id": "test-cpu-1-20190417225512",
+      "audio": "<base64 encoded WAV file>",
+    },
     "id": "hostid-datetime",
     "anomaly": true,
     "distribution": "<base64 encoded PNG file>",
