@@ -54,6 +54,11 @@ Monitors attached microphone using `record` service and provides FFT functionali
 + `RECORD_PERIOD` - interval to poll audio device; default: `10.0` seconds
 + `RECORD_SECONDS` - amount of time to record; default: `5.0` seconds
 
+## Description
+This service provides a variety of FFT based anomaly detectors to provide data that may be used for temporal analysis of sound.  The service makes use of the `record` service to poll the device's microphone and collect audio.  The `fft` service polls the `record` service output and when updated, performs the specified anomaly detector (n.b. `FFT_ANOMALY_TYPE`), updating its output to include both the BASE64 encoded audio, but also the analysis data in both BASE64 encoded Python `numpy` array as well as a JSON array.
+
+The `fft` service provides a ReStful API on its designated port and returns a JSON payload; see **EXAMPLE** below.
+
 ## How To Use
 Copy this [repository][repository], change to the `fft` directory, then use the **make** command; see below:
 
@@ -96,16 +101,28 @@ The `fft` value will initially be incomplete until the service completes its ini
       "start": 1555541712,
       "finish": 1555541717,
       "id": "test-cpu-1-20190417225512",
-      "audio": "<base64 encoded WAV file>",
+      "audio": "<base64 encoded WAV file>"
     },
     "id": "hostid-datetime",
-    "anomaly": true,
-    "distribution": "<base64 encoded PNG file>",
-    "data": { "bins": [ 0.1, 7.2, .. ] }
+    "anomaly": "butter-3",
+    "level": 0.05,
+    "raw": {"image": "<base64 encoded PNG file>", "array": "<base64 encoded numpy array>", "values": [ #.#, #.#, .. ]},
+    "filter": {"image": "<base64 encoded PNG file>", "array": "<base64 encoded numpy array>", "values": [ #.#, #.#, .. ]}
   }
 }
 ```
+
+## SAMPLE
+A provided `square.wav` file, which may also be created using the `rootfs/usr/bin/mksqwave.sh` script is used as one of the mock data sets.
+
+### Source
 <img src="sample/square.png">
+
+### FFT (raw)
+<img src="sample/square-raw.png">
+
+### FFT (filter; butter-3)
+<img src="sample/square-butter.png">
 
 ## Changelog & Releases
 
