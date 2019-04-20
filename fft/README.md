@@ -21,8 +21,8 @@ Monitors attached microphone using `record` service and provides FFT functionali
 [pulls-arm]: https://img.shields.io/docker/pulls/dcmartin/arm_com.github.dcmartin.open-horizon.fft.svg
 
 ![Supports aarch64 Architecture][arm64-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/arm64_com.github.dcmartin.open-horizon.fft.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.fft "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/arm64_com.github.dcmartin.open-horizon.fft.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.fft "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/arm64_com.github.dcmartin.open-horizon.fft.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.fft)
+[![](https://images.microbadger.com/badges/version/dcmartin/arm64_com.github.dcmartin.open-horizon.fft.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.fft)
 [![Docker Pulls][pulls-arm64]][docker-arm64]
 
 [docker-arm64]: https://hub.docker.com/r/dcmartin/arm64_com.github.dcmartin.open-horizon.fft
@@ -38,12 +38,13 @@ Monitors attached microphone using `record` service and provides FFT functionali
 + `version` - `0.0.1`
 
 ## Service Variables
-+ `FFT_BIN_COUNT` - number of bins; default: `0`; options: \{16,32,64,128,256\}
-+ `FFT_SAMPLE_MIN` - minimum number of samples required for trend analysis; default: `5`; range: \(1,`MAX`\]
-+ `FFT_SAMPLE_MAX` - maximum number of samples used for trend analysis; default: `20`; range: \(1,1000\]
-+ `FFT_ANOMALY_TYPE` - type of anomaly; default: `"butter-3"`; options: { `"butter-3"`,`"var"`,`"foobar"` }
-+ `FFT_ANOMALY_LEVEL` - level indicating anomaly; default: `0.05`; range: \[0.0,1.0\)
+
++ `FFT_ANOMALY_TYPE` - type of anomaly; default: `"butter"`; options: { `"butter"`,`"welch"`,*TBD* }
++ `FFT_ANOMALY_LEVEL` - level indicating anomaly; default: `0.05` for `butter` & `128` for `welch`
 + `FFT_ANOMALY_MOCK` - generate mock anomaly; default: `false`; options: `true`, `false`
++ `FFT_INCLUDE_RAW` - include raw results; default: `false`; options: `true`, `false`
++ `FFT_INCLUDE_WAV` - include original audio; default: `false`; options: `true`, `false`
++ `FFT_PERIOD` - interval to poll for new recording; default: `5`; range: \(0,+\)
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - default: `false`
 
@@ -58,6 +59,11 @@ Monitors attached microphone using `record` service and provides FFT functionali
 This service provides a variety of FFT based anomaly detectors to provide data that may be used for temporal analysis of sound.  The service makes use of the `record` service to poll the device's microphone and collect audio.  The `fft` service polls the `record` service output and when updated, performs the specified anomaly detector (n.b. `FFT_ANOMALY_TYPE`), updating its output to include both the BASE64 encoded audio, but also the analysis data in both BASE64 encoded Python `numpy` array as well as a JSON array.
 
 The `fft` service provides a ReStful API on its designated port and returns a JSON payload; see **EXAMPLE** below.
+
+Options for anomaly analysis:
+
++ `butter-3` - perform [Butterworth](https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.signal.butter.html) order 3 [signal filter](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.lfilter.html)
++ `welch` - perform [Welch](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.welch.html) power spectral density
 
 ## How To Use
 Copy this [repository][repository], change to the `fft` directory, then use the **make** command; see below:
@@ -80,34 +86,48 @@ The `fft` value will initially be incomplete until the service completes its ini
 **EXAMPLE**
 
 ```
-{   
-  "date": 1555192656,
-  "hzn": { "agreementid": "ca200f9e5620cde9ad9d36384de52c0fcd307e8f0b22428a2f55da71ef4ac403", "arch": "arm", "cpus": 1, "device_id": "test-cpu-2", "exchange_url": "https://alpha.edge-fabric.com/v1/", "host_ips": [ "127.0.0.1", "192.168.1.52", "172.17.0.1", "172.18.0.1", "169.254.179.194" ], "organization": "dcmartin@us.ibm.com", "ram": 0, "pattern": "fft" },
-  "service": { "label": "fft", "version": "0.0.1", "port": "9192" },
-  "config": {
-    "bins": 64,
-    "min": 20,
-    "max": 100,
-    "type": "butter-3",
-    "level": 0.05,
-    "mock": false,
-    "period": 5,
-    "record": { "device": "/dev/video0", "period": 10, "seconds": 5 },
-    "services": [ { "name": "record", "url": "http://record" } ]
-  },  
+{
   "fft": {
+    "date": 1555774171,
+    "type": "welch",
+    "level": 128,
+    "id": "",
     "record": {
-      "type": "WAV",
-      "start": 1555541712,
-      "finish": 1555541717,
-      "id": "test-cpu-1-20190417225512",
-      "audio": "<base64 encoded WAV file>"
+      "mock": "mixer_1",
+      "date": 1555774169,
+      "audio": "<base64 encoded WAV>"
     },
-    "id": "hostid-datetime",
-    "anomaly": "butter-3",
-    "level": 0.05,
-    "raw": {"image": "<base64 encoded PNG file>", "array": "<base64 encoded numpy array>", "values": [ #.#, #.#, .. ]},
-    "filter": {"image": "<base64 encoded PNG file>", "array": "<base64 encoded numpy array>", "values": [ #.#, #.#, .. ]}
+    "welch": {
+      "data": [ <array of floats>, <array of floats> ]
+      "image": "<base64 encoded PNG>"
+    }
+  },
+  "date": 1555774159,
+  "hzn": {
+    "agreementid": "",
+    "arch": "",
+    "cpus": 0,
+    "device_id": "",
+    "exchange_url": "",
+    "host_ips": [
+      ""
+    ],
+    "organization": "",
+    "ram": 0,
+    "pattern": null
+  },
+  "config": {
+    "log_level": "info",
+    "debug": true,
+    "period": 10,
+    "type": "welch",
+    "level": 128,
+    "mock": false,
+    "services": null
+  },
+  "service": {
+    "label": "fft",
+    "version": "0.0.1"
   }
 }
 ```
