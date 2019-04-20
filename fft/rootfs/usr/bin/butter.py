@@ -5,8 +5,6 @@
 ###
 ### pip3 install matplotlib numpy scipy pydub
 ###
-### LOW-PASS BUTTERWORTH FILTER
-### https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.lfilter.html
 
 ## system for command-line arguments
 import sys
@@ -35,41 +33,40 @@ else:
   filename = "square"
 
 if narg > 2:
-  butter_order = sys.argv[2]
+  butter_order = int(sys.argv[2])
 else:
   butter_order = 3
 
 if narg > 3:
-  butter_level = sys.argv[3]
+  butter_level = float(sys.argv[3])
 else:
   butter_level = 0.05
 
 ## get file
 wav_filename = filename + '.wav'
-samplerate, data = wavfile.read(wav_filename)
+samplerate, raw = wavfile.read(wav_filename)
 
-## size of data
-total_samples = len(data)
+## size of raw data 
+total_samples = len(raw)
 limit = int((total_samples /2)-1)
 
-## fft data
-fft_abs = abs(fft(data))
+## fft raw data
+fft_abs = abs(fft(raw))
 freqs = fftfreq(total_samples,1/samplerate)
 
 ## plot frequencies
 plt.plot(freqs[:limit], fft_abs[:limit])
-plt.savefig(filename + '-raw.png')
+plt.savefig(filename + '-fft.png')
 
-## dump raw data
-freqs.dump(filename + '-raw.nda')
+## dump fft 
 freqs_list = freqs.tolist()
-json.dump(freqs_list, codecs.open(filename + '-raw.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=2)
+json.dump(freqs_list, codecs.open(filename + '-fft.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=2)
 
 ## BUTTERWORTH FILTER
 b, a = signal.butter(butter_order, butter_level)
 
 # filter signal with with butter (b, a)
-data_filtered = signal.filtfilt(b, a, data)
+data_filtered = signal.filtfilt(b, a, raw)
 
 ## calculate new FFT
 fft_abs_filtered = abs(fft(data_filtered))
@@ -80,6 +77,5 @@ plt.plot(freqs_filtered[:limit], fft_abs_filtered[:limit])
 plt.savefig(filename + '-butter.png')
 
 ## dump butterworth data
-freqs_filtered.dump(filename + '-butter.nda')
 freqs_list = freqs_filtered.tolist()
 json.dump(freqs_list, codecs.open(filename + '-butter.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=2)
