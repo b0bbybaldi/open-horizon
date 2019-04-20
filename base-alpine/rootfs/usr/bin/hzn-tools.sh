@@ -24,7 +24,7 @@ hzn_pattern() {
 hzn_init() {
   HZN='{"date":'$(date +%s)',"hzn":{"agreementid":"'${HZN_AGREEMENTID:-}'","arch":"'${HZN_ARCH:-}'","cpus":'${HZN_CPUS:-0}',"device_id":"'${HZN_DEVICE_ID:-}'","exchange_url":"'${HZN_EXCHANGE_URL:-}'","host_ips":['$(echo "${HZN_HOST_IPS:-}" | sed 's/,/","/g' | sed 's/\(.*\)/"\1"/')'],"organization":"'${HZN_ORGANIZATION:-}'","ram":'${HZN_RAM:-0}',"pattern":'$(hzn_pattern "${HZN_PATTERN:-}")'}}'
   if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- hzn_init: ${HZN}" &> /dev/stderr; fi
-  echo "${HZN}" > "${HZN_CONFIG_FILE}" && echo "${HZN_CONFIG_FILE}" || echo ''
+  echo "${HZN}" > "${HZN_CONFIG_FILE}" && cat "${HZN_CONFIG_FILE}" || echo ''
 }
 
 # get horizon configuration
@@ -34,8 +34,8 @@ hzn_config() {
       echo "*** ERROR $0 $$ -- environment HZN unset; empty ${HZN_CONFIG_FILE}; exiting" &> /dev/stderr
       exit 1
     fi
-    echo "+++ WARN $0 $$ -- environment HZN unset; using ${HZN_CONFIG_FILE}; continuing" &> /dev/stderr
     export HZN=$(jq -c '.' "${HZN_CONFIG_FILE}")
+    echo "+++ WARN $0 $$ -- environment HZN unset; using file: ${HZN_CONFIG_FILE}; contents: ${HZN}" &> /dev/stderr
     if [ -z "${HZN}" ]; then
       echo "*** ERROR $0 $$ -- environment HZN unset; invalid ${HZN_CONFIG_FILE}; exiting" $(cat ${HZN_CONFIG_FILE}) &> /dev/stderr
       exit 1

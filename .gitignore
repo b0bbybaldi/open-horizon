@@ -1,4 +1,5 @@
 darknet/
+FFT_*
 kafkacat.sh.*
 test-config-*
 test.json
