@@ -62,7 +62,7 @@ The `fft` service provides a ReStful API on its designated port and returns a JS
 
 Options for anomaly analysis:
 
-+ `butter-3` - perform [Butterworth](https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.signal.butter.html) order 3 [signal filter](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.lfilter.html)
++ `butter` - perform [Butterworth](https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.signal.butter.html) order 3 [signal filter](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.lfilter.html)
 + `welch` - perform [Welch](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.welch.html) power spectral density
 
 ## How To Use
@@ -141,7 +141,7 @@ A provided `square.wav` file, which may also be created using the `rootfs/usr/bi
 ### FFT (raw)
 <img src="sample/square-raw.png">
 
-### FFT (filter; butter-3)
+### FFT (filter; butter)
 <img src="sample/square-butter.png">
 
 ## Changelog & Releases
