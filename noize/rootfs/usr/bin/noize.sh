@@ -42,7 +42,7 @@ hzn_init
 
 ## configure service
 SERVICES='[{"name":"mqtt","url":"http://mqtt"}]'
-CONFIG='{"tmpdir":"'${TMPDIR}'","logto":"'${LOGTO:-}'","log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-false}',"group":"'${NOIZE_GROUP}'","client":"'${NOIZE_CLIENT}'","start":{"level":'${NOIZE_START_LEVEL:-0}',"seconds":'${NOIZE_START_SECONDS:-0}'},"finish":{"level":'${NOIZE_FINISH_LEVEL:-0}',"seconds":'${NOIZE_FINISH_SECONDS:-0}'},"sample_rate":"'${NOIZE_SAMPLE_RATE:-60}'","threshold":"'${NOIZE_THRESHOLD:-none}'","threshold_tune":false,"level_tune":false,"services":'"${SERVICES:-null}"'}'
+CONFIG='{"tmpdir":"'${TMPDIR}'","logto":"'${LOGTO:-}'","log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-false}',"group":"'${NOIZE_GROUP}'","client":"'${NOIZE_CLIENT}'","start":{"level":'${NOIZE_START_LEVEL:-0}',"seconds":'${NOIZE_START_SECONDS:-0}'},"trim":{"duration":'${NOIZE_TRIM_DURATION:-0}'},"sample_rate":"'${NOIZE_SAMPLE_RATE:-60}'","threshold":"'${NOIZE_THRESHOLD:-none}'","threshold_tune":false,"level_tune":false,"services":'"${SERVICES:-null}"'}'
 
 ## initialize servive
 service_init ${CONFIG}

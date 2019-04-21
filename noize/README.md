@@ -46,8 +46,7 @@ Monitors attached microphone and provides `sox` functionality as micro-service, 
 + `NOIZE_DEVICE` - device to record sound; default: *system default device*
 + `NOIZE_START_LEVEL` - default: `1` percent
 + `NOIZE_START_SECONDS` - default: `0.1` seconds
-+ `NOIZE_FINISH_LEVEL` - default: `1` percent
-+ `NOIZE_FINISH_SECONDS` - default: `5` seconds
++ `NOIZE_TRIM_DURATION` - default: `5` seconds
 + `NOIZE_THRESHOLD_TUNE` - default: `false`
 + `NOIZE_INCLUDE_WAV` - include audio as base64 encoded WAV; default: `true`
 + `NOIZE_INCLUDE_PNG` - include spectrogram as base64 encoded PNG; default: `true`
@@ -86,44 +85,58 @@ The `noize` value will initially be incomplete until the service completes its i
 should result in a partial service payload:
 
 ```
-{   
-  "date": 1555192656,
-  "hzn": { "agreementid": "ca200f9e5620cde9ad9d36384de52c0fcd307e8f0b22428a2f55da71ef4ac403", "arch": "arm", "cpus": 1, "device_id": "test-cpu-2", "exchange_url": "https://alpha.edge-fabric.com/v1/", "host_ips": [ "127.0.0.1", "192.168.1.52", "172.17.0.1", "172.18.0.1", "169.254.179.194" ], "organization": "dcmartin@us.ibm.com", "ram": 0, "pattern": "noize" },
-  "service": { "label": "noize", "version": "0.0.1", "port": "9191" },
+{
+  "mqtt": null,
+  "noize": {
+    "date": 1555859075,
+    "client": "b95ffa22f971",
+    "mock": "square",
+    "noise": "<base64 encoded WAV>",
+    "spectrogram": "<base64 encoded PNG>"
+  },
+  "date": 1555859040,
+  "hzn": {
+    "agreementid": "",
+    "arch": "",
+    "cpus": 0,
+    "device_id": "",
+    "exchange_url": "",
+    "host_ips": [
+      ""
+    ],
+    "organization": "",
+    "ram": 0,
+    "pattern": null
+  },
   "config": {
+    "tmpdir": "/tmpfs",
+    "logto": "/dev/stderr",
     "log_level": "info",
     "debug": true,
     "group": "noize",
-    "client": "test-cpu-2",
-    "device": "/dev/video0",
-    "start": { "level": 1.0, "seconds": 0.1 }.
-    "finish": { "level": 1.0, "seconds": 5.0 }.
-    "sample_rate": 19200,
-    "threshold": "",
-    "threshold_tune": false,
-    "level_tune": false
-    "mqtt": {
-      "host": "mqtt",
-      "port": 1883,
-      "username": "<redacted>",
-      "password": "<redacted>"
+    "client": "b95ffa22f971",
+    "start": {
+      "level": 1,
+      "seconds": 0.1
     },
-    "services": [ { "name": "mqtt", "url": "http://mqtt" } ]
-  },  
-  "noize": {
-    "group": "noize",
-    "client": "test-cpu-1",
-    "device": "/dev/video0",
-    "type": "WAV",
-    "start": 1555541712,
-    "finish": 1555541715,
-    "event": "86",
-    "seqno": "01",
-    "id": "20190417225512-86-01",
-    "audio": "<redacted>",
-    "spectrogram": "<redacted>"
+    "trim": {
+      "duration": 5
+    },
+    "sample_rate": "19200",
+    "threshold": "none",
+    "threshold_tune": false,
+    "level_tune": false,
+    "services": [
+      {
+        "name": "mqtt",
+        "url": "http://mqtt"
+      }
+    ]
   },
-  "mqtt": { "date": 1555601623, "pid": 30, "version": "mosquitto version 1.4.15", "broker": { "bytes": { "received": 24280269, "sent": 15274671 }, "clients": { "connected": 2 }, "load": { "messages": { "sent": { "one": 131.78, "five": 132.14, "fifteen": 132.46 }, "received": { "one": 131.78, "five": 132.09, "fifteen": 132.44 } } }, "publish": { "messages": { "received": 0, "sent": 297015, "dropped": 0 } }, "subscriptions": { "count": 2 } } }
+  "service": {
+    "label": "noize",
+    "version": "0.0.1"
+  }
 }
 ```
 
