@@ -42,7 +42,7 @@ noize_detect_noise()
     FILEPATH="${1}"
     if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- noize_detect_noise: filepath: ${FILEPATH}" >> ${LOGTO} 2>&1; fi
     ## start listener
-    pid=$(sox_detect_noise ${FILEPATH} ${NOIZE_START_LEVEL} ${NOIZE_START_SECONDS} ${NOIZE_FINISH_LEVEL} ${NOIZE_FINISH_SECONDS})
+    pid=$(sox_detect_noise ${FILEPATH} ${NOIZE_START_LEVEL} ${NOIZE_START_SECONDS} ${NOIZE_TRIM_DURATION})
     if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- started sox; PID: ${pid}" >> ${LOGTO} 2>&1; fi
   else
     if [ "${DEBUG:-}" = true ]; then echo "*** ERROR -- $0 $$ -- noize_detect_noise: no filepath" >> ${LOGTO} 2>&1; fi

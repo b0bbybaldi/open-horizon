@@ -35,3 +35,10 @@
 #Alarm Clock	&#9200;
 # Stopwatch	&#9201;
 # Timer Clock	&#9202;
+# Socks	&#129510;
+# Speaking Head	&#128483;
+# Studio Microphone	&#127897;
+# Wheelchair	&#9855;
+# Umbrella with Rain	&#9748;
+# Ferris Wheel	&#127905;
+# Factory	&#127981;

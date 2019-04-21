@@ -71,19 +71,21 @@ sox_detect_noise()
     sox_filepath="${1}"
     if [ -z "${2:-}" ]; then sox_start_level='1.0'; fi
     if [ -z "${3:-}" ]; then sox_start_seconds='0.1'; fi
-    if [ -z "${4:-}" ]; then sox_finish_level='1.0' ; fi
-    if [ -z "${5:-}" ]; then sox_finish_seconds='5.0'; fi
+    if [ -z "${5:-}" ]; then sox_trim_duration='5'; fi
     if [ ! -z "${6:-}" ]; then sox_frequency_min="sinc ${6}"; fi
     if [ ! -z "${7:-}" ]; then sox_sample_rate='19200'; else sox_sample_rate=${7}; fi
+    if [ ! -z "${8:-}" ]; then sox_audio_channels='1'; else sox_audio_channels=${8}; fi
+
+rec -c1 -r 192000 record.wav silence 1 0.1 1% trim 0 5 : newfile : restart
 
     # continuously record and create new WAV files in the specified directory
-    rec -c1 \
-	-r ${sox_sample_rate} \
+    rec -c ${sox_audio_channels:-1} \
+	-r ${sox_sample_rate:-19200} \
 	${sox_filepath}.wav \
 	${sox_frequency_min:-} \
-	silence  \
-	1 ${sox_start_seconds} ${sox_start_level}'%' \
-	1 ${sox_finish_seconds} ${sox_finish_level}'%' \
+	silence 1 \
+	${sox_start_seconds:-0.1} ${sox_start_level:-1}'%' \
+	trim ${sox_trim_start:-0} ${sox_trim_duration:-5} \
 	: newfile : restart >> ${LOGTO} 2>&1 &
     PID=$!
   fi

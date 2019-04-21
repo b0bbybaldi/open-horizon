@@ -18,16 +18,14 @@ source /usr/bin/noize-tools.sh
 ###
 ### NOIZE_START_LEVEL - percentage change between silence and non-silence
 ### NOIZE_START_SECONDS - number of seconds of non-silence to start noiseing
-### NOIZE_FINISH_SECONDS - number of seconds of silence after noise detected to stop noiseing
-### NOIZE_FINISH_LEVEL - percentage change between non-silence and silence
+### NOIZE_TRIM_DURATION - maximum length of sound in seconds; default 5
 ### NOIZE_SAMPLE_RATE - sampling rate; default: 19200
 ### NOIZE_THRESHOLD - use high-pass filter to remove sounds below threshold
 ###
 
 if [ -z "${NOIZE_START_LEVEL:-}" ]; then NOIZE_START_LEVEL='1.0'; fi
 if [ -z "${NOIZE_START_SECONDS:-}" ]; then NOIZE_START_SECONDS='0.1'; fi
-if [ -z "${NOIZE_FINISH_LEVEL:-}" ]; then NOIZE_FINISH_LEVEL='1.0' ; fi
-if [ -z "${NOIZE_FINISH_SECONDS:-}" ]; then NOIZE_FINISH_SECONDS='5.0'; fi
+if [ -z "${NOIZE_TRIM_DURATION:-}" ]; then NOIZE_TRIM_DURATION='5'; fi
 if [ -z "${NOIZE_SAMPLE_RATE:-}" ]; then NOIZE_SAMPLE_RATE='19200'; fi
 if [ -z "${NOIZE_MOCK:-}" ]; then NOIZE_MOCK=false; fi
 if [ -z ${NOIZE_THRESHOLD:-} ]; then NOIZE_THRESHOLD=; fi
