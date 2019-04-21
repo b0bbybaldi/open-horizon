@@ -9,30 +9,10 @@
   "public": true,
   "sharable": "singleton",
   "requiredServices": [
-    {
-      "url": "com.github.dcmartin.open-horizon.cpu",
-      "org": "${HZN_ORG_ID}",
-      "version": "0.0.3",
-      "arch": null
-    },
-    {
-      "url": "com.github.dcmartin.open-horizon.hal",
-      "org": "${HZN_ORG_ID}",
-      "version": "0.0.3",
-      "arch": null
-    },
-    {
-      "url": "com.github.dcmartin.open-horizon.yolo4motion",
-      "org": "${HZN_ORG_ID}",
-      "version": "0.0.4",
-      "arch": null
-    },
-    {
-      "url": "com.github.dcmartin.open-horizon.mqtt",
-      "org": "${HZN_ORG_ID}",
-      "version": "0.0.3",
-      "arch": null
-    }
+    { "url": "com.github.dcmartin.open-horizon.cpu", "org": "${HZN_ORG_ID}", "version": "0.0.3", "arch": null },
+    { "url": "com.github.dcmartin.open-horizon.hal", "org": "${HZN_ORG_ID}", "version": "0.0.3", "arch": null },
+    { "url": "com.github.dcmartin.open-horizon.yolo4motion", "org": "${HZN_ORG_ID}", "version": "0.0.4", "arch": null },
+    { "url": "com.github.dcmartin.open-horizon.mqtt", "org": "${HZN_ORG_ID}", "version": "0.0.3", "arch": null }
   ],
   "userInput": [
     {

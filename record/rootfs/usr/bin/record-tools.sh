@@ -1,13 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-record_sound()
+###
+### record-tools.sh
+###
+### provide functions for using the `arecord` command
+###
+###
+
+record_wav()
 {
-  OUTPUT=$(mktemp).wav
-  arecord  -D ${RECORD_DEVICE} -d ${RECORD_DURATION} ${OUTPUT}
-  echo ${OUTPUT}
-}
+  if [ "${1:-}" ]; then record_output=$(mktemp); else record_output="${1}"; fi
+  if [ "${2:-}" ]; then record_device='plughw:1'; else record_device="${2}"; fi
+  if [ "${3:-}" ]; then record_duration=5; else record_duration="${3}"; fi
 
-if [ -z "${1:-}" ]; then OUTPUT=$(mktemp); else OUTPUT=${1}; fi
-RECORD_DEVICE='plughw:1'
-RECORD_DURATION=5
+  if [ -z $(command -v "arecord") ]; then
+    echo "*** ERROR $0 $$ -- arecord not found" &> /dev/stderr
+  else
+    wavfile="${record_output}.wav"
+    arecord -D ${record_device} -d ${record_duration} ${wavfile}
+  fi
+  echo "${wavfile:-}"
+}
 

@@ -11,7 +11,7 @@ if [ -z "${LOGTO:-}" ]; then LOGTO="${TMPDIR}/${0##*/}.log"; fi
 ###
 
 source /usr/bin/service-tools.sh
-source /usr/bin/sox-tools.sh
+source /usr/bin/noize-tools.sh
 
 ###
 ### noise-detect.sh - create multiple WAV files named `noise###.wav`
@@ -29,6 +29,7 @@ if [ -z "${NOIZE_START_SECONDS:-}" ]; then NOIZE_START_SECONDS='0.1'; fi
 if [ -z "${NOIZE_FINISH_LEVEL:-}" ]; then NOIZE_FINISH_LEVEL='1.0' ; fi
 if [ -z "${NOIZE_FINISH_SECONDS:-}" ]; then NOIZE_FINISH_SECONDS='5.0'; fi
 if [ -z "${NOIZE_SAMPLE_RATE:-}" ]; then NOIZE_SAMPLE_RATE='19200'; fi
+if [ -z "${NOIZE_MOCK:-}" ]; then NOIZE_MOCK=false; fi
 if [ -z ${NOIZE_THRESHOLD:-} ]; then NOIZE_THRESHOLD=; fi
 
 ###
@@ -39,59 +40,129 @@ if [ -z ${NOIZE_THRESHOLD:-} ]; then NOIZE_THRESHOLD=; fi
 hzn_init
 
 ## configure service
-
-CONFIG='{"log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-false}',"start":{"level":'${NOIZE_START_LEVEL}',"seconds":'${NOIZE_START_SECONDS}'},"finish":{"level":'${NOIZE_FINISH_LEVEL}',"seconds":'${NOIZE_FINISH_SECONDS}'},"sample_rate":"'${NOIZE_SAMPLE_RATE:-60}',"threshold":"'${NOIZE_THRESHOLD:-}'","threshold_tune":false,"level_tune":false,"services":'"${SERVICES:-null}"'}'
+SERVICES='[{"name":"mqtt","url":"http://mqtt"}]'
+CONFIG='{"tmpdir":"'${TMPDIR}'","logto":"'${LOGTO:-}'","log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-false}',"start":{"level":'${NOIZE_START_LEVEL:-0}',"seconds":'${NOIZE_START_SECONDS:-0}'},"finish":{"level":'${NOIZE_FINISH_LEVEL:-0}',"seconds":'${NOIZE_FINISH_SECONDS:-0}'},"sample_rate":"'${NOIZE_SAMPLE_RATE:-60}'","threshold":"'${NOIZE_THRESHOLD:-none}'","threshold_tune":false,"level_tune":false,"services":'"${SERVICES:-null}"'}'
 
 ## initialize servive
 service_init ${CONFIG}
 
-## start noise-detector
-DIR=${TMPDIR}/${0##*/}
+## create temporary directory for noise output
+DIR=${TMPDIR}/${0##*/}-output
 mkdir -p ${DIR}
-if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- created directory: $DIR" &> /dev/stderr; fi
+## default name of file
+WAVNAME='noise'
+PID=$(noize_detect_noise ${DIR}/${WAVNAME})
+if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- started noize_detect_noise; BFP=${DIR}/${WAVNAME}; PID: ${PID}" >> ${LOGTO} 2>&1; fi
 
-## start listener
-PID=$(sox_detect_record ${DIR} ${NOISE_START_LEVEL} ${NOIZE_START_SECONDS} ${NOIZE_FINISH_LEVEL} ${NOIZE_FINISH_SECONDS})
-if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- started sox; PID" &> /dev/stderr; fi
+## start watchdog for generating mock data (and re-starting detector ... at some point)
+if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- starting watchdog; PID: ${PID}; BFP: ${DIR}/${WAVNAME}" >> ${LOGTO} 2>&1; fi
+WATCHDOG=$(noize_detect_watchdog ${PID} ${DIR}/${WAVNAME})
+if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- started watchdog; WATCHDOG: ${WATCHDOG}" >> ${LOGTO} 2>&1; fi
 
 ## initialize
 OUTPUT_FILE="${TMPDIR}/${0##*/}.${SERVICE_LABEL}.$$.json"
-echo '{"date":'$(date +%s)',"pid":'${PID:-0}'}' > "${OUTPUT_FILE}"
+echo '{"date":'$(date +%s)',"pid":'${PID:-0}',"watchdog":'${WATCHDOG:-0}'}' > "${OUTPUT_FILE}"
 service_update "${OUTPUT_FILE}"
+if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- initialized service; output:" $(jq -c '.' ${OUTPUT_FILE}) >> ${LOGTO} 2>&1; fi
 
+## FOREVER
 while true; do
+
   # update service
   service_update ${OUTPUT_FILE}
-  if [ "${DEBUG}" == 'true' ]; then echo "--- INFO -- $0 $$ -- waiting on directory: ${DIR}" >> ${LOGTO} 2>&1; fi
+
   # wait (forever) on changes in ${DIR}
+  if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- waiting on directory: ${DIR}" >> ${LOGTO} 2>&1; fi
   inotifywait -m -r -e close_write --format '%w%f' "${DIR}" | while read FULLPATH; do
-    if [ "${DEBUG}" == 'true' ]; then echo "--- INFO -- $0 $$ -- inotifywait ${FULLPATH}" >> ${LOGTO} 2>&1; fi
+    if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- inotifywait ${FULLPATH}" >> ${LOGTO} 2>&1; fi
     if [ ! -z "${FULLPATH}" ]; then
+      # assume not mock
+      MOCK=
       # process updates
       case "${FULLPATH##*/}" in
         *.wav)
-          if [ -s "${FULLPATH}" ]; then
+	  WAVFILE=${FULLPATH}
+          if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- WAV file detected: ${WAVFILE}" >> ${LOGTO} 2>&1; fi
+          # test for null payload
+          if [ -s "${WAVFILE}" ]; then
+            # test for mock
+	    if [[ "${WAVFILE##*/}" =~ mock* ]]; then 
+              MOCK=${WAVFILE##*/} && MOCK=${MOCK##*-} && MOCK=${MOCK%.*}
+              if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- using mock: ${MOCK}" >> ${LOGTO} 2>&1; fi
+            fi
 	    # process wav into png
-            PNGFILE=$(sox_spectrogram ${FULLPATH})
+            PNGFILE=$(sox_spectrogram ${WAVFILE})
             if [ ! -z "${PNGFILE}" ] && [ -s "${PNGFILE}" ]; then
-              if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- spectrogram created: ${PNGFILE}" &> /dev/stderr; fi
+              if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- spectrogram created: ${PNGFILE}" >> ${LOGTO} 2>&1; fi
             else
-	      echo "+++ WARN $0 $$ -- no PNG file for WAV: ${FULLPATH}; continuing..." >> ${LOGTO} 2>&1
+	      echo "+++ WARN $0 $$ -- no spectrogram: ${PNGFILE}; removing: ${WAVFILE}; continuing..." >> ${LOGTO} 2>&1
+	      rm -f ${WAVFILE} ${PNGFILE}
 	      continue
             fi
           else
-            echo "+++ WARN $0 $$ -- no content in ${FULLPATH}; continuing..." >> ${LOGTO} 2>&1
+            echo "+++ WARN $0 $$ -- empty WAV file: ${WAVFILE}; removing and continuing..." >> ${LOGTO} 2>&1
+            rm -f ${WAVFILE}
             continue
           fi
           ;;
         *)
+          if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- non-WAV file: ${FULLPATH}" >> ${LOGTO} 2>&1; fi
 	  continue
 	  ;;
       esac
     else
-      echo "+++ WARN $0 $$ -- empty path" &> /dev/stderr
+      echo "+++ WARN $0 $$ -- empty path" >> ${LOGTO} 2>&1
       continue
     fi
+
+    # test WAV
+    if [ ! -s "${WAVFILE}" ]; then
+      echo "*** ERROR $0 $$ -- no WAV file found: ${WAVFILE}" >> ${LOGTO} 2>&1
+      continue
+    fi
+    # encode for transport
+    base64 -w 0 ${WAVFILE} > ${WAVFILE}.b64
+
+    # test spectrogram
+    if [ ! -s "${PNGFILE}" ]; then
+      echo "*** ERROR $0 $$ -- no spectrogram found: ${PNGFILE}" >> ${LOGTO} 2>&1
+      continue
+    fi
+    base64 -w 0 ${PNGFILE} > ${PNGFILE}.b64
+
+    ## START output
+    echo '{"date":'$(date +%s)',"device":"'${HZN_DEVICE_ID}'"' > ${OUTPUT_FILE}
+    if [ ! -z "${MOCK:-}" ]; then
+      echo ',"mock":"'${MOCK}'"' >> ${OUTPUT_FILE}
+    fi
+    if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- initialized output: ${OUTPUT_FILE}" >> ${LOGTO} 2>&1; fi
+
+    # do audio
+    if [ "${NOIZE_INCLUDE_WAV:-}" != false ]; then
+      echo ',' >> ${OUTPUT_FILE}
+      echo -n '"'${WAVNAME}'":"' >> ${OUTPUT_FILE}
+      cat ${WAVFILE}.b64 >> ${OUTPUT_FILE}
+      echo '"' >> ${OUTPUT_FILE}
+    fi
+
+    # do spectrogram
+    if [ "${NOIZE_INCLUDE_PNG:-}" != false ]; then
+      echo ',' >> ${OUTPUT_FILE}
+      echo -n '"spectrogram":"' >> ${OUTPUT_FILE}
+      cat ${PNGFILE}.b64 >> ${OUTPUT_FILE}
+      echo '"' >> ${OUTPUT_FILE}
+    fi
+
+    # close dict
+    echo '}' >> ${OUTPUT_FILE}
+
+    # cleanup
+    if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- cleaning:" ${WAVFILE%.*}* >> ${LOGTO} 2>&1; fi
+    rm -f ${WAVFILE%.*}*
+
+    ## DONE output
+    if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- created output: ${OUTPUT_FILE}" $(jq -c '.'${WAVNAME}'=(.'${WAVNAME}'!=null)|.spectrogram=(.spectrogram!=null)' ${OUTPUT_FILE}) >> ${LOGTO} 2>&1; fi
+
     # update output
     service_update "${OUTPUT_FILE}"
   done

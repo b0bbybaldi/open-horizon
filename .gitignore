@@ -1,3 +1,6 @@
+.vscode
+LOGTO
+NOIZE_*
 darknet/
 FFT_*
 kafkacat.sh.*

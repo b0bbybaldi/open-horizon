@@ -14,6 +14,9 @@ ENV \
 RUN apt-get update && apt-get install -q -y --no-install-recommends \
     curl \
     socat \
+    ffmpeg \
+    sox \
+    inotify-tools \
     jq \
   \
   && rm -fr \

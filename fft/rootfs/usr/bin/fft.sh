@@ -72,7 +72,7 @@ while true; do
     if [ "${DEBUG:-}" = true ]; then echo "+++ WARN $0 $$ -- no payload or FFT_ANOMALY_MOCK is true: ${FFT_ANOMALY_MOCK}" &> /dev/stderr; fi
     # available mock data in MOCK_DATADIR
     MOCKS=( square mixer_1 mixer_2 )
-    if [ -z "${ITERATION:-}" ]; then MOCK_INDEX=0 && ITERATION=1; else MOCK_INDEX=$((ITERATION % ${#MOCKS[@]})); fi
+    if [ -z "${ITERATION:-}" ]; then MOCK_INDEX=0 && ITERATION=1; else MOCK_INDEX=$((ITERATION % ${#MOCKS[@]})); ITERATION=$((ITERATION+1)); fi
     if [ ${MOCK_INDEX} -ge ${#MOCKS[@]} ]; then MOCK_INDEX=0; fi
     MOCK="${MOCKS[${MOCK_INDEX}]}"
     WAV_MOCK=${MOCK_DATADIR}/${MOCK}.wav
