@@ -87,22 +87,18 @@ The `fft` value will initially be incomplete until the service completes its ini
 
 ```
 {
+  "mqtt": null,
   "fft": {
-    "date": 1555774171,
-    "type": "welch",
-    "level": 128,
+    "date": 1555813230,
+    "type": "butter",
+    "level": 0.05,
     "id": "",
-    "record": {
-      "mock": "mixer_1",
-      "date": 1555774169,
-      "audio": "<base64 encoded WAV>"
-    },
-    "welch": {
-      "data": [ <array of floats>, <array of floats> ]
-      "image": "<base64 encoded PNG>"
+    "butter": {
+      "data": [<data array>],
+      "image": "<base64 encoded string>"
     }
   },
-  "date": 1555774159,
+  "date": 1555813226,
   "hzn": {
     "agreementid": "",
     "arch": "",
@@ -120,10 +116,15 @@ The `fft` value will initially be incomplete until the service completes its ini
     "log_level": "info",
     "debug": true,
     "period": 10,
-    "type": "welch",
-    "level": 128,
+    "type": "butter",
+    "level": 0.05,
     "mock": false,
-    "services": null
+    "services": [
+      {
+        "name": "mqtt",
+        "url": "http://mqtt"
+      }
+    ]
   },
   "service": {
     "label": "fft",
@@ -135,14 +136,14 @@ The `fft` value will initially be incomplete until the service completes its ini
 ## SAMPLE
 A provided `square.wav` file, which may also be created using the `rootfs/usr/bin/mksqwave.sh` script is used as one of the mock data sets.
 
-### Source
-<img src="sample/square.png">
+### `raw`
+<img width=512 src="sample/square.png">
 
-### FFT (raw)
-<img src="sample/square-raw.png">
+### `butter`
+<img width=512 src="sample/butter.png">
 
-### FFT (filter; butter)
-<img src="sample/square-butter.png">
+### `welch`
+<img width=512 src="sample/welch.png">
 
 ## Changelog & Releases
 

@@ -100,8 +100,12 @@ if [ $(jq '.ports!=null' ${SERVICE}) == 'true' ]; then
     OPTIONS="${OPTIONS:-}"' --publish='"${PE}"':'"${PS}"
   done
 elif [ ! -z "${SERVICE_PORT:-}" ]; then
-  if [ "${SERVICE_PORT}" == 'null' ]; then SERVICE_PORT=80; fi
-  if [ -z "${DOCKER_PORT:-}" ]; then DOCKER_PORT=12345; fi
+  if [ "${SERVICE_PORT}" == 'null' ]; then 
+    SERVICE_PORT=80
+    if [ -z "${DOCKER_PORT:-}" ]; then DOCKER_PORT=12345; fi
+  else
+    DOCKER_PORT=${SERVICE_PORT}
+  fi
   if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- mapping service port ${SERVICE_PORT} to localhost port ${DOCKER_PORT}" &> /dev/stderr; fi
   OPTIONS="${OPTIONS:-}"' --publish='"${DOCKER_PORT}"':'"${SERVICE_PORT}"
 else
