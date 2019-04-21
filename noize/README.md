@@ -43,16 +43,19 @@ Monitors attached microphone and provides `sox` functionality as micro-service, 
 ## Variables
 + `NOIZE_GROUP` - group name (aka top-level topic); defaults to `noize`
 + `NOIZE_CLIENT` - client name; defaults to `HZN_DEVICE_ID` or `hostname`
-+ `NOIZE_DEVICE` - device to record sound; default: `PS3 Eye camera microphone identifier`
++ `NOIZE_DEVICE` - device to record sound; default: *system default device*
 + `NOIZE_START_LEVEL` - default: `1` percent
 + `NOIZE_START_SECONDS` - default: `0.1` seconds
 + `NOIZE_FINISH_LEVEL` - default: `1` percent
 + `NOIZE_FINISH_SECONDS` - default: `5` seconds
++ `NOIZE_THRESHOLD_TUNE` - default: `false`
++ `NOIZE_INCLUDE_WAV` - include audio as base64 encoded WAV; default: `true`
++ `NOIZE_INCLUDE_PNG` - include spectrogram as base64 encoded PNG; default: `true`
 + `NOIZE_THRESHOLD` - default: `none`; specify KHz
 + `NOIZE_LEVEL_TUNE` - default: `false`
-+ `NOIZE_THRESHOLD_TUNE` - default: `false`
-+ `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
-+ `DEBUG` - default: `false`
++ `LOGTO` - specify place to log; default: `"${TMPDIR}/${0##*/}.log"`; use `"/dev/stderr"` during development
++ `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`; currently ignored)
++ `DEBUG` - default: `false`; very verbose
 
 ## Required Services
 
