@@ -1,6 +1,6 @@
 # &#127897; `noize` - detect sound and send to MQTT
 
-Monitors attached microphone and provides `sox` functionality as micro-service, transmitting WAV data and spectrogram visualization (PNG) a designated [MQTT][mqtt-org] host.  This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.
+Monitors attached microphone and provides [`sox`](https://linux.die.net/man/1/sox) functionality as micro-service, transmitting WAV data and spectrogram visualization (PNG) a designated [MQTT][mqtt-org] host.  This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.
 
 [mqtt-org]: http://mqtt.org/
 [motion-project-io]: https://motion-project.github.io/
