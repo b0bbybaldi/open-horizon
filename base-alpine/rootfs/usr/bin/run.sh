@@ -2,6 +2,7 @@
 
 # TMPDIR
 if [ -d '/tmpfs' ]; then TMPDIR='/tmpfs'; else TMPDIR='/tmp'; fi
+if [ -z "${LOGTO:-}" ]; then LOGTO="${TMPDIR}/${0##*/}.log"; fi
 
 ## hzn-tools.sh
 source /usr/bin/hzn-tools.sh
@@ -12,7 +13,7 @@ source /usr/bin/hzn-tools.sh
 
 # initialize horizon
 if [ -z "$(hzn_init)" ]; then
-  echo "*** ERROR$0 $$ -- horizon initilization failure; exiting" &> /dev/stderr
+  echo "*** ERROR$0 $$ -- horizon initilization failure; exiting" >> ${LOGTO} 2&> /dev/stderr>1
   exit 1
 else
   export HZN=$(hzn_config)
@@ -25,14 +26,14 @@ if [ ! -z "${SERVICE_LABEL:-}" ]; then
     ${CMD} &
   fi
 else
-  echo "+++ WARN $0 $$ -- executable ${SERVICE_LABEL:-}.sh not found" &> /dev/stderr
+  echo "+++ WARN $0 $$ -- executable ${SERVICE_LABEL:-}.sh not found" >> ${LOGTO} 2&> /dev/stderr>1
 fi
 
 # port
 if [ -z "${SERVICE_PORT:-}" ]; then 
   SERVICE_PORT=80
 else
-  echo "+++ WARN: using localhost port ${SERVICE_PORT}" &> /dev/stderr
+  echo "+++ WARN: using localhost port ${SERVICE_PORT}" >> ${LOGTO} 2&> /dev/stderr>1
 fi
 
 # start listening

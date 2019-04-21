@@ -32,6 +32,9 @@ if [ -z "${NOIZE_SAMPLE_RATE:-}" ]; then NOIZE_SAMPLE_RATE='19200'; fi
 if [ -z "${NOIZE_MOCK:-}" ]; then NOIZE_MOCK=false; fi
 if [ -z ${NOIZE_THRESHOLD:-} ]; then NOIZE_THRESHOLD=; fi
 
+## test client
+if [ -z "${NOIZE_CLIENT}" ]; then NOIZE_CLIENT=${HZN_CLIENT_ID:-$(hostname)}; fi
+
 ###
 ### MAIN
 ###
@@ -41,7 +44,7 @@ hzn_init
 
 ## configure service
 SERVICES='[{"name":"mqtt","url":"http://mqtt"}]'
-CONFIG='{"tmpdir":"'${TMPDIR}'","logto":"'${LOGTO:-}'","log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-false}',"start":{"level":'${NOIZE_START_LEVEL:-0}',"seconds":'${NOIZE_START_SECONDS:-0}'},"finish":{"level":'${NOIZE_FINISH_LEVEL:-0}',"seconds":'${NOIZE_FINISH_SECONDS:-0}'},"sample_rate":"'${NOIZE_SAMPLE_RATE:-60}'","threshold":"'${NOIZE_THRESHOLD:-none}'","threshold_tune":false,"level_tune":false,"services":'"${SERVICES:-null}"'}'
+CONFIG='{"tmpdir":"'${TMPDIR}'","logto":"'${LOGTO:-}'","log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-false}',"group":"'${NOIZE_GROUP}'","client":"'${NOIZE_CLIENT}'","start":{"level":'${NOIZE_START_LEVEL:-0}',"seconds":'${NOIZE_START_SECONDS:-0}'},"finish":{"level":'${NOIZE_FINISH_LEVEL:-0}',"seconds":'${NOIZE_FINISH_SECONDS:-0}'},"sample_rate":"'${NOIZE_SAMPLE_RATE:-60}'","threshold":"'${NOIZE_THRESHOLD:-none}'","threshold_tune":false,"level_tune":false,"services":'"${SERVICES:-null}"'}'
 
 ## initialize servive
 service_init ${CONFIG}
@@ -131,7 +134,7 @@ while true; do
     base64 -w 0 ${PNGFILE} > ${PNGFILE}.b64
 
     ## START output
-    echo '{"date":'$(date +%s)',"device":"'${HZN_DEVICE_ID}'"' > ${OUTPUT_FILE}
+    echo '{"date":'$(date +%s)',"client":"'${NOIZE_CLIENT}'"' > ${OUTPUT_FILE}
     if [ ! -z "${MOCK:-}" ]; then
       echo ',"mock":"'${MOCK}'"' >> ${OUTPUT_FILE}
     fi

@@ -12,6 +12,8 @@
     { "url": "com.github.dcmartin.open-horizon.mqtt", "org": "${HZN_ORG_ID}", "version": "0.0.3", "arch": null }
   ],
   "userInput": [
+    { "name": "NOIZE_GROUP", "label": "group for client", "defaultValue": "noize" },
+    { "name": "NOIZE_CLIENT", "label": "client identifier within group", "defaultValue": "" },
     { "name": "NOIZE_START_SECONDS", "label": "number of seconds of noise to start", "type": "int", "defaultValue": "0.1" },
     { "name": "NOIZE_FINISH_SECONDS", "label": "number of seconds of silence to finish", "type": "int", "defaultValue": "5.0" },
     { "name": "NOIZE_START_LEVEL", "label": "percentage change from silence", "type": "float", "defaultValue": "1.0" },
@@ -21,6 +23,8 @@
     { "name": "NOIZE_LEVEL_TUNE", "label": "tune level automatically", "defaultValue": "false" },
     { "name": "NOIZE_AUDIO_DEVICE", "label": "identifier for device to use to capture audio", "defaultValue": "/dev/video0" },
     { "name": "NOIZE_SAMPLE_RATE", "label": "sampling rate", "type": "int", "defaultValue": "19200" },
+    { "name": "NOIZE_INCLUDE_WAV", "label": "include audio", "type": "boolean", "defaultValue": "true" },
+    { "name": "NOIZE_INCLUDE_PNG", "label": "include audio", "type": "boolean", "defaultValue": "true" },
     { "name": "NOIZE_MOCK", "label": "use mock data", "type": "boolean", "defaultValue": "true" },
     { "name": "LOG_LEVEL", "label": "specify logging level", "type": "string", "defaultValue": "info" },
     { "name": "LOGTO", "label": "logging output; default to /tmp/noize.sh.log", "type": "string", "defaultValue": "" },
