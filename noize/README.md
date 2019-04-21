@@ -8,28 +8,28 @@ Monitors attached microphone and provides [`sox`](https://linux.die.net/man/1/so
 ## Status
 
 ![Supports amd64 Architecture][amd64-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/amd64_com.github.dcmartin.open-horizon.noize.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.noize "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/amd64_com.github.dcmartin.open-horizon.noize.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.noize "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/amd64_com.github.dcmartin.open-horizon.noize-beta.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.noize-beta "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/amd64_com.github.dcmartin.open-horizon.noize-beta.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.noize-beta "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-amd64]][docker-amd64]
 
-[docker-amd64]: https://hub.docker.com/r/dcmartin/amd64_com.github.dcmartin.open-horizon.noize
-[pulls-amd64]: https://img.shields.io/docker/pulls/dcmartin/amd64_com.github.dcmartin.open-horizon.noize.svg
+[docker-amd64]: https://hub.docker.com/r/dcmartin/amd64_com.github.dcmartin.open-horizon.noize-beta
+[pulls-amd64]: https://img.shields.io/docker/pulls/dcmartin/amd64_com.github.dcmartin.open-horizon.noize-beta.svg
 
 ![Supports armhf Architecture][arm-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/arm_com.github.dcmartin.open-horizon.noize.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.noize "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/arm_com.github.dcmartin.open-horizon.noize.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.noize "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/arm_com.github.dcmartin.open-horizon.noize-beta.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.noize-beta "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/arm_com.github.dcmartin.open-horizon.noize-beta.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.noize-beta "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-arm]][docker-arm]
 
-[docker-arm]: https://hub.docker.com/r/dcmartin/arm_com.github.dcmartin.open-horizon.noize
-[pulls-arm]: https://img.shields.io/docker/pulls/dcmartin/arm_com.github.dcmartin.open-horizon.noize.svg
+[docker-arm]: https://hub.docker.com/r/dcmartin/arm_com.github.dcmartin.open-horizon.noize-beta
+[pulls-arm]: https://img.shields.io/docker/pulls/dcmartin/arm_com.github.dcmartin.open-horizon.noize-beta.svg
 
 ![Supports aarch64 Architecture][arm64-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/arm64_com.github.dcmartin.open-horizon.noize.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.noize "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/arm64_com.github.dcmartin.open-horizon.noize.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.noize "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/arm64_com.github.dcmartin.open-horizon.noize-beta.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.noize-beta "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/arm64_com.github.dcmartin.open-horizon.noize-beta.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.noize-beta "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-arm64]][docker-arm64]
 
-[docker-arm64]: https://hub.docker.com/r/dcmartin/arm64_com.github.dcmartin.open-horizon.noize
-[pulls-arm64]: https://img.shields.io/docker/pulls/dcmartin/arm64_com.github.dcmartin.open-horizon.noize.svg
+[docker-arm64]: https://hub.docker.com/r/dcmartin/arm64_com.github.dcmartin.open-horizon.noize-beta
+[pulls-arm64]: https://img.shields.io/docker/pulls/dcmartin/arm64_com.github.dcmartin.open-horizon.noize-beta.svg
 
 [arm64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
@@ -37,7 +37,7 @@ Monitors attached microphone and provides [`sox`](https://linux.die.net/man/1/so
 
 ## Service discovery
 + `org` - `dcmartin@us.ibm.com`
-+ `url` - `com.github.dcmartin.open-horizon.noize`
++ `url` - `com.github.dcmartin.open-horizon.noize-beta`
 + `version` - `0.0.1`
 
 ## Variables
@@ -71,7 +71,7 @@ Copy this [repository][repository], change to the `noize` directory, then use th
 % mkdir ~/gitdir
 % cd ~/gitdir
 % git clone http://github.com/dcmartin/open-horizon
-% cd open-horizon/noize
+% cd open-horizon.noize-beta
 % make
 ...
 ```
