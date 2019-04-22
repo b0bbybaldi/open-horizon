@@ -36,6 +36,7 @@
     { "name": "LOCALHOST_PORT", "label": "localhost port", "type": "int", "defaultValue": "8082" },
     { "name": "LOG_LEVEL", "label": "specify logging level", "type": "string", "defaultValue": "info" },
     { "name": "DEBUG", "label": "debug; true or false", "type": "boolean", "defaultValue": "false" },
+    { "name": "LOGTO", "label": "where to log", "type": "string", "defaultValue": "/dev/stderr" },
     { "name": "HZN_EXCHANGE_APIKEY", "label": "exchange API key", "type": "string", "defaultValue": "" }
   ],
   "deployment": {
@@ -71,10 +72,5 @@
   },
   "tmpfs": {
     "size": 131071000
-  },
-  "ports": {
-    "8082/tcp": 8082,
-    "8080/tcp": 8080,
-    "8081/tcp": 8081
   }
 }

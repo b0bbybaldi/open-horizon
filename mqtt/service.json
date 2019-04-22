@@ -10,24 +10,10 @@
   "sharable": "singleton",
   "requiredServices": [],
   "userInput": [
-    {
-      "name": "MQTT_PERIOD",
-      "label": "seconds between update",
-      "type": "int",
-      "defaultValue": "30"
-    },
-    {
-      "name": "LOG_LEVEL",
-      "label": "specify logging level",
-      "type": "string",
-      "defaultValue": "info"
-    },
-    {
-      "name": "DEBUG",
-      "label": "debug on/off",
-      "type": "boolean",
-      "defaultValue": "false"
-    }
+    { "name": "MQTT_PERIOD", "label": "seconds between update", "type": "int", "defaultValue": "30" },
+    { "name": "LOG_LEVEL", "label": "specify logging level", "type": "string", "defaultValue": "info" },
+    { "name": "LOGTO", "label": "where to log", "type": "string", "defaultValue": "/dev/stderr" },
+    { "name": "DEBUG", "label": "debug on/off", "type": "boolean", "defaultValue": "false" }
   ],
   "deployment": {
     "services": {
@@ -44,9 +30,5 @@
   },
   "tmpfs": {
     "size": 8192000
-  },
-  "ports": {
-    "80/tcp": 8590,
-    "1883/tcp": 1883
   }
 }

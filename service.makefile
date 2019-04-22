@@ -50,10 +50,11 @@ DOCKER_NAME = $(BUILD_ARCH)_$(SERVICE_URL)
 DOCKER_TAG := $(DOCKER_REPOSITORY)/$(DOCKER_NAME):$(SERVICE_VERSION)
 
 ## ports
-SERVICE_PORT := $(shell jq -r '.deployment.services."'${SERVICE_LABEL}'".specific_ports?|first|.HostPort' service.json | sed 's/\([0-9]*\)\/.*/\1/' | sed 's/null//')
-DOCKER_PORT := $(if ${SERVICE_PORT},${SERVICE_PORT},$(shell jq -r '.ports?|to_entries?|first|.value?' service.json))
+SERVICE_PORT ?= $(shell jq -r '.deployment.services."'${SERVICE_LABEL}'".specific_ports?|first|.HostPort' service.json | sed 's/\([0-9]*\).*/\1/' | sed 's/null//')
+DOCKER_PORT ?= $(shell jq -r '.deployment.services."'${SERVICE_LABEL}'".specific_ports?|first|.HostPort' service.json | sed 's/[0-9]*[:]*\([0-9]*\).*/\1/' | sed 's/null//')
+DOCKER_PORT := $(if ${DOCKER_PORT},${DOCKER_PORT},$(shell jq -r '.ports?|to_entries?|first|.value?' service.json))
 SERVICE_PORT := $(if ${SERVICE_PORT},${SERVICE_PORT},80)
-DOCKER_PORT := $(if ${DOCKER_PORT},${DOCKER_PORT},12345)
+DOCKER_PORT := $(if ${DOCKER_PORT},${DOCKER_PORT},$(shell echo "( $$$$ + 5000 ) % 32000 + 32000" | bc))
 
 ## BUILD
 BUILD_BASE=$(shell export DOCKER_REGISTRY=$(DOCKER_REGISTRY) DOCKER_NAMESPACE=${DOCKER_NAMESPACE} DOCKER_REPOSITORY=$(DOCKER_REPOSITORY) && jq -r ".build_from.${BUILD_ARCH}" build.json | envsubst)
@@ -204,7 +205,7 @@ TEST_OUTPUT = ./test.${BUILD_ARCH}_${SERVICE_URL}_${SERVICE_VERSION}.json
 service-test:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- service-test: ${SERVICE_NAME}; architectures: ${SERVICE_ARCH_SUPPORT}""${NC}" &> /dev/stderr
 	@for arch in $(SERVICE_ARCH_SUPPORT); do \
-	  $(MAKE) TAG=$(TAG) HZN_ORG_ID=$(HZN_ORG_ID) DOCKER_REPOSITORY=$(DOCKER_REPOSITORY) BUILD_ARCH="$${arch}" test-service; \
+	  $(MAKE) DOCKER_PORT=$(DOCKER_PORT) SERVICE_PORT=$(SERVICE_PORT) TAG=$(TAG) HZN_ORG_ID=$(HZN_ORG_ID) DOCKER_REPOSITORY=$(DOCKER_REPOSITORY) BUILD_ARCH="$(BUILD_ARCH)" test-service; \
 	done
 
 test-service: start-service test
@@ -213,7 +214,7 @@ test-service: start-service test
 
 test:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- test: ${DOCKER_TAG}""${NC}" &> /dev/stderr
-	@./sh/test.sh "${DOCKER_TAG}" 1> ${TEST_RESULT} 2> ${TEST_OUTPUT} && cat ${TEST_OUTPUT} && cat ${TEST_RESULT}
+	@export DOCKER_PORT=$(DOCKER_PORT) SERVICE_PORT=$(SERVICE_PORT) && ./sh/test.sh "${DOCKER_TAG}" # 1> ${TEST_RESULT} 2> ${TEST_OUTPUT} && cat ${TEST_OUTPUT} && cat ${TEST_RESULT}
  
 ## publish & verify
 

@@ -9,30 +9,11 @@
   "sharable": "singleton",
   "requiredServices": [],
   "userInput": [
-    {
-      "name": "CPU_PERIOD",
-      "label": "seconds between update",
-      "type": "int",
-      "defaultValue": "60"
-    },
-    {
-      "name": "CPU_INTERVAL",
-      "label": "seconds between cpu testing",
-      "type": "int",
-      "defaultValue": "1"
-    },
-    {
-      "name": "LOG_LEVEL",
-      "label": "specify logging level",
-      "type": "string",
-      "defaultValue": "info"
-    },
-    {
-      "name": "DEBUG",
-      "label": "debug on/off",
-      "type": "boolean",
-      "defaultValue": "false"
-    }
+    { "name": "CPU_PERIOD", "label": "seconds between update", "type": "int", "defaultValue": "60" },
+    { "name": "CPU_INTERVAL", "label": "seconds between cpu testing", "type": "int", "defaultValue": "1" },
+    { "name": "LOG_LEVEL", "label": "specify logging level", "type": "string", "defaultValue": "info" },
+    { "name": "LOGTO", "label": "where to log", "type": "string", "defaultValue": "/dev/stderr" },
+    { "name": "DEBUG", "label": "debug on/off", "type": "boolean", "defaultValue": "false" }
   ],
   "deployment": {
     "services": {
@@ -52,8 +33,5 @@
   "public": true,
   "tmpfs": {
     "size": 2048000
-  },
-  "ports": {
-    "80/tcp": 8581
   }
 }

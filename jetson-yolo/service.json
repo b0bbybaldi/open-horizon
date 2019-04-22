@@ -10,48 +10,14 @@
   "sharable": "singleton",
   "requiredServices": [],
   "userInput": [
-    {
-      "name": "YOLO_CONFIG",
-      "label": "YOLO configuration type: tiny, v2, v3",
-      "type": "string",
-      "defaultValue": "v3"
-    },
-    {
-      "name": "YOLO_ENTITY",
-      "label": "entity to count",
-      "type": "string",
-      "defaultValue": "all"
-    },
-    {
-      "name": "YOLO_SCALE",
-      "label": "scaling of image; none or WIDTHxHEIGHT",
-      "type": "string",
-      "defaultValue": "none"
-    },
-    {
-      "name": "YOLO_THRESHOLD",
-      "label": "threshold of probability; 0.0 to 1.0",
-      "type": "number",
-      "defaultValue": "0.25"
-    },
-    {
-      "name": "YOLO_PERIOD",
-      "label": "seconds between updates",
-      "type": "int",
-      "defaultValue": "0"
-    },
-    {
-      "name": "LOG_LEVEL",
-      "label": "specify logging level",
-      "type": "string",
-      "defaultValue": "info"
-    },
-    {
-      "name": "DEBUG",
-      "label": "debug on/off",
-      "type": "boolean",
-      "defaultValue": "false"
-    }
+    { "name": "YOLO_CONFIG", "label": "YOLO configuration type: tiny, v2, v3", "type": "string", "defaultValue": "v3" },
+    { "name": "YOLO_ENTITY", "label": "entity to count", "type": "string", "defaultValue": "all" },
+    { "name": "YOLO_SCALE", "label": "scaling of image; none or WIDTHxHEIGHT", "type": "string", "defaultValue": "none" },
+    { "name": "YOLO_THRESHOLD", "label": "threshold of probability; 0.0 to 1.0", "type": "number", "defaultValue": "0.25" },
+    { "name": "YOLO_PERIOD", "label": "seconds between updates", "type": "int", "defaultValue": "0" },
+    { "name": "LOG_LEVEL", "label": "specify logging level", "type": "string", "defaultValue": "info" },
+    { "name": "LOGTO", "label": "where to log", "type": "string", "defaultValue": "/dev/stderr" },
+    { "name": "DEBUG", "label": "debug on/off", "type": "boolean", "defaultValue": "false" }
   ],
   "deployment": {
     "services": {
@@ -82,8 +48,5 @@
   },
   "tmpfs": {
     "size": 2048000
-  },
-  "ports": {
-    "80/tcp": 8683
   }
 }

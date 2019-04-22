@@ -31,16 +31,11 @@ else
 fi
 
 if [ "${HOST%:*}" == "${HOST}" ]; then
-  if [ -z "${DOCKER_PORT}" ]; then
-    PORT=$(jq -r '.deployment.services|to_entries|first|.value.specific_ports|first|.HostPort' service.json | sed 's/\([0-9]*\).*/\1/' | sed 's/null//')
+  if [ -z "${SERVICE_PORT}" ]; then
+    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- empty: SERVICE_PORT" &> /dev/stderr; fi
   else
-    PORT=${DOCKER_PORT}
-  fi
-  if [ "${PORT}" == 'null' ]; then
-    PORT=$(jq -r '.ports?|to_entries|first|.key?' service.json | sed 's|\(.*\)/.*|\1|')
-    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- Using development port: ${PORT}" &> /dev/stderr; fi
-  else
-    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- Using specific_port: ${PORT}" &> /dev/stderr; fi
+    PORT=${SERVICE_PORT}
+    if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- Using SERVICE_PORT: ${PORT}" &> /dev/stderr; fi
   fi
   if [ -z "${PORT}" ] || [ "${PORT}" == 'null' ]; then
     PORT=80

@@ -27,7 +27,7 @@
       "yolo2msghub": {
         "environment": [
           "SERVICE_LABEL=yolo2msghub",
-          "SERVICE_VERSION=0.0.11.2",
+          "SERVICE_VERSION=0.0.11.3",
           "SERVICE_PORT=8587"
         ],
         "devices": null,

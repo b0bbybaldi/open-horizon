@@ -10,12 +10,8 @@
   "sharable": "singleton",
   "requiredServices": [],
   "userInput": [
-    {
-      "name": "DEBUG",
-      "label": "debug on/off",
-      "type": "boolean",
-      "defaultValue": "false"
-    }
+    { "name": "LOGTO", "label": "where to log", "type": "string", "defaultValue": "/dev/stderr" },
+    { "name": "DEBUG", "label": "debug on/off", "type": "boolean", "defaultValue": "false" }
   ],
   "deployment": {
     "services": {
@@ -32,8 +28,5 @@
   },
   "tmpfs": {
     "size": 2048000
-  },
-  "ports": {
-    "80/tcp": 8680
   }
 }
