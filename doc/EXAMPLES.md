@@ -1,4 +1,6 @@
 # Examples
+
+## Complexity
 The examples are divided into levels of complexity:
 
 + Level `0` - The null service; does nothing useful.
@@ -11,8 +13,10 @@ The examples are divided into levels of complexity:
 + Level `7` - Service -AAS for other nodes (e.g. `couchdb`)
 + Level `8` - Multi-pattern composition (i.e. _application_)
 
-## Examples listing
-Below is a listing of services, some of which are also configured to be deployed as test patterns.  Services denoted in *italic* are either WIP or TBD.
+
+
+## Example services
+Below is a listing of services. Services denoted in *italic* are either WIP or TBD.
 
 Level|Type|Services|Port|Expose|Shared|Description
 ---|---|---|---|---|---|---|
@@ -26,7 +30,7 @@ Level|Type|Services|Port|Expose|Shared|Description
 3| service |[`yolo`](https://github.com/dcmartin/open-horizon/tree/master/yolo)|80|||capture image from webcam, detect & classify entities ([darknet](https://pjreddie.com/darknet/)
 3| service |[`mqtt`](https://github.com/dcmartin/open-horizon/tree/master/mqtt)|80, 1883|1883|X|provide on-device MQTT broker; shared across services
 3|*service*|[`herald4pattern`](https://github.com/dcmartin/open-horizon/tree/master/herald4pattern)|80, 5959, 5960|5959, 5960||announce the _pattern_ information for the node
-4|service, pattern|[`yolo2msghub`](https://github.com/dcmartin/open-horizon/tree/master/yolo2msghub)|8587|8587||integrate multiple service outputs and send to cloud using Kafka
+4|service|[`yolo2msghub`](https://github.com/dcmartin/open-horizon/tree/master/yolo2msghub)|8587|8587||integrate multiple service outputs and send to cloud using Kafka
 ||+|`cpu`|
 ||+|`hal`| 
 ||+|`wan` |
@@ -37,12 +41,12 @@ Level|Type|Services|Port|Expose|Shared|Description
 ||+|`mqtt`
 4|service|[`mqtt2kafka`](https://github.com/dcmartin/open-horizon/tree/master/mqtt2kafka)|80|||route specified MQTT topics' payloads to Kafka broker
 ||+|`mqtt`
-5 |service, pattern|[`motion2mqtt`](https://github.com/dcmartin/open-horizon/tree/master/motion2mqtt)|8080, 8081, 8082|8082||capture images using [motion package](https://motion-project.github.io/); send to MQTT
+5 |service|[`motion2mqtt`](https://github.com/dcmartin/open-horizon/tree/master/motion2mqtt)|8080, 8081, 8082|8082||capture images using [motion package](https://motion-project.github.io/); send to MQTT
 ||+|`mqtt`|80, 1883|1883|X|
 ||+|`hal`|80|||to detect camera
 ||+|`wan`|80|||to monitor Internet
 ||+|`cpu`|80|||to monitor CPU load
-||+|`yolo4motion`|80|
+||service|`yolo4motion`|80|
 ||+|`mqtt`|80, 1883|1883|X|
 5|*service*|[`noize`](https://github.com/dcmartin/open-horizon/tree/master/noize)|9191|9191||capture audio after silence and send to MQTT broker
 ||+|`mqtt`|
@@ -56,10 +60,16 @@ Level|Type|Services|Port|Expose|Shared|Description
 ||+|`nosqldb`|||x|
 ||service|`mqtt2kafka`||||route specified MQTT topics' payloads to cloud
 ||+|mqtt|||X|
-7|*service* |[`nosqldb`](https://github.com/dcmartin/open-horizon/tree/master/nosqldb)||||local noSQL store; see  [**CouchDB**](http://couchdb.apache.org/)
-8|pattern|`gateway4motion`|NA|NA||gateway for multiple motion2mqtt devices
-||service|`motion-control`|80|8080, 8081, 8082||Provide control infrastructure for `motion` configuration
-||service|`gateway-webui`|80|80|||Web UX for _application_: motion and entity detection and classification
+7|*service* |[`nosqldb`](https://github.com/dcmartin/open-horizon/tree/master/nosqldb)||||noSQL repository; see  [**CouchDB**](http://couchdb.apache.org/)
+7|*service*|`grafana`||3306||Graphical analysis; see [**InfluxDB**](https://github.com/influxdata/influxdb)
+7|*service*|`influxdb`||8086||Time-series database; see [**Grafana**](https://grafana.com/)
+7|*service*|`motion-control`|80|8080, 8081, 8082||Provide control infrastructure for `motion` configuration
+||+|`mqtt`|80|81, 1883|X||MQTT broker
+||+|`cpu`|80|81, 1883|X||CPU monitor
+||+|`hal`|80|81, 1883|X||hardware monitor
+||+|`wan`|80|81, 1883|X||Internet monitor
+||+|`herald4pattern`|80, 5959, 5960|5959, 5960||Herald of services in _pattern_
+7|*service*|`gateway`|80|80|||Web UX for _application_: motion and entity detection and classification
 ||+|`couchdb`|80|<STD>|X||CouchDB service with replication to/from IBM Cloudant
 ||+|`mqtt`|80|81, 1883|X||MQTT broker
 ||+|`cpu`|80|81, 1883|X||CPU monitor
@@ -67,13 +77,41 @@ Level|Type|Services|Port|Expose|Shared|Description
 ||+|`wan`|80|81, 1883|X||Internet monitor
 ||+|`herald4pattern`|80, 5959, 5960|5959, 5960||Herald of services in _pattern_
 ||+|`mqtt2kafka`|80||X||MQTT to Kafka relay
- |service|`grafana`||3306||Graphical analysis
- |service|`influxdb`||8086||Time-series database
-8|pattern|`motion4gateway`|NA|NA||`yolo4motion` using `gateway4motion` services
-||service|`motion2mqtt`|
+8|service|`gw4motion`|NA|NA||`gateway` supporting `yolo4motion`
 ||+|`cpu`|80|81, 1883|X||CPU monitor
+||+|`wan`|80|||to monitor Internet
 ||+|`hal`|80|81, 1883|X||hardware monitor
-||+|`yolo4motion`|
-||service|`mqtt2mqtt`|
-||+|`herald4pattern`|80, 5959, 5960|5959, 5960||Herald of services in _pattern_
+||+|`nosqldb`|
+||service|`mqtt2kafka`|
 ||+|`mqtt`|
+||service|+|`herald4pattern`|80, 5959, 5960|5959, 5960||Herald of services in _pattern_
+
+## Example patterns
+
+Level|Type|Services|Port|Expose|Description
+---|---|---|---|---|---|
+4|pattern|[`yolo2msghub`](https://github.com/dcmartin/open-horizon/tree/master/yolo2msghub)|||poll USB camera image; detect "person" using [`YOLO`](https://pjreddie.com/darknet/yolo/) on _node_; send composite services' data to Kafka.
+||service|`yolo2msghub`|80|8587
+||+|`cpu`|80
+||+|`hal`|80
+||+|`wan` |80
+||+|`yolo` |80
+6|pattern|[`motion-detect`](https://github.com/dcmartin/open-horizon/tree/master/motion-detect)|||detect motion with [motion](https://motion-project.github.io/) from USB or other camera(s); classify with [`YOLO`](https://pjreddie.com/darknet/yolo/); send results to non-local MQTT broker (n.b. see `motion-control`)
+||service|`motion2mqtt`|8080, 8081, 8082|8080, 8081, 8082||
+||+|`mqtt`|80, 1883|1883||
+||+|`hal`|80|||
+||+|`cpu`|80|||
+||service|`yolo4motion`|80|
+||service|`mqtt2mqtt`|80||Relay selected local topics to master
+||service|`herald4pattern`|80|||
+8|pattern|[`motion-control`](https://github.com/dcmartin/open-horizon/tree/master/motion-control)|||monitor and control fleet of devices running `motion-detect` pattern; receive MQTT payloads of latest images, GIF animations, classified selected entity(s); aggregate locally and provide Web analysis dashboad
+||+|`mqtt`|80, 1883|1883|Master MQTT broker
+||+|`hal`|80|||
+||+|`wan`|80|||
+||+|`cpu`|80|||
+||service|`nosqldb`|
+||service|`grafana`|
+||service|`influxdb`|
+||service|`motion-control`|80|80|
+||service|`herald4pattern`|80|||
+||service|`mqtt2kafka`|
