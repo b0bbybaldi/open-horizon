@@ -42,3 +42,4 @@
 # Umbrella with Rain	&#9748;
 # Ferris Wheel	&#127905;
 # Factory	&#127981;
+# Smiley Face	&#128515;
