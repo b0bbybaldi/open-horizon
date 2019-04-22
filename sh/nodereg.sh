@@ -53,7 +53,7 @@ node_purge()
   node_unregister ${machine}
   if [ $(node_is_debian ${machine}) == 'true' ]; then
     echo "--- INFO -- $0 $$ -- purging ${machine}" &> /dev/stderr
-    ssh ${machine} 'sudo apt purge -y bluehorizon horizon horizon-cli' &> /dev/null
+    ssh ${machine} 'sudo apt purge -y bluehorizon horizon horizon-cli' # &> /dev/null
   else
     if [ "${DEBUG:-}" == 'true' ]; then echo "+++ WARN -- $0 $$ -- ${1} - non-DEBIAN; purge manually" &> /dev/stderr; fi
   fi

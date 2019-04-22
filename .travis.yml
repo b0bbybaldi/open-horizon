@@ -46,7 +46,7 @@ env:
     - TEST_ON=true 
     - PUSH_ON=false
     - PUBLISH_ON=false
-    - PATTERN_ON=true
+    - PATTERN_ON=false
     - REGISTRY_TARGET=docker.io
     - EXCHANGE_TARGET=alpha.edge-fabric.com
     - EXCHANGE_TARGET_VERSION=v1
@@ -167,7 +167,7 @@ jobs:
         - STAGE=master-pull-request
         - TAG=
       script:
-        - if [ ${TEST_ON:-false} = true ]; then make ./.travis/travis-pull-request.sh; fi
+        - if [ ${TEST_ON:-false} = true ]; then ./.travis/travis-pull-request.sh; fi
     # master publish
     - stage: master-publish
       env:
