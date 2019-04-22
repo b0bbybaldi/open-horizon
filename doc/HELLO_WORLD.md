@@ -1,4 +1,4 @@
-# `hello` - The `hello-world` example
+# &#128515; `hello` - The `hello-world` example
 
 ## Introduction
 As with all software systems a simple example is required to on-board new users; this service is that example.
