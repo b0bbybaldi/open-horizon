@@ -31,7 +31,7 @@ else
 fi
 
 if [ "${HOST%:*}" == "${HOST}" ]; then
-  PORT=$(jq '.deployment.services|to_entries|first|.value.specific_ports|first|.HostPort' service.json | sed 's/[^:]*:\([^\/]*\).*/\1/')
+  PORT=$(jq -r '.deployment.services|to_entries|first|.value.specific_ports|first|.HostPort' service.json | sed 's/\([0-9]*\)\/.*/\1/' | sed 's/null//')
   if [ -z "${PORT}" ] || [ "${PORT}" == 'null' ]; then
     PORT=$(jq -r '.ports?|to_entries|first|.key?' service.json | sed 's|\(.*\)/.*|\1|')
     if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO $0 $$ -- Using development port: ${PORT}" &> /dev/stderr; fi

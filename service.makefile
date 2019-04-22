@@ -209,12 +209,11 @@ service-test:
 
 test-service: start-service test
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; version: ${SERVICE_VERSION}; arch: $(BUILD_ARCH)""${NC}" &> /dev/stderr
-	#@if [ -s "${TEST_RESULT}" ] && [ $$(cat ${TEST_RESULT}) == 'true' ]; then TC="${TEST_GOOD}"; else TC="${TEST_BAD}"; OP=$$(cat ${TEST_OUTPUT}); fi && echo "$${TC}"">>> MAKE --" $$(date +%T) "-- test-service: ${SERVICE_NAME}; result:" $$(cat $(TEST_RESULT)) "; output: $${OP:-okay}" "${NC}" &> /dev/stderr
 	-@${MAKE} stop-service &> /dev/null
 
 test:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- test: ${DOCKER_TAG}""${NC}" &> /dev/stderr
-	@./sh/test.sh "${DOCKER_TAG}" 1> ${TEST_RESULT} 2> ${TEST_OUTPUT}
+	@./sh/test.sh "${DOCKER_TAG}" 1> ${TEST_RESULT} 2> ${TEST_OUTPUT} && cat ${TEST_OUTPUT} && cat ${TEST_RESULT}
  
 ## publish & verify
 
@@ -228,7 +227,7 @@ publish-service: publish
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- publish-service: $(SERVICE_NAME); architecture: ${BUILD_ARCH}""${NC}" &> /dev/stderr
 
 publish: ${DIR} $(APIKEY) $(KEYS)
-	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && if [ ! -z "$(DOCKER_PUBLICKEY)" ]; then ARGS="-r $(DOCKER_REGISTRY):iamapikey:$(DOCKER_PUBLICKEY)"; fi && hzn exchange service publish -O -k ${PRIVATE_KEY_FILE} -K ${PUBLIC_KEY_FILE} -f ${DIR}/service.definition.json -o ${HZN_ORG_ID} -u iamapikey:$(shell cat $(APIKEY)) $${ARGS:-}
+	@export HZN_ORG_ID=$(HZN_ORG_ID) HZN_EXCHANGE_URL=${HEU} && if [ ! -z "$(DOCKER_PUBLICKEY)" ]; then ARGS="-r $(DOCKER_REGISTRY):iamapikey:$(DOCKER_PUBLICKEY)"; fi && hzn exchange service publish -k ${PRIVATE_KEY_FILE} -K ${PUBLIC_KEY_FILE} -f ${DIR}/service.definition.json -o ${HZN_ORG_ID} -u iamapikey:$(shell cat $(APIKEY)) $${ARGS:-}
 
 service-verify: 
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- service-verify : ${SERVICE_NAME}; architectures: ${SERVICE_ARCH_SUPPORT}""${NC}" &> /dev/stderr

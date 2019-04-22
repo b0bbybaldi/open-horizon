@@ -13,15 +13,13 @@
     { "url": "com.github.dcmartin.open-horizon.record", "org": "${HZN_ORG_ID}", "version": "0.0.1", "arch": null }
   ],
   "userInput": [
-    { "name": "FFT_BIN_COUNT", "label": "", "type": "int", "defaultValue": "64" },
-    { "name": "FFT_SAMPLE_MIN", "label": "minimum samples required for analysis", "type": "int", "defaultValue": "5" },
-    { "name": "FFT_SAMPLE_MAX", "label": "maximum number of samples", "type": "int", "defaultValue": "100" },
     { "name": "FFT_ANOMALY_TYPE", "label": "anomaly type; default: butter; options: butter,welch", "type": "string", "defaultValue": "butter" },
     { "name": "FFT_ANOMALY_LEVEL", "label": "anomaly level; default: 0.05; range: (0,1]", "type": "float", "defaultValue": "0.05" },
     { "name": "FFT_ANOMALY_MOCK", "label": "generate mock anomaly; default: false", "type": "boolean", "defaultValue": "false" },
     { "name": "FFT_INCLUDE_RAW", "label": "include raw results", "type": "boolean", "defaultValue": "false" },
     { "name": "FFT_INCLUDE_WAV", "label": "include original audio", "type": "boolean", "defaultValue": "false" },
     { "name": "FFT_PERIOD", "label": "period in seconds to poll for new audio", "type": "int", "defaultValue": "5" },
+    { "name": "LOGTO", "label": "where to log", "type": "string", "defaultValue": "/dev/stderr" },
     { "name": "LOG_LEVEL", "label": "specify logging level", "type": "string", "defaultValue": "info" },
     { "name": "DEBUG", "label": "debug on/off", "type": "boolean", "defaultValue": "true" }
   ],

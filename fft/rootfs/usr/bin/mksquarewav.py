@@ -13,7 +13,7 @@ from scipy import signal
 from scipy.io import wavfile
 
 ## use Tk canvas
-matplotlib.use('TkAgg')
+matplotlib.use('Agg')
 
 ## define parameters
 sampleRate = 44100

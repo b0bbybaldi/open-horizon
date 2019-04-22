@@ -12,7 +12,7 @@ import sys
 ## matplotlib
 import matplotlib
 # configure to use Tk canvas
-matplotlib.use('TkAgg')
+matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 import numpy as np

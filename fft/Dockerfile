@@ -11,18 +11,45 @@ ENV \
     PS1="$(whoami)@$(hostname):$(pwd)$ " \
     TERM="xterm"
 
-RUN apt-get update && apt-get install -q -y --no-install-recommends \
+## base
+RUN export DEBIAN_FRONTEND=noninteractive \
+  \
+  && \
+  \
+  apt-get update && apt-get install -qq -y --no-install-recommends \
+    apt-utils \
+    pkg-config \
+    jq \
     curl \
     socat \
     ffmpeg \
-    jq \
-    python3 \
-    python3-pip \
   \
   && rm -fr \
     /tmp/*
 
-RUN pip3 install  matplotlib numpy scipy pydub
+## python
+RUN export DEBIAN_FRONTEND=noninteractive \
+  \
+  && \
+  \
+  apt-get update && apt-get install -qq -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-tk \
+    python3-numpy \
+    python3-matplotlib \
+    python3-scipy \
+  \
+  && rm -fr \
+    /tmp/*
+
+## cleanup
+RUN apt-get -y autoremove && apt-get -y autoclean
+RUN rm -rf /var/cache/apt
+
+RUN pip3 install --upgrade setuptools 
+
+RUN pip3 install pydub 
 
 # Copy root file-system
 COPY rootfs /

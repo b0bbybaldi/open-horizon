@@ -6,6 +6,8 @@
       "url": "com.github.dcmartin.open-horizon.fft",
       "versionRange": "[0.0.0,INFINITY)",
       "variables": {
+        "FFT_ANOMALY_MOCK": true,
+        "LOGTO": "/dev/stderr",
         "LOG_LEVEL": "info",
         "DEBUG": false
       }
