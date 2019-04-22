@@ -95,21 +95,19 @@ fi
 PORTS=$(jq -r '.deployment.services|to_entries[]|.value.specific_ports[].HostPort' ${SERVICE})
 if [ ! -z "${PORTS}" ]; then
   for P in ${PORTS}; do
-    SP=$(echo "${P}" | sed 's/\([0-9]*\).*/\1/')
-    if [ -z "${SP}" ]; then
-      echo "*** ERRROR: no service port specified: ${P}; continuing" &> /dev/stderr
-      continue
-    elif [ "${SP}" -eq "${SERVICE_PORT:-}" ]; then
-      echo "--- INFO: service port: ${SP}; continuing" &> /dev/stderr
+    HOST_PORT=$(echo "${P}" | sed 's/\([0-9]*\).*/\1/')
+    if [ -z "${HOST_PORT}" ]; then
+      echo "*** ERRROR: no port specified: ${P}; continuing" &> /dev/stderr
       continue
     fi
-    DP=$(echo ${PORTS} | sed 's/[0-9]*[:]*\([0-9]*\).*/\1/')
-    if [ -z "${DP}" ]; then
-      echo "+++ WARN: no host port specified; matching service port: ${DP}" &> /dev/stderr
+    CONTAINER_PORT=$(echo ${P} | sed 's/[0-9]*[:]*\([0-9]*\).*/\1/')
+    if [ -z "${CONTAINER_PORT}" ]; then CONTAINER_PORT=${HOST_PORT}; fi
+    if [ "${SERVICE_PORT}" -eq "${CONTAINER_PORT:-}" ]; then
+      echo "+++ WARN -- $0 $$ -- service port: ${CONTAINER_PORT}; continuing" &> /dev/stderr
       continue
     fi
-    if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- mapping service port: ${SP} to host port: ${DP}" &> /dev/stderr; fi
-    OPTIONS="${OPTIONS:-}"' --publish='"${DP}"':'"${SP}"
+    if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- mapping service port: ${CONTAINER_PORT} to host port: ${HOST_PORT}" &> /dev/stderr; fi
+    OPTIONS="${OPTIONS:-}"' --publish='"${HOST_PORT}"':'"${CONTAINER_PORT}"
   done
 fi
 

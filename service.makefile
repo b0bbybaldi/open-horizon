@@ -50,10 +50,9 @@ DOCKER_NAME = $(BUILD_ARCH)_$(SERVICE_URL)
 DOCKER_TAG := $(DOCKER_REPOSITORY)/$(DOCKER_NAME):$(SERVICE_VERSION)
 
 ## ports
-SERVICE_PORT ?= $(shell jq -r '.deployment.services."'${SERVICE_LABEL}'".specific_ports?|first|.HostPort' service.json | sed 's/\([0-9]*\).*/\1/' | sed 's/null//')
-DOCKER_PORT ?= $(shell jq -r '.deployment.services."'${SERVICE_LABEL}'".specific_ports?|first|.HostPort' service.json | sed 's/[0-9]*[:]*\([0-9]*\).*/\1/' | sed 's/null//')
-DOCKER_PORT := $(if ${DOCKER_PORT},${DOCKER_PORT},$(shell jq -r '.ports?|to_entries?|first|.value?' service.json))
-SERVICE_PORT := $(if ${SERVICE_PORT},${SERVICE_PORT},80)
+DOCKER_PORT ?= $(shell jq -r '.deployment.services."'${SERVICE_LABEL}'".specific_ports?|first|.HostPort' service.json | sed 's/\([0-9]*\).*/\1/' | sed 's/null//')
+SERVICE_PORT ?= $(shell jq -r '.deployment.services."'${SERVICE_LABEL}'".specific_ports?|first|.HostPort' service.json | sed 's/[0-9]*[:]*\([0-9]*\).*/\1/' | sed 's/null//')
+SERVICE_PORT := $(if ${SERVICE_PORT},${SERVICE_PORT},$(if ${DOCKER_PORT},${DOCKER_PORT},80))
 DOCKER_PORT := $(if ${DOCKER_PORT},${DOCKER_PORT},$(shell echo "( $$$$ + 5000 ) % 32000 + 32000" | bc))
 
 ## BUILD
@@ -316,7 +315,7 @@ nodes-clean: nodes-undo
 	@for machine in $(TEST_NODE_NAMES); do \
 	  echo "${MC}>>> MAKE --" $$(date +%T) "-- cleaning $${machine}" "${NC}"; \
 	  ping -W 1 -c 1 $${machine} &> /dev/null \
-	    && ssh $${machine} 'IDS=$$(docker ps --format "{{.ID}}") && if [ ! -z "${IDS}" ]; then docker rm -f ${IDS}; fi || docker system prune -fa &> ~/prune.log &' \
+	    && ssh $${machine} 'IDS=$$(docker ps --format "{{.ID}}") && if [ ! -z "$${IDS}" ]; then docker rm -f $${IDS}; fi || docker system prune -fa &> ~/prune.log &' \
 	    || echo "${RED}>>> MAKE **" $$(date +%T) "** not found $${machine}""${NC}" &> /dev/stderr; \
 	done
 

@@ -20,9 +20,9 @@
       "mqtt": {
         "environment": [
           "SERVICE_LABEL=mqtt",
-          "SERVICE_VERSION=0.0.2"
+          "SERVICE_VERSION=0.0.2.1"
         ],
-        "specific_ports": [],
+        "specific_ports": [ { "HostPort": "1882:80/tcp", "HostIP": "0.0.0.0" }, { "HostPort": "1883/tcp", "HostIP": "0.0.0.0" } ],
         "image": null,
         "privileged": true
       }

@@ -6,6 +6,10 @@
       "url": "com.github.dcmartin.open-horizon.fft",
       "versionRange": "[0.0.0,INFINITY)",
       "variables": {
+        "MQTT_HOST": "mqtt",
+        "MQTT_USERNAME": "",
+        "MQTT_PASSWORD": "",
+        "FFT_DEVICE": "",
         "FFT_ANOMALY_MOCK": true,
         "LOGTO": "/dev/stderr",
         "LOG_LEVEL": "info",

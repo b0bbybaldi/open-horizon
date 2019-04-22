@@ -7,7 +7,6 @@
       "versionRange": "[0.0.0,INFINITY)",
       "variables": {
         "MOTION_TIMEZONE": "America/Los_Angeles",
-        "MOTION_GROUP": "newman",
         "MOTION_DEVICE": "",
         "MOTION_POST_PICTURES": "center",
         "MOTION_LOG_LEVEL": 6,

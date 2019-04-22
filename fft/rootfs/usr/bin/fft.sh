@@ -204,4 +204,13 @@ while true; do
   ## update the output file
   service_update "${OUTPUT_FILE}"
 
+  ## send payload to MQTT
+  if [ ! -z "${MQTT_HOST}" ]; then
+    MQTT_TOPIC="${FFT_GROUP}/${FFT_DEVICE}/fft/event"
+    if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- publishing ${OUTPUT_FILE} to ${MQTT_TOPIC}; size:" $(wc -c ${OUTPUT_FILE}) &> /dev/stderr; fi
+    ${0%/*}/mqtt_pub.sh -t "${MQTT_TOPIC}" -f "${OUTPUT_FILE}"
+  else
+    if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- no MQTT host defined" &> /dev/stderr; fi
+  fi
+
 done
