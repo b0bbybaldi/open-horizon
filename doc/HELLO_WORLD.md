@@ -110,8 +110,9 @@ ln -s ../service.makefile Makefile
 Create the **`./Dockerfile`** with the following contents
 
 ```
+ARG BUILD_FROM
 FROM ${BUILD_FROM}
-RUN apt-get update && apt-get install -qq -y socat
+RUN apt-get update && apt-get install -qq -y socat curl
 COPY rootfs /
 CMD ["/usr/bin/run.sh"]
 ```

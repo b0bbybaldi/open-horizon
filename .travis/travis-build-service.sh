@@ -2,3 +2,5 @@
 set -o errexit
 
 echo "--- INFO -- $0 $$ -- executed" &> /dev/stderr
+
+make build-service

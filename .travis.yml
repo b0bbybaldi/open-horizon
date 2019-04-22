@@ -100,7 +100,8 @@ jobs:
         - TAG=beta 
         - BUILD_ARCH=amd64
       script:
-        - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+        - if [ ${BUILD_ON:-false} = true ]; then ./travis/travis-build-service.sh beta; fi
+        - if [ ${TEST_ON:-false} = true ]; then ./travis/travis-test-service.sh beta; fi
     # beta arm64 build
     - stage: test-arm64-beta
       env:
@@ -108,7 +109,8 @@ jobs:
         - TAG=beta 
         - BUILD_ARCH=arm64
       script:
-        - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+        - if [ ${BUILD_ON:-false} = true ]; then ./travis/travis-build-service.sh beta; fi
+        - if [ ${TEST_ON:-false} = true ]; then ./travis/travis-test-service.sh beta; fi
     # beta arm build
     - stage: test-arm-beta
       env:
@@ -116,11 +118,11 @@ jobs:
         - TAG=beta 
         - BUILD_ARCH=arm
       script:
-        - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+        - if [ ${BUILD_ON:-false} = true ]; then ./travis/travis-build-service.sh beta; fi
+        - if [ ${TEST_ON:-false} = true ]; then ./travis/travis-test-service.sh beta; fi
       after_script:
         - if [ ${TRAVIS_AFTER:-false} = true ]; then ./.travis/travis-after-script.sh; fi
       after_success:
-        # anything or nothing at all
         - if [ ${TRAVIS_SUCCESS:-false} = true ]; then ./.travis/travis-after-success.sh; fi
       after_failure:
         - if [ ${TRAVIS_FAILURE:-false} = true ]; then ./.travis/travis-after-failure.sh; fi
@@ -131,8 +133,7 @@ jobs:
         - TAG=beta 
         - BUILD_ARCH=amd64
       script:
-        - ./.travis/travis-publish.sh beta
-        - if [ ${PUBLISH_ON:-false} = true ]; then make build-service publish-service; fi
+        - if [ ${PUBLISH_ON:-false} = true ]; then ./.travis/travis-publish-service.sh beta; fi
     # beta deploy
     - stage: beta-deploy
       env:
@@ -142,8 +143,7 @@ jobs:
         - EXCHANGE_TARGET=staging.edge-fabric.com
         - EXCHANGE_TARGET_VERSION=v1
       script:
-        - ./.travis/travis-deploy.sh beta
-        - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
+        - if [ ${PATTERN_ON:-false} = true ]; then ./.travis/travis-deploy.sh beta; fi
 #      before_deploy:
 #        provider: script
 #        script:
@@ -167,16 +167,14 @@ jobs:
         - STAGE=master-pull-request
         - TAG=
       script:
-        - ./.travis/travis-pull-request.sh
-        - if [ ${TEST_ON:-false} = true ]; then make build-service test-service; fi
+        - if [ ${TEST_ON:-false} = true ]; then make ./.travis/travis-pull-request.sh; fi
     # master publish
     - stage: master-publish
       env:
         - STAGE=master-publish
         - TAG=
       script:
-        - ./.travis/travis-publish.sh
-        - if [ ${PUBLISH_ON:-false} = true ]; then make build-service test-service publish-service; fi
+        - if [ ${PUBLISH_ON:-false} = true ]; then ./.travis/travis-publish-service.sh; fi
     # master deploy
     - stage: master-deploy
       env:
@@ -186,5 +184,4 @@ jobs:
         - EXCHANGE_TARGET=alpha.edge-fabric.com
         - EXCHANGE_TARGET_VERSION=v1
       script:
-        - ./.travis/travis-deploy.sh
-        - if [ ${PATTERN_ON:-false} = true ]; then make pattern-publish; fi
+        - if [ ${PATTERN_ON:-false} = true ]; then ./.travis/travis-deploy.sh; fi
