@@ -31,11 +31,10 @@ Level|Type|Services|Port|Expose|Shared|Description
 ||+|`hal`| 
 ||+|`wan` |
 ||+|`yolo` |
+5| *service* |[`fft4mqtt`](https://github.com/dcmartin/open-horizon/tree/master/fft)|80|||process input `mqtt`; perform analysis; post `mqtt`
+||+|`mqtt`
 4|service |[`yolo4motion`](https://github.com/dcmartin/open-horizon/tree/master/yolo4motion)|80|||modified from `yolo` to listen via MQTT to `motion`
 ||+|`mqtt`
-4|*service* |[`noize-filter`](https://github.com/dcmartin/open-horizon/tree/master/noize-filter)|
-||+|`mqtt`
-||+|`fft4noize`
 4|service|[`mqtt2kafka`](https://github.com/dcmartin/open-horizon/tree/master/mqtt2kafka)|80|||route specified MQTT topics' payloads to Kafka broker
 ||+|`mqtt`
 5 |service, pattern|[`motion2mqtt`](https://github.com/dcmartin/open-horizon/tree/master/motion2mqtt)|8080, 8081, 8082|8082||capture images using [motion package](https://motion-project.github.io/); send to MQTT
@@ -47,13 +46,17 @@ Level|Type|Services|Port|Expose|Shared|Description
 ||+|`mqtt`|80, 1883|1883|X|
 5|*service*|[`noize`](https://github.com/dcmartin/open-horizon/tree/master/noize)|9191|9191||capture audio after silence and send to MQTT broker
 ||+|`mqtt`|
-6|*service*|[`fft-detect`](https://github.com/dcmartin/open-horizon/tree/master/fft-detect)|
-||+|*fft4mqtt*|
-||+|mqtt|||X|
-||+|`couchdb`|||x|
+4|*service* |[`noize-filter`](https://github.com/dcmartin/open-horizon/tree/master/noize-filter)|
+||+|`mqtt`
+||+|`fft4noize`
+6|*service*|[`noize-analysis`](https://github.com/dcmartin/open-horizon/tree/master/analysis4fft)|
+||+|`fft4noize`|
+||+|`fft2mqtt`|
+||+|`mqtt`|||X|
+||+|`nosqldb`|||x|
 ||service|`mqtt2kafka`||||route specified MQTT topics' payloads to cloud
 ||+|mqtt|||X|
-7|*service* |[`couchdb`](https://github.com/dcmartin/open-horizon/tree/master/couchdb)||||local noSQL store; see  [**CouchDB**](http://couchdb.apache.org/)
+7|*service* |[`nosqldb`](https://github.com/dcmartin/open-horizon/tree/master/nosqldb)||||local noSQL store; see  [**CouchDB**](http://couchdb.apache.org/)
 8|pattern|`gateway4motion`|NA|NA||gateway for multiple motion2mqtt devices
 ||service|`motion-control`|80|8080, 8081, 8082||Provide control infrastructure for `motion` configuration
 ||service|`gateway-webui`|80|80|||Web UX for _application_: motion and entity detection and classification
