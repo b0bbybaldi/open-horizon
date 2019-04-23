@@ -6,6 +6,7 @@
       "url": "com.github.dcmartin.open-horizon.motion2mqtt",
       "versionRange": "[0.0.0,INFINITY)",
       "variables": {
+        "HZN_EXCHANGE_APIKEY": "${HZN_EXCHANGE_APIKEY}",
         "MOTION_TIMEZONE": "America/Los_Angeles",
         "MOTION_DEVICE": "",
         "MOTION_POST_PICTURES": "center",
@@ -25,7 +26,7 @@
 	"MQTT_HOST": "mqtt",
         "MQTT_USERNAME": "",
         "MQTT_PASSWORD": "",
-        "MQTT2KAFKA_APIKEY": "",
+        "MQTT2KAFKA_APIKEY": "${MQTT2KAFKA_APIKEY}",
         "MQTT2KAFKA_PAYLOAD": "image",
         "MQTT2KAFKA_SUBSCRIBE": "+/+/+/event/end",
         "MQTT2KAFKA_PUBLISH": "",

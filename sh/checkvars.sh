@@ -42,19 +42,34 @@ if [ ${user_input} -gt 0 ]; then
   if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- found ${user_input} userInput variables" &> /dev/stderr; fi
   for evar in $(jq -r '.userInput?[].name' "${SERVICE_TEMPLATE}"); do 
     VAL=$(jq -r '.services[]?|select(.url=="'${SERVICE_URL}'").variables|to_entries[]?|select(.key=="'${evar}'").value' ${USERINPUT}) 
-    if [ -z "${VAL:-}" ]; then
-      if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- no value found for variable ${evar}" &> /dev/stderr; fi
-      continue
-    fi
     if [ ! -z "${DEBUG:-}" ]; then echo "--- INFO -- $0 $$ -- ${evar}: ${VAL}" &> /dev/stderr; fi
     if [ -s "${evar}" ]; then 
+      if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- found file: ${evar}" &> /dev/stderr; fi
       VAL=$(cat "${evar}")
       UI=$(jq -c '(.services[]?|select(.url=="'${SERVICE_URL}'").variables.'${evar}')|='${VAL} "${USERINPUT}")
       echo "${UI}" > "${USERINPUT}"
       if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- ${evar}=${VAL}" &> /dev/stderr; fi
-    elif [ "${VAL}" = null ]; then 
-      echo "*** ERROR -- $0 $$ -- variable ${evar} has no default and value is null; create file named ${evar} with JSON content; exiting"
-      exit 1
+    fi
+  done
+fi
+
+# check userinput
+service_urls=$(jq -r '.services[]?.url' ${USERINPUT})
+if [ ! -z "${service_urls}" ]; then
+  for service_url in ${service_urls}; do
+    variables=$(jq -r '.services[]|select(.url=="'${service_url}'")|.variables|to_entries[].key' ${USERINPUT})
+    if [ ! -z "${variables}" ]; then
+      for evar in ${variables}; do
+        if [ -s "${evar}" ]; then 
+          if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- found file: ${evar}" &> /dev/stderr; fi
+          VAL=$(cat "${evar}")
+          UI=$(jq -c '(.services[]|select(.url=="'${service_url}'").variables.'${evar}')|='${VAL} "${USERINPUT}")
+          echo "${UI}" > "${USERINPUT}"
+          if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- URL: ${service_url}; ${evar}=${VAL}" &> /dev/stderr; fi
+        fi
+      done
+    else
+      if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- URL: ${service_url}; no variables" &> /dev/stderr; fi
     fi
   done
 fi

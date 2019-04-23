@@ -90,15 +90,9 @@ $(PRIVATE_KEY_FILE) $(PUBLIC_KEY_FILE):
 ${DIR}: service.json userinput.json $(APIKEY)
 	@rm -fr ${DIR} && mkdir -p ${DIR} && export HZN_ORG_ID=${HZN_ORG_ID} HZN_EXCHANGE_URL=${HEU} && hzn dev service new -d ${DIR} # &> /dev/null
 	@jq '.org="'${HZN_ORG_ID}'"|.label="'${SERVICE_LABEL}'"|.arch="'${BUILD_ARCH}'"|.url="'${SERVICE_URL}'"|.deployment.services=([.deployment.services|to_entries[]|select(.key=="'${SERVICE_LABEL}'")|.key="'${SERVICE_LABEL}'"|.value.image="'${DOCKER_TAG}'"]|from_entries)' service.json > ${DIR}/service.definition.json
-	@export SERVICE_URL=${SERVICE_URL} HZN_ORG_ID=${HZN_ORG_ID} && cat userinput.json | envsubst > ${DIR}/userinput.json
+	@export HZN_EXCHANGE_APIKEY=$(shell cat $(APIKEY)) SERVICE_URL=${SERVICE_URL} HZN_ORG_ID=${HZN_ORG_ID} && cat userinput.json | envsubst > ${DIR}/userinput.json
+	@./sh/checkvars.sh ${DIR}
 	@export HZN_EXCHANGE_URL=${HEU} TAG=${TAG} && ./sh/fixservice.sh ${DIR}
-
-#${DIR}/userinput.json: userinput.json ${DIR}
-#	@export SERVICE_URL=${SERVICE_URL} HZN_ORG_ID=${HZN_ORG_ID} && cat userinput.json | envsubst > ${DIR}/userinput.json
-#	@./sh/checkvars.sh ${DIR}
-
-#${DIR}/pattern.json: pattern.json ${DIR}
-#	@export TAG=${TAG} HZN_ORG_ID=${HZN_ORG_ID} SERVICE_LABEL=${SERVICE_LABEL} SERVICE_VERSION=${SERVICE_VERSION} SERVICE_URL=${SERVICE_URL} && ./sh/fixpattern.sh ${DIR}
 
 depend: $(APIKEY) ${DIR}
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- fetching dependencies; service: ${SERVICE_LABEL}; dir: ${DIR}""${NC}" &> /dev/stderr

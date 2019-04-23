@@ -1,7 +1,16 @@
 #!/usr/bin/python3
 
 ###
-### welch.py - perform FFT on WAV and calculate Welch power spectral density
+### motor.py - perform FFT on WAV and calculate Welch power spectral density; compare current to prior:
+###
+### - prior[0]: frequency bin 1
+### - prior[1]: frequency signal 1
+### - prior[2]: frequency bin 2
+### - prior[3]: frequency signal 2
+### - prior[4]: previous bin 1 test result (unused)
+### - prior[5]: previous signal 1 test result (unused)
+### - prior[6]: previous bin 2 test result (unused)
+### - prior[7]: previous signal 2 test result (unused)
 ###
 ### pip3 install matplotlib numpy scipy pydub
 ###

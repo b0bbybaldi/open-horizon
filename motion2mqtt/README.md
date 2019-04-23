@@ -40,7 +40,7 @@ Monitors attached camera and provides [motion-project.github.io][motion-project-
 + `url` - `com.github.dcmartin.open-horizon.motion2mqtt`
 + `version` - `0.0.10`
 
-## Variables
+## Service Variables
 + `MOTION_GROUP` - group name (aka top-level topic); defaults to `motion`
 + `MOTION_DEVICE` - device name; defaults to `HZN_DEVICE_ID` or `hostname`
 + `MOTION_TIMEZONE` - 
@@ -61,6 +61,38 @@ Monitors attached camera and provides [motion-project.github.io][motion-project-
 + `MQTT_PASSWORD` - MQTT password; defaults to ""
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - default: `false`
+
+## Required Services
+
+### [`cpu`](https://github.com/dcmartin/open-horizon/tree/master/cpu)
+### [`hal`](https://github.com/dcmartin/open-horizon/tree/master/hal)
+### [`yolo4motion`](https://github.com/dcmartin/open-horizon/tree/master/yolo4motion)
+### [`mqtt`](https://github.com/dcmartin/open-horizon/tree/master/mqtt)
+
+## Description
+This service detects [motion](http://motion-project.io), detects and identifies entities using [YOLO](http://darknet).  All image processing and AI classification is executed on the device; no GPU is currently utilized. Timing varies by device type; for example a 320x240 8-bit pixel image:
+
++ RaspberryPi3B+ - approximately 50 seconds
++ nVidia Jetson Nano - approximately 5 seconds
++ AMD64/Intel - approximately 2 seconds
+
+### Output
+This service publishes JSON *events*, JPEG *images*, and GIF *animations* of motion.  The event information includes details on the event:
+
+**EVENT*
+
+```
+```
+
+**IMAGE**
+
+<img src="samples/annotated-image.jpeg">
+
+
+**ANIMATION**
+
+<img src="samples/animated-image.gif">
+
 
 ## How To Use
 Copy this [repository][repository], change to the `motion2mqtt` directory, then use the **make** command; see below:
