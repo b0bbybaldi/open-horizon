@@ -39,21 +39,31 @@ Monitors attached microphone using `record` service and provides FFT functionali
 
 ## Service Variables
 
-+ `FFT_ANOMALY_TYPE` - type of anomaly; default: `"motor"`; options: { `"butter"`,`"welch"`,`"motor"` }
-+ `FFT_ANOMALY_LEVEL` - level indicating anomaly; default: `0.2` for `motor`;`0.05` for `butter`;`128` for `welch`
++ `FFT_ANOMALY_GROUP` - group for MQTT topics; default `fft`
++ `FFT_ANOMALY_CLIENT` - client identifier; defaults to `HZN_DEVICE_ID` or `hostname`
++ `FFT_ANOMALY_TYPE` - type of anomaly; default: `"motor"`
++ `FFT_ANOMALY_LEVEL` - level indicating anomaly; default: `0.2` for `motor`
 + `FFT_ANOMALY_MOCK` - generate mock anomaly; default: `false`; options: `true`, `false`
 + `FFT_INCLUDE_RAW` - include raw results; default: `false`; options: `true`, `false`
-+ `FFT_INCLUDE_WAV` - include original audio; default: `false`; options: `true`, `false`
++ `FFT_INCLUDE_PNG` - include image results; default: `false`; options: `true`, `false`
++ `FFT_INCLUDE_WAV` - include audio; default: `false`; options: `true`, `false`
 + `FFT_PERIOD` - interval to poll for new recording; default: `5`; range: \(0,+\)
++ `MQTT_HOST` - default: `mqtt`
++ `MQTT_PORT` - default: `1883`
++ `MQTT_USERNAME` - default: `""`
++ `MQTT_PASSWORD` - default: `""`
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - default: `false`
 
 ## Required Services
 
 ### [`record`](https://github.com/dcmartin/open-horizon/blob/beta/record/README.md)
-+ `RECORD_DEVICE` - device to record sound; default: `PS3 Eye camera microphone identifier`
++ `RECORD_DEVICE` - device to record sound; default: *default system device*
 + `RECORD_PERIOD` - interval to poll audio device; default: `10.0` seconds
 + `RECORD_SECONDS` - amount of time to record; default: `5.0` seconds
+
+### [`mqtt`]()
++ `MQTT_PERIOD`
 
 ## Description
 This service provides a variety of FFT based anomaly detectors to provide data that may be used for temporal analysis of sound.  The service makes use of the `record` service to poll the device's microphone and collect audio.  The `fft` service polls the `record` service output and when updated, performs the specified anomaly detector (n.b. `FFT_ANOMALY_TYPE`), updating its output to include both the BASE64 encoded audio, but also the analysis data in both BASE64 encoded Python `numpy` array as well as a JSON array.
@@ -62,7 +72,9 @@ The `fft` service provides a ReStful API on its designated port and returns a JS
 
 Options for anomaly analysis:
 
-+ `butter` - perform [Butterworth](https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.signal.butter.html) order 3 [signal filter](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.lfilter.html)
+
++ `motor` - perform [Welch](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.welch.html) power spectral density and compare between readings for variation in top signal and signal strength.
++ `butter` - perform [Butterworth order 3](https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.signal.butter.html) [signal filter](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.lfilter.html)
 + `welch` - perform [Welch](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.welch.html) power spectral density
 
 ## How To Use
@@ -87,38 +99,94 @@ The `fft` value will initially be incomplete until the service completes its ini
 
 ```
 {
-  "mqtt": null,
-  "fft": {
-    "date": 1555813230,
-    "type": "butter",
-    "level": 0.05,
-    "id": "",
-    "butter": {
-      "data": [<data array>],
-      "image": "<base64 encoded string>"
+  "mqtt": {
+    "date": 1556054659,
+    "pid": 71,
+    "version": "mosquitto version 1.4.15",
+    "broker": {
+      "bytes": {
+        "received": 16894449,
+        "sent": 2049
+      },
+      "clients": {
+        "connected": 0
+      },
+      "load": {
+        "messages": {
+          "sent": {
+            "one": 82.43,
+            "five": 23.85,
+            "fifteen": 8.5
+          },
+          "received": {
+            "one": 105.6,
+            "five": 32.46,
+            "fifteen": 11.72
+          }
+        }
+      },
+      "publish": {
+        "messages": {
+          "received": 15,
+          "sent": 46,
+          "dropped": 0
+        }
+      },
+      "subscriptions": {
+        "count": 0
+      }
     }
   },
-  "date": 1555813226,
+  "fft": {
+    "date": 1556054668,
+    "type": "motor",
+    "level": 0.2,
+    "id": "davidsimac.local",
+    "record": {
+      "mock": "mixer_1",
+      "date": 1556054666,
+      "audio": true
+    },
+    "motor": {
+      "data": [
+        6890.625,
+        4976.8681640625,
+        1205.859375,
+        1966.3599853515625,
+        "true",
+        "true",
+        "true",
+        "true"
+      ],
+      "image": true
+    }
+  },
+  "date": 1556054571,
   "hzn": {
-    "agreementid": "",
-    "arch": "",
-    "cpus": 0,
-    "device_id": "",
-    "exchange_url": "",
+    "agreementid": "0001b487674e63737d84fbcdc011eaf365a39477a31f5feb20960040aaad154d",
+    "arch": "amd64",
+    "cpus": 1,
+    "device_id": "davidsimac.local",
+    "exchange_url": "https://alpha.edge-fabric.com/v1",
     "host_ips": [
-      ""
+      "127.0.0.1",
+      "192.168.1.27",
+      "192.168.1.26",
+      "9.80.94.82"
     ],
-    "organization": "",
-    "ram": 0,
+    "organization": "dcmartin@us.ibm.com",
+    "ram": 1024,
     "pattern": null
   },
   "config": {
     "log_level": "info",
     "debug": true,
-    "period": 10,
-    "type": "butter",
-    "level": 0.05,
-    "mock": false,
+    "period": 5,
+    "type": "motor",
+    "level": 0.2,
+    "mock": true,
+    "raw": false,
+    "wav": true,
     "services": [
       {
         "name": "mqtt",
@@ -130,8 +198,7 @@ The `fft` value will initially be incomplete until the service completes its ini
     "label": "fft",
     "version": "0.0.1"
   }
-}
-```
+}```
 
 ## SAMPLE
 A provided `square.wav` file, which may also be created using the `rootfs/usr/bin/mksqwave.sh` script is used as one of the mock data sets.
