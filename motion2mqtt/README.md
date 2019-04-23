@@ -79,14 +79,14 @@ This service detects [motion](http://motion-project.io), detects and identifies 
 ### Output
 This service publishes JSON *events*, JPEG *images*, and GIF *animations* of motion.  The event information includes details on the event:
 
-**EVENT*
+**EVENT**
 
 ```
 ```
 
 **IMAGE**
 
-<img src="samples/annotated-image.jpeg">
+<img src="samples/annotated-image.png">
 
 
 **ANIMATION**
