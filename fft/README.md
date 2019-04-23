@@ -39,8 +39,8 @@ Monitors attached microphone using `record` service and provides FFT functionali
 
 ## Service Variables
 
-+ `FFT_ANOMALY_TYPE` - type of anomaly; default: `"butter"`; options: { `"butter"`,`"welch"`,*TBD* }
-+ `FFT_ANOMALY_LEVEL` - level indicating anomaly; default: `0.05` for `butter` & `128` for `welch`
++ `FFT_ANOMALY_TYPE` - type of anomaly; default: `"motor"`; options: { `"butter"`,`"welch"`,`"motor"` }
++ `FFT_ANOMALY_LEVEL` - level indicating anomaly; default: `0.2` for `motor`;`0.05` for `butter`;`128` for `welch`
 + `FFT_ANOMALY_MOCK` - generate mock anomaly; default: `false`; options: `true`, `false`
 + `FFT_INCLUDE_RAW` - include raw results; default: `false`; options: `true`, `false`
 + `FFT_INCLUDE_WAV` - include original audio; default: `false`; options: `true`, `false`

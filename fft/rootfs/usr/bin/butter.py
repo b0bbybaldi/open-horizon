@@ -33,14 +33,21 @@ else:
   filename = "square"
 
 if narg > 2:
-  butter_order = int(sys.argv[2])
-else:
-  butter_order = 3
-
-if narg > 3:
-  butter_level = float(sys.argv[3])
+  butter_level = float(sys.argv[2])
 else:
   butter_level = 0.05
+
+if narg > 3:
+  print(sys.argv[:])
+  if sys.argv[3] != '':
+    butter_priors = json.loads(sys.argv[3])
+  else:
+    butter_priors = list()
+else:
+  butter_priors = list()
+
+if len(butter_priors) < 1:
+  butter_priors = json.loads("null")
 
 ## get file
 wav_filename = filename + '.wav'
@@ -63,7 +70,7 @@ freqs_list = freqs.tolist()
 json.dump(freqs_list, codecs.open(filename + '-fft.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=2)
 
 ## BUTTERWORTH FILTER
-b, a = signal.butter(butter_order, butter_level)
+b, a = signal.butter(3, butter_level)
 
 # filter signal with with butter (b, a)
 data_filtered = signal.filtfilt(b, a, raw)

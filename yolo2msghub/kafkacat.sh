@@ -49,21 +49,21 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
       echo "${REPLY}" > ${PAYLOAD}
       VALID=$(echo "${REPLY}" | ./test-yolo2msghub.sh 2> ${PAYLOAD%.*}.out)
     else
-      if [ "${DEBUG:-}" == true ]; then echo "+++ WARN $0 $$ -- received null payload:" $(date +%T) &> /dev/stderr; fi
+      if [ "${DEBUG:-}" = true ]; then echo "+++ WARN $0 $$ -- received null payload:" $(date +%T) &> /dev/stderr; fi
       continue
     fi
     if [ "${VALID}" != true ]; then
       echo "+++ WARN $0 $$ -- invalid payload: ${VALID}" $(cat ${PAYLOAD%.*}.out) &> /dev/stderr
     else
-      if [ "${DEBUG:-}" == true ]; then echo "--- INFO $0 $$ -- received bytes: $(wc -c ${PAYLOAD}); at: $(date +%T)" &> /dev/stderr; fi
+      if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- received bytes: $(wc -c ${PAYLOAD}); at: $(date +%T)" &> /dev/stderr; fi
     fi
 
     ID=$(jq -r '.hzn.device_id' ${PAYLOAD})
     ENTITY=$(jq -r '.yolo2msghub.yolo.entity?' ${PAYLOAD})
-    ENTITIES=($(jq -r '.yolo2msghub.yolo.detected[].entity' ${PAYLOAD}))
-    DATE=$(jq -r '.yolo2msghub.yolo.date' ${PAYLOAD})
+    DETECTED=$(jq '.yolo2msghub.yolo.detected[]?.entity' ${PAYLOAD})
+    DATE=$(jq -r '.date' ${PAYLOAD})
     NOW=$(date +%s)
-    AGO=$((NOW-DATE))
+    STARTED=$((NOW-DATE))
     DOWNLOAD=
     PERCENT=
     PRODUCT=
@@ -81,46 +81,59 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
       PRODUCT=$(echo "${HAL}" | jq -r '.lshw.product')
     fi
 
-    if [ "${DEBUG:-}" == true ]; then echo "--- INFO $0 $$ -- device: ${ID}; entity: ${ENTITY:-}; ago: ${AGO}; download: ${DOWNLOAD:-}; percent: ${PERCENT:-}; product: ${PRODUCT:-}" &> /dev/stderr; fi
+    if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- device: ${ID}; entity: ${ENTITY:-}; started: ${STARTED}; download: ${DOWNLOAD:-}; percent: ${PERCENT:-}; product: ${PRODUCT:-}" &> /dev/stderr; fi
 
     THIS=$(echo "${DEVICES}" | jq '.[]|select(.id=="'${ID}'")')
-    if [ -z "${THIS}" ] || [ "${THIS}" == 'null' ]; then
-      THIS='{"id":"'${ID}'","when":'${DATE}',"date":'${NOW}',"count":0,"ago":'${AGO}',"download":'${DOWNLOAD:-0}',"percent":'${PERCENT:-0}',"product":"'${PRODUCT:-unknown}'"}'
-      DEVICES=$(echo "${DEVICES}" | jq '.+=['"${THIS}"']')
+    if [ -z "${THIS}" ] || [ "${THIS}" = 'null' ]; then
+      COUNT=0
       TOTAL=0
       LAST=0
+      FIRST=0
+      AVERAGE=0
+      THIS='{"id":"'${ID}'","date":'${DATE}',"started":'${STARTED}',"count":'${COUNT}',"total":'${TOTAL}',"first":'${FIRST}',"last":'${LAST}',"average":'${AVERAGE:-0}',"download":'${DOWNLOAD:-0}',"percent":'${PERCENT:-0}',"product":"'${PRODUCT:-unknown}'"}'
+      DEVICES=$(echo "${DEVICES}" | jq '.+=['"${THIS}"']')
     else
-      TOTAL=$(echo "${THIS}" | jq '.count')
-      LAST=$(echo "${THIS}" | jq '.date')
+      COUNT=$(echo "${THIS}" | jq '.count')
+      FIRST=$(echo "${THIS}" | jq '.first')
+      AVERAGE=$(echo "${THIS}" | jq '.average')
     fi
 
-    DEVICES=$(echo "${DEVICES}" | jq '(.[]|select(.id=="'${ID}'"))|='"${THIS}")
-
-    if [ $(jq '.yolo2msghub.yolo!=null' ${PAYLOAD}) == true ]; then
-      if [ $(jq -r '.yolo2msghub.yolo.mock' ${PAYLOAD}) == 'null' ]; then
-        if [ ${DATE} -gt ${LAST} ]; then
-          COUNT=$(jq -r '.yolo2msghub.yolo.count' ${PAYLOAD})
+    if [ $(jq '.yolo2msghub.yolo!=null' ${PAYLOAD}) = true ]; then
+      if [ $(jq -r '.yolo2msghub.yolo.mock' ${PAYLOAD}) = 'null' ]; then
+        echo "--- INFO $0 $$ -- ${ID}: non-mock" &> /dev/stderr
+        WHEN=$(jq -r '.yolo2msghub.yolo.date' ${PAYLOAD})
+        if [ ${WHEN} -gt ${LAST} ]; then
+          echo "--- INFO $0 $$ -- ${ID}: new payload" &> /dev/stderr
+          SEEN=$(jq -r '.yolo2msghub.yolo.count' ${PAYLOAD})
           jq -r '.yolo2msghub.yolo.image' ${PAYLOAD} | base64 --decode > ${0##*/}.$$.${ID}.jpeg
-          if [ ${COUNT} -gt 0 ]; then
-            echo "--- INFO $0 $$ -- ${ID} at ${DATE}: ${ENTITY} count ${COUNT}" &> /dev/stderr
-            TOTAL=$((${TOTAL}+${COUNT}))
-            THIS=$(echo "${THIS}" | jq '.count='${TOTAL})
-            # if [ ! -z $(command -v open) ]; then open ${0##*/}.$$.${ID}.jpeg; fi
+          if [ ${SEEN} -gt 0 ]; then
+	    LAST=${WHEN}
+	    AGO=$((NOW-LAST))
+            echo "--- INFO $0 $$ -- ${ID}; ago: ${AGO}; ${ENTITY} seen: ${SEEN}" &> /dev/stderr
+            TOTAL=$(echo "${THIS}" | jq '.total') && TOTAL=$((TOTAL+SEEN))
+	    if [ ${FIRST} -eq 0 ]; then 
+              FIRST=${WHEN}
+	      INTERVAL=0
+	      AVERAGE=1.0
+	    else
+	      INTERVAL=$((LAST-FIRST))
+	      AVERAGE=$(echo "${TOTAL}/${INTERVAL}" | bc -l)
+            fi
+            THIS=$(echo "${THIS}" | jq '.interval='${INTERVAL:-0}'|.ago='${AGO:-0}'|.total='${TOTAL:-0}'|.last='${LAST:-0}'|.first='${FIRST:-0}'|.average='${AVERAGE:-0})
           else
-            if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- ${ID} at ${DATE}: detected: ${ENTITIES:-nothing}" &> /dev/stderr; fi
+            if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- ${ID} at ${WHEN}; did not see: ${DETECTED:-null}" &> /dev/stderr; fi
           fi
-          THIS=$(echo "${THIS}" | jq '.date='${DATE})
-          THIS=$(echo "${THIS}" | jq '.ago='${AGO})
-          DEVICES=$(echo "${DEVICES}" | jq '(.[]|select(.id=="'${ID}'"))|='"${THIS}")
-          DEVICES=$(echo "${DEVICES}" | jq '.|sort_by(.ago)')
         fi
       else
-        echo "+++ WARN $0 $$ -- ${ID} at ${DATE}: mock" $(jq -c '.yolo2msghub.yolo.detected' ${PAYLOAD}) &> /dev/stderr
+        echo "+++ WARN $0 $$ -- ${ID} at ${WHEN}: mock" $(jq -c '.yolo2msghub.yolo.detected' ${PAYLOAD}) &> /dev/stderr
       fi
     else
-      echo "+++ WARN $0 $$ -- ${ID} at ${DATE}: no yolo output" &> /dev/stderr
+      echo "+++ WARN $0 $$ -- ${ID} at ${WHEN}: no yolo output" &> /dev/stderr
     fi
     echo ">>> $0 $$ -- $(date +%T)"
+    COUNT=$((COUNT+1)) && THIS=$(echo "${THIS}" | jq '.count='${COUNT})
+    DEVICES=$(echo "${DEVICES}" | jq '(.[]|select(.id=="'${ID}'"))|='"${THIS}")
+    DEVICES=$(echo "${DEVICES}" | jq '.|sort_by(.average)|reverse')
     echo "${DEVICES}" | jq -c '.[]'
 done
 rm -f ${0##*/}.$$.*

@@ -23,6 +23,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     curl \
     socat \
     ffmpeg \
+    mosquitto-clients \
   \
   && rm -fr \
     /tmp/*

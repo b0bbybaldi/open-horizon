@@ -33,14 +33,21 @@ else:
   filename = "square"
 
 if narg > 2:
-  welch_window = sys.argv[2]
-else:
-  welch_window = "hanning"
-
-if narg > 3:
-  welch_nperseg = int(sys.argv[3])
+  welch_nperseg = int(sys.argv[2])
 else:
   welch_nperseg = 128
+
+if narg > 3:
+  print(sys.argv[:])
+  if sys.argv[3] != '':
+    welch_priors = json.loads(sys.argv[3])
+  else:
+    welch_priors = list()
+else:
+  welch_priors = list()
+
+if len(welch_priors) < 1:
+  welch_priors = json.loads("null")
 
 ## get file
 wav_filename = filename + '.wav'
@@ -51,7 +58,7 @@ total_samples = len(raw)
 limit = int((total_samples /2)-1)
 
 ## calculate Welch
-bins, scores = signal.welch(raw, fs=samplerate, window=welch_window, nperseg=welch_nperseg, noverlap=None, nfft=None, detrend="constant", return_onesided=True, scaling="density", axis=-1)
+bins, scores = signal.welch(raw, fs=samplerate, window="hanning", nperseg=welch_nperseg, noverlap=None, nfft=None, detrend="constant", return_onesided=True, scaling="density", axis=-1)
 
 ## plot fft
 fft_abs = abs(fft(raw))
@@ -70,6 +77,3 @@ plt.savefig(filename + '-welch.png')
 ## dump bins
 data_list = bins.tolist(), scores.tolist()
 json.dump(data_list, codecs.open(filename + '-welch.json', 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=2)
-# dump scores
-#data_list = scores.tolist()
-#json.dump(data_list, codecs.open(filename + '-welch.json', 'a', encoding='utf-8'), separators=(',', ':'), sort_keys=True, indent=2)
