@@ -198,7 +198,8 @@ The `fft` value will initially be incomplete until the service completes its ini
     "label": "fft",
     "version": "0.0.1"
   }
-}```
+}
+```
 
 ## SAMPLE
 A provided `square.wav` file, which may also be created using the `rootfs/usr/bin/mksqwave.sh` script is used as one of the mock data sets.
