@@ -255,7 +255,7 @@ make service-test && make service-publish
 ```
 
 ## Step 13
-Create pattern configuration file to test the `yolo2msghub` service.  The variables will have values substituted during the build process.
+Create pattern configuration file to test the `hello` service.  The variables will have values substituted during the build process.
 
 **`./pattern.json`**
 
