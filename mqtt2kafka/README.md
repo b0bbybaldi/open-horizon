@@ -1,4 +1,4 @@
-# `mqtt2kafka` - MQTT to Kafka relay
+# 	&#128228; `mqtt2kafka` - MQTT to Kafka relay
 
 This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.
 
