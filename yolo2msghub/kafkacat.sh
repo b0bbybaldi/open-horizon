@@ -35,8 +35,10 @@ done
 
 TOPIC="yolo2msghub"
 DEVICES='[]'
+TOTAL_BYTES=0
+BEGIN=$(date +%s)
 
-if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- listening for topic ${TOPIC}" &> /dev/stderr; fi
+echo "--- INFO $0 $$ -- listening for topic ${TOPIC}" &> /dev/stderr
 
 kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
   -X "security.protocol=sasl_ssl" \
@@ -44,6 +46,9 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
   -X "sasl.username=${APIKEY:0:16}" \
   -X "sasl.password=${APIKEY:16}" \
   -t "${TOPIC}" | while read -r; do
+
+    NOW=$(date +%s)
+
     if [ -n "${REPLY}" ]; then
       PAYLOAD=${0##*/}.$$.json
       echo "${REPLY}" > ${PAYLOAD}
@@ -55,14 +60,17 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
     if [ "${VALID}" != true ]; then
       echo "+++ WARN $0 $$ -- invalid payload: ${VALID}" $(cat ${PAYLOAD%.*}.out) &> /dev/stderr
     else
-      if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- received bytes: $(wc -c ${PAYLOAD}); at: $(date +%T)" &> /dev/stderr; fi
+      BYTES=$(wc -c ${PAYLOAD} | awk '{ print $1 }')
+      TOTAL_BYTES=$((TOTAL_BYTES+BYTES))
+      ELAPSED=$((NOW-BEGIN))
+      if [ ${ELAPSED} -ne 0 ]; then BPS=$(echo "${TOTAL_BYTES} / ${ELAPSED}" | bc -l); else BPS=1; fi
+      echo "--- INFO $0 $$ -- received at: $(date +%T); bytes: ${BYTES}; total: ${TOTAL_BYTES}; bytes/sec: ${BPS}" &> /dev/stderr
     fi
 
     ID=$(jq -r '.hzn.device_id' ${PAYLOAD})
     ENTITY=$(jq -r '.yolo2msghub.yolo.entity?' ${PAYLOAD})
     DETECTED=$(jq '.yolo2msghub.yolo.detected[]?.entity' ${PAYLOAD})
     DATE=$(jq -r '.date' ${PAYLOAD})
-    NOW=$(date +%s)
     STARTED=$((NOW-DATE))
     DOWNLOAD=
     PERCENT=
@@ -81,7 +89,7 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
       PRODUCT=$(echo "${HAL}" | jq -r '.lshw.product')
     fi
 
-    if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- device: ${ID}; entity: ${ENTITY:-}; started: ${STARTED}; download: ${DOWNLOAD:-}; percent: ${PERCENT:-}; product: ${PRODUCT:-}" &> /dev/stderr; fi
+    if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- device: ${ID}; entity: ${DETECTED:-}; started: ${STARTED}; download: ${DOWNLOAD:-}; percent: ${PERCENT:-}; product: ${PRODUCT:-}" &> /dev/stderr; fi
 
     THIS=$(echo "${DEVICES}" | jq '.[]|select(.id=="'${ID}'")')
     if [ -z "${THIS}" ] || [ "${THIS}" = 'null' ]; then
@@ -94,16 +102,17 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
       DEVICES=$(echo "${DEVICES}" | jq '.+=['"${THIS}"']')
     else
       COUNT=$(echo "${THIS}" | jq '.count')
+      TOTAL=$(echo "${THIS}" | jq '.total')
       FIRST=$(echo "${THIS}" | jq '.first')
       AVERAGE=$(echo "${THIS}" | jq '.average')
     fi
 
     if [ $(jq '.yolo2msghub.yolo!=null' ${PAYLOAD}) = true ]; then
       if [ $(jq -r '.yolo2msghub.yolo.mock' ${PAYLOAD}) = 'null' ]; then
-        echo "--- INFO $0 $$ -- ${ID}: non-mock" &> /dev/stderr
+        if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- ${ID}: non-mock" &> /dev/stderr; fi
         WHEN=$(jq -r '.yolo2msghub.yolo.date' ${PAYLOAD})
         if [ ${WHEN} -gt ${LAST} ]; then
-          echo "--- INFO $0 $$ -- ${ID}: new payload" &> /dev/stderr
+          if [ "${DEBUG:-}" = true ]; then echo "--- INFO $0 $$ -- ${ID}: new payload" &> /dev/stderr; fi
           SEEN=$(jq -r '.yolo2msghub.yolo.count' ${PAYLOAD})
           jq -r '.yolo2msghub.yolo.image' ${PAYLOAD} | base64 --decode > ${0##*/}.$$.${ID}.jpeg
           if [ ${SEEN} -gt 0 ]; then
@@ -111,12 +120,12 @@ kafkacat -E -u -C -q -o end -f "%s\n" -b "${BROKER}" \
 	    AGO=$((NOW-LAST))
             echo "--- INFO $0 $$ -- ${ID}; ago: ${AGO}; ${ENTITY} seen: ${SEEN}" &> /dev/stderr
             TOTAL=$(echo "${THIS}" | jq '.total') && TOTAL=$((TOTAL+SEEN))
-	    if [ ${FIRST} -eq 0 ]; then 
+	    INTERVAL=$((LAST-FIRST))
+	    if [ ${INTERVAL} -eq 0 ]; then 
               FIRST=${WHEN}
 	      INTERVAL=0
 	      AVERAGE=1.0
 	    else
-	      INTERVAL=$((LAST-FIRST))
 	      AVERAGE=$(echo "${TOTAL}/${INTERVAL}" | bc -l)
             fi
             THIS=$(echo "${THIS}" | jq '.interval='${INTERVAL:-0}'|.ago='${AGO:-0}'|.total='${TOTAL:-0}'|.last='${LAST:-0}'|.first='${FIRST:-0}'|.average='${AVERAGE:-0})

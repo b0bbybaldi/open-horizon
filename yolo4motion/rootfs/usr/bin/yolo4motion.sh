@@ -6,15 +6,15 @@ if [ -d '/tmpfs' ]; then TMPDIR='/tmpfs'; else TMPDIR='/tmp'; fi
 # more defaults for testing
 if [ -z "${MQTT_HOST:-}" ]; then MQTT_HOST='mqtt'; fi
 if [ -z "${MQTT_PORT:-}" ]; then MQTT_PORT=1883; fi
-if [ -z "${YOLO4MOTION_GROUP:-}" ]; then YOLO4MOTION_GROUP='motion'; fi
-if [ -z "${YOLO4MOTION_DEVICE:-}" ]; then YOLO4MOTION_DEVICE='+'; fi
+if [ -z "${MOTION_GROUP:-}" ]; then MOTION_GROUP='motion'; fi
+if [ -z "${MOTION_CLIENT:-}" ]; then MOTION_CLIENT='+'; fi
 if [ -z "${YOLO4MOTION_CAMERA:-}" ]; then YOLO4MOTION_CAMERA='+'; fi
 if [ -z "${YOLO4MOTION_TOPIC_EVENT:-}" ]; then YOLO4MOTION_TOPIC_EVENT='event/end'; fi
 if [ -z "${YOLO4MOTION_TOPIC_PAYLOAD:-}" ]; then YOLO4MOTION_TOPIC_PAYLOAD='image'; fi
 if [ -z "${YOLO4MOTION_TOO_OLD:-}" ]; then YOLO4MOTION_TOO_OLD=300; fi
 
 ## derived
-YOLO4MOTION_TOPIC="${YOLO4MOTION_GROUP}/${YOLO4MOTION_DEVICE}/${YOLO4MOTION_CAMERA}"
+YOLO4MOTION_TOPIC="${MOTION_GROUP}/${MOTION_CLIENT}/${YOLO4MOTION_CAMERA}"
 
 ###
 ### FUNCTIONS
@@ -33,7 +33,7 @@ hzn_init
 ## configure service
 SERVICES='[{"name":"mqtt","url":"http://mqtt"}]'
 MQTT='{"host":"'${MQTT_HOST:-}'","port":'${MQTT_PORT:-1883}',"username":"'${MQTT_USERNAME:-}'","password":"'${MQTT_PASSWORD:-}'"}'
-CONFIG='{"log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-false}',"group":"'${YOLO4MOTION_GROUP:-}'","device":"'${YOLO4MOTION_DEVICE}'","camera":"'${YOLO4MOTION_CAMERA}'","event":"'${YOLO4MOTION_TOPIC_EVENT:-}'","old":'${YOLO4MOTION_TOO_OLD:-300}',"payload":"'${YOLO4MOTION_TOPIC_PAYLOAD}'","topic":"'${YOLO4MOTION_TOPIC}'","services":'"${SERVICES:-null}"',"mqtt":'"${MQTT}"',"yolo":'$(yolo-init)'}'
+CONFIG='{"log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-false}',"group":"'${MOTION_GROUP:-}'","device":"'${MOTION_CLIENT}'","camera":"'${YOLO4MOTION_CAMERA}'","event":"'${YOLO4MOTION_TOPIC_EVENT:-}'","old":'${YOLO4MOTION_TOO_OLD:-300}',"payload":"'${YOLO4MOTION_TOPIC_PAYLOAD}'","topic":"'${YOLO4MOTION_TOPIC}'","services":'"${SERVICES:-null}"',"mqtt":'"${MQTT}"',"yolo":'$(yolo-init)'}'
 
 ## initialize servive
 service_init ${CONFIG}
@@ -89,7 +89,7 @@ mosquitto_sub ${MOSQUITTO_ARGS} -t "${YOLO4MOTION_TOPIC}/${YOLO4MOTION_TOPIC_EVE
     touch "${JPEG_FILE}"
   else 
     # build image topic
-    TOPIC="${YOLO4MOTION_GROUP}/${DEVICE}/${CAMERA}/${YOLO4MOTION_TOPIC_PAYLOAD}"
+    TOPIC="${MOTION_GROUP}/${DEVICE}/${CAMERA}/${YOLO4MOTION_TOPIC_PAYLOAD}"
     if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- listening to ${MQTT_HOST} on topic: ${TOPIC}" &> /dev/stderr; fi
     # get image
     mosquitto_sub ${MOSQUITTO_ARGS} -C 1 -t "${TOPIC}"  > "${JPEG_FILE}"
@@ -99,7 +99,7 @@ mosquitto_sub ${MOSQUITTO_ARGS} -t "${YOLO4MOTION_TOPIC}/${YOLO4MOTION_TOPIC_EVE
   IMAGE=$(yolo_process "${JPEG_FILE}" "${ITERATION}")
 
   # send annotated image back to MQTT
-  TOPIC="${YOLO4MOTION_GROUP}/${DEVICE}/${CAMERA}/${YOLO4MOTION_TOPIC_PAYLOAD}/${YOLO_ENTITY}"
+  TOPIC="${MOTION_GROUP}/${DEVICE}/${CAMERA}/${YOLO4MOTION_TOPIC_PAYLOAD}/${YOLO_ENTITY}"
   if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- publishing to ${MQTT_HOST} on topic: ${TOPIC}" &> /dev/stderr; fi
   jq -r '.image' "${IMAGE}" | base64 --decode > "${TMPDIR}/${0##*/}.$$.jpeg"
   mosquitto_pub -r -q 2 ${MOSQUITTO_ARGS} -t "${TOPIC}" -f "${TMPDIR}/${0##*/}.$$.jpeg"
@@ -116,7 +116,7 @@ mosquitto_sub ${MOSQUITTO_ARGS} -t "${YOLO4MOTION_TOPIC}/${YOLO4MOTION_TOPIC_EVE
     # update status
     service_update "${OUTPUT_FILE}"
     # send annotated event back to MQTT
-    TOPIC="${YOLO4MOTION_GROUP}/${DEVICE}/${CAMERA}/${YOLO4MOTION_TOPIC_EVENT}/${YOLO_ENTITY}"
+    TOPIC="${MOTION_GROUP}/${DEVICE}/${CAMERA}/${YOLO4MOTION_TOPIC_EVENT}/${YOLO_ENTITY}"
     if [ "${DEBUG:-}" == 'true' ]; then echo "--- INFO -- $0 $$ -- publishing to ${MQTT_HOST} on topic: ${TOPIC}" &> /dev/stderr; fi
     mosquitto_pub -r -q 2 ${MOSQUITTO_ARGS} -t "${TOPIC}" -f "${TMPDIR}/${SERVICE_LABEL}.json"
   else
