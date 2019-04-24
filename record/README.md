@@ -2,7 +2,7 @@
 
 Monitors attached microphone and provides `arecord` functionality as micro-service, providing WAV data.  This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.
 
-## Status
+## Status &#128679;
 
 ![Supports amd64 Architecture][amd64-shield]
 [![](https://images.microbadger.com/badges/image/dcmartin/amd64_com.github.dcmartin.open-horizon.record.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.record "Get your own image badge on microbadger.com")
