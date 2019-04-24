@@ -106,21 +106,21 @@ make test
 The output of the test:
 
 ```
->>> MAKE -- 11:15:37 -- testing container: hzncli-beta; tag: dcmartin/amd64_com.github.dcmartin.open-horizon.hzncli-beta:0.0.3
-./test.sh "dcmartin/amd64_com.github.dcmartin.open-horizon.hzncli-beta:0.0.3"
+>>> MAKE -- 11:15:37 -- testing container: hzncli; tag: dcmartin/amd64_com.github.dcmartin.open-horizon.hzncli:0.0.3
+./test.sh "dcmartin/amd64_com.github.dcmartin.open-horizon.hzncli:0.0.3"
 --- INFO -- ./test.sh 55960 -- No host specified; assuming 127.0.0.1
 +++ WARN ./test.sh 55960 -- No port specified; assuming port 80
 +++ WARN ./test.sh 55960 -- No protocol specified; assuming http
---- INFO -- ./test.sh 55960 -- Testing hzncli in container tagged: dcmartin/amd64_com.github.dcmartin.open-horizon.hzncli-beta:0.0.3 at Wed Apr 3 11:15:37 PDT 2019
+--- INFO -- ./test.sh 55960 -- Testing hzncli in container tagged: dcmartin/amd64_com.github.dcmartin.open-horizon.hzncli:0.0.3 at Wed Apr 3 11:15:37 PDT 2019
 {"hzncli":{"nodes":"null"},"date":"number","hzn":{"agreementid":"string","arch":"string","cpus":"number","device_id":"string","exchange_url":"string","host_ips":["string","string","string","string"],"organization":"string","ram":"number","pattern":"null"},"config":{"log_level":"string","debug":"boolean","period":"string","services":"null"},"service":{"label":"string","version":"string"}}
-!!! SUCCESS -- ./test.sh 55960 -- test /Volumes/dcmartin/GIT/beta/open-horizon/hzncli/test-hzncli.sh returned true
+!!! SUCCESS -- ./test.sh 55960 -- test /Volumes/dcmartin/GIT/master/open-horizon/hzncli/test-hzncli.sh returned true
 true
 ```
 
 The resulting status JSON file may also be inspected; it will be named (or something similar):
 
 ```
-test.amd64_com.github.dcmartin.open-horizon.hzncli-beta:0.0.3.json
+test.amd64_com.github.dcmartin.open-horizon.hzncli:0.0.3.json
 ```
 
 ### Example `hzncli` status

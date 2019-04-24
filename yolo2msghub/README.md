@@ -147,16 +147,16 @@ make test
 The output of the test:
 
 ```
->>> MAKE -- 11:51:40 -- testing container: yolo2msghub-beta; tag: dcmartin/amd64_com.github.dcmartin.open-horizon.yolo2msghub-beta:0.0.11
-./test.sh "dcmartin/amd64_com.github.dcmartin.open-horizon.yolo2msghub-beta:0.0.11"
+>>> MAKE -- 11:51:40 -- testing container: yolo2msghub; tag: dcmartin/amd64_com.github.dcmartin.open-horizon.yolo2msghub:0.0.11
+./test.sh "dcmartin/amd64_com.github.dcmartin.open-horizon.yolo2msghub:0.0.11"
 --- INFO -- ./test.sh 65358 -- No host specified; assuming 127.0.0.1
 +++ WARN ./test.sh 65358 -- No port specified; assuming port 8587
 +++ WARN ./test.sh 65358 -- No protocol specified; assuming http
---- INFO -- ./test.sh 65358 -- Testing yolo2msghub in container tagged: dcmartin/amd64_com.github.dcmartin.open-horizon.yolo2msghub-beta:0.0.11 at Wed Apr 3 11:51:40 PDT 2019
+--- INFO -- ./test.sh 65358 -- Testing yolo2msghub in container tagged: dcmartin/amd64_com.github.dcmartin.open-horizon.yolo2msghub:0.0.11 at Wed Apr 3 11:51:40 PDT 2019
 jq: error (at <stdin>:1102): null (null) and number (3) cannot be subtracted
 jq: error (at <stdin>:1102): null (null) and number (3) cannot be subtracted
 {"wan":{"date":"number","speedtest":{"client":{"rating":"string","loggedin":"string","isprating":"string","ispdlavg":"string","ip":"string","isp":"string","lon":"string","ispulavg":"string","country":"string","lat":"string"},"bytes_sent":"number","download":"number","timestamp":"string","share":"null","bytes_received":"number","ping":"number","upload":"number","server":{"latency":"number","name":"string","url":"string","country":"string","lon":"string","cc":"string","host":"string","sponsor":"string","lat":"string","id":"string","d":"number"}}},"cpu":{"date":"number","percent":"number"},"hal":{"date":"number","lshw":{"id":"string","class":"string","claimed":"boolean","handle":"string","description":"string","product":"string","version":"string","serial":"string","width":"number","configuration":{"boot":"string","sku":"string","uuid":"string"},"capabilities":{"0":"","vsyscall32":"string"},"children":["object","object"]},"lsusb":[],"lscpu":{"Architecture":"string","CPU_op_modes":"string","Byte_Order":"string","CPUs":"string","On_line_CPUs_list":"string","Threads_per_core":"string","Cores_per_socket":"string","Sockets":"string","Vendor_ID":"string","CPU_family":"string","Model":"string","Model_name":"string","Stepping":"string","CPU_MHz":"string","BogoMIPS":"string","L1d_cache":"string","L1i_cache":"string","L2_cache":"string","L3_cache":"string","Flags":"string"},"lspci":["object","object","object","object","object","object","object","object","object"],"lsblk":["object","object","object","object"],"lsdf":["object"]},"yolo2msghub":{"date":"number","yolo":{"mock":"string","info":{"type":"string","size":"string","bps":"string","color":"string"},"time":"number","count":"number","detected":["object"],"image":"string","date":"number"}},"date":"number","hzn":{"agreementid":"string","arch":"string","cpus":"number","device_id":"string","exchange_url":"string","host_ips":["string","string","string","string"],"organization":"string","ram":"number","pattern":"null"},"config":{"date":"number","log_level":"string","debug":"boolean","services":["object","object","object"],"period":"number"},"service":{"label":"string","version":"string"}}
-!!! SUCCESS -- ./test.sh 65358 -- test /Volumes/dcmartin/GIT/beta/open-horizon/yolo2msghub/test-yolo2msghub.sh returned true
+!!! SUCCESS -- ./test.sh 65358 -- test /Volumes/dcmartin/GIT/master/open-horizon/yolo2msghub/test-yolo2msghub.sh returned true
 true
 ```
 
@@ -164,7 +164,7 @@ true
 The resulting status JSON file may also be inspected; it will be named (or something similar):
 
 ```
-test.amd64_com.github.dcmartin.open-horizon.yolo2msghub-beta:0.0.11.json
+test.amd64_com.github.dcmartin.open-horizon.yolo2msghub:0.0.11.json
 ```
 
 ### Example `yolo2msghub` status

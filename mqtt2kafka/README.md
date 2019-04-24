@@ -134,21 +134,21 @@ make test
 The output of the test:
 
 ```
->>> MAKE -- 14:27:22 -- testing container: mqtt2kafka-beta; tag: dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka-beta:0.0.1
-./test.sh "dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka-beta:0.0.1"
+>>> MAKE -- 14:27:22 -- testing container: mqtt2kafka; tag: dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka:0.0.1
+./test.sh "dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka:0.0.1"
 --- INFO -- ./test.sh 73518 -- No host specified; assuming 127.0.0.1
 +++ WARN ./test.sh 73518 -- No port specified; assuming port 80
 +++ WARN ./test.sh 73518 -- No protocol specified; assuming http
---- INFO -- ./test.sh 73518 -- Testing mqtt2kafka in container tagged: dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka-beta:0.0.1 at Wed Apr 3 14:27:22 PDT 2019
+--- INFO -- ./test.sh 73518 -- Testing mqtt2kafka in container tagged: dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka:0.0.1 at Wed Apr 3 14:27:22 PDT 2019
 {"mqtt":{"date":"number","pid":"number","version":"string","broker":{"bytes":{"received":"number","sent":"number"},"clients":{"connected":"number"},"load":{"messages":{"messages":"object"}},"publish":{"messages":{"messages":"object"}},"subscriptions":{"count":"number"}}},"wan":{"date":"number"},"mqtt2kafka":{"date":"number"},"date":"number","hzn":{"agreementid":"string","arch":"string","cpus":"number","device_id":"string","exchange_url":"string","host_ips":["string","string","string","string"],"organization":"string","ram":"number","pattern":"null"},"config":{"log_level":"string","debug":"boolean","subscribe":"string","payload":"string","publish":"string","services":["object","object"],"mqtt":{"host":"string","port":"number","username":"string","password":"string"},"wan":"null"},"service":{"label":"string","version":"string"}}
-!!! SUCCESS -- ./test.sh 73518 -- test /Volumes/dcmartin/GIT/beta/open-horizon/mqtt2kafka/test-mqtt2kafka.sh returned true
+!!! SUCCESS -- ./test.sh 73518 -- test /Volumes/dcmartin/GIT/master/open-horizon/mqtt2kafka/test-mqtt2kafka.sh returned true
 true
 ```
 
 The resulting status JSON file may also be inspected; it will be named (or something similar):
 
 ```
-test.amd64_com.github.dcmartin.open-horizon.mqtt2kafka-beta:0.0.1.json
+test.amd64_com.github.dcmartin.open-horizon.mqtt2kafka:0.0.1.json
 ```
 
 ### Example `mqtt2kafka` status

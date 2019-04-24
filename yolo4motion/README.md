@@ -125,7 +125,7 @@ The `yolo4motion` service will not operate successfully without an attached came
     ],
     "organization": "dcmartin@us.ibm.com",
     "ram": 0,
-    "pattern": "dcmartin@us.ibm.com/motion2mqtt-beta"
+    "pattern": "dcmartin@us.ibm.com/motion2mqtt"
   },
   "config": null,
   "service": {

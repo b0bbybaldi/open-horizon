@@ -231,12 +231,12 @@ Build, run, and check the service container locally using the native (i.e. `amd6
 
 ```
 % make
->>> MAKE -- 11:44:37 -- hello building: hello-beta; tag: dcmartin/amd64_dcmartin.hello-beta:0.0.1
->>> MAKE -- 11:44:38 -- removing container named: amd64_dcmartin.hello-beta
-amd64_dcmartin.hello-beta
->>> MAKE -- 11:44:38 -- running container: dcmartin/amd64_dcmartin.hello-beta:0.0.1; name: amd64_dcmartin.hello-beta
+>>> MAKE -- 11:44:37 -- hello building: hello; tag: dcmartin/amd64_dcmartin.hello:0.0.1
+>>> MAKE -- 11:44:38 -- removing container named: amd64_dcmartin.hello
+amd64_dcmartin.hello
+>>> MAKE -- 11:44:38 -- running container: dcmartin/amd64_dcmartin.hello:0.0.1; name: amd64_dcmartin.hello
 2565ecd514322e55bd6c1091982541d30e5db212682887c25d1e814caf4c0445
->>> MAKE -- 11:44:41 -- checking container: dcmartin/amd64_dcmartin.hello-beta:0.0.1; URL: http://localhost:12345
+>>> MAKE -- 11:44:41 -- checking container: dcmartin/amd64_dcmartin.hello:0.0.1; URL: http://localhost:12345
 {
   "hello": "world"
 }

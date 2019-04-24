@@ -5,28 +5,28 @@ Monitors attached microphone using `record` service and provides FFT functionali
 ## Status
 
 ![Supports amd64 Architecture][amd64-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/amd64_com.github.dcmartin.open-horizon.fft-beta.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.fft-beta "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/amd64_com.github.dcmartin.open-horizon.fft-beta.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.fft-beta "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/amd64_com.github.dcmartin.open-horizon.fft.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.fft "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/amd64_com.github.dcmartin.open-horizon.fft.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.fft "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-amd64]][docker-amd64]
 
-[docker-amd64]: https://hub.docker.com/r/dcmartin/amd64_com.github.dcmartin.open-horizon.fft-beta
-[pulls-amd64]: https://img.shields.io/docker/pulls/dcmartin/amd64_com.github.dcmartin.open-horizon.fft-beta.svg
+[docker-amd64]: https://hub.docker.com/r/dcmartin/amd64_com.github.dcmartin.open-horizon.fft
+[pulls-amd64]: https://img.shields.io/docker/pulls/dcmartin/amd64_com.github.dcmartin.open-horizon.fft.svg
 
 ![Supports armhf Architecture][arm-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/arm_com.github.dcmartin.open-horizon.fft-beta.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.fft-beta "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/arm_com.github.dcmartin.open-horizon.fft-beta.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.fft-beta "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/arm_com.github.dcmartin.open-horizon.fft.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.fft "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/arm_com.github.dcmartin.open-horizon.fft.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.fft "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-arm]][docker-arm]
 
-[docker-arm]: https://hub.docker.com/r/dcmartin/arm_com.github.dcmartin.open-horizon.fft-beta
-[pulls-arm]: https://img.shields.io/docker/pulls/dcmartin/arm_com.github.dcmartin.open-horizon.fft-beta.svg
+[docker-arm]: https://hub.docker.com/r/dcmartin/arm_com.github.dcmartin.open-horizon.fft
+[pulls-arm]: https://img.shields.io/docker/pulls/dcmartin/arm_com.github.dcmartin.open-horizon.fft.svg
 
 ![Supports aarch64 Architecture][arm64-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/arm64_com.github.dcmartin.open-horizon.fft-beta.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.fft-beta)
-[![](https://images.microbadger.com/badges/version/dcmartin/arm64_com.github.dcmartin.open-horizon.fft-beta.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.fft-beta)
+[![](https://images.microbadger.com/badges/image/dcmartin/arm64_com.github.dcmartin.open-horizon.fft.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.fft)
+[![](https://images.microbadger.com/badges/version/dcmartin/arm64_com.github.dcmartin.open-horizon.fft.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.fft)
 [![Docker Pulls][pulls-arm64]][docker-arm64]
 
-[docker-arm64]: https://hub.docker.com/r/dcmartin/arm64_com.github.dcmartin.open-horizon.fft-beta
-[pulls-arm64]: https://img.shields.io/docker/pulls/dcmartin/arm64_com.github.dcmartin.open-horizon.fft-beta.svg
+[docker-arm64]: https://hub.docker.com/r/dcmartin/arm64_com.github.dcmartin.open-horizon.fft
+[pulls-arm64]: https://img.shields.io/docker/pulls/dcmartin/arm64_com.github.dcmartin.open-horizon.fft.svg
 
 [arm64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
@@ -34,7 +34,7 @@ Monitors attached microphone using `record` service and provides FFT functionali
 
 ## Service discovery
 + `org` - `dcmartin@us.ibm.com`
-+ `url` - `com.github.dcmartin.open-horizon.fft-beta`
++ `url` - `com.github.dcmartin.open-horizon.fft`
 + `version` - `0.0.1`
 
 ## Service Variables
@@ -57,7 +57,7 @@ Monitors attached microphone using `record` service and provides FFT functionali
 
 ## Required Services
 
-### [`record`](https://github.com/dcmartin/open-horizon/blob/beta/record/README.md)
+### [`record`](https://github.com/dcmartin/open-horizon/blob/master/record/README.md)
 + `RECORD_DEVICE` - device to record sound; default: *default system device*
 + `RECORD_PERIOD` - interval to poll audio device; default: `10.0` seconds
 + `RECORD_SECONDS` - amount of time to record; default: `5.0` seconds
@@ -84,7 +84,7 @@ Copy this [repository][repository], change to the `fft` directory, then use the 
 % mkdir ~/gitdir
 % cd ~/gitdir
 % git clone http://github.com/dcmartin/open-horizon
-% cd open-horizon.fft-beta
+% cd open-horizon/fft
 % make
 ...
 ```
