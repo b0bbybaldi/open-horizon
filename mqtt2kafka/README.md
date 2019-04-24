@@ -53,6 +53,26 @@ This container may be run locally using Docker, pushed to a Docker registry, and
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - force debug settings; boolean; default `false`
 
+## Required Services
+
+### [`mqtt`](https://github.com/dcmartin/open-horizon/tree/master/mqtt)
++ `MQTT_PERIOD`
++ `MQTT_PORT`
++ `MQTT_USERNAME`
++ `MQTT_PASSWORD`
+
+### [`wan`](https://github.com/dcmartin/open-horizon/tree/master/wan)
++ `WAN_PERIOD`
+
+## Description
+Transmit data received from MQTT broker on specified event and payload topics to specified Kafka broker.
+
+The `MQTT2KAFKA_SUBCRIBE` topic is intended to receive JSON payloads containing information about a new sensor event, e.g. motion detection and image classification.
+
+If the `MQTT2KAFKA_PAYLOAD` variable is defined, a corresponding payload is retrieved by appending to the receiving topic.
+
+For example, the default `+/+/+/event/end` topic is received as `<group>/<client>/<camera>/event/end`; in the default case, a corresponding payload is expected on the topic `<group>/<client>/<camera>/event/end/image`.
+
 ## How To use
 
 Copy this [repository][repository], change to the `mqtt2kafka` directory, then use the **make** command; see below:

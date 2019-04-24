@@ -21,7 +21,7 @@ BUILD_ARCH ?= $(if $(wildcard BUILD_ARCH),$(shell cat BUILD_ARCH),)
 BASES = base-alpine base-ubuntu 
 SERVICES = cpu hal wan yolo noize fft mqtt hzncli herald yolo4motion mqtt2kafka 
 JETSONS = jetson-jetpack jetson-cuda jetson-opencv jetson-yolo # jetson-caffe # jetson-digits
-PATTERNS = yolo2msghub # motion2mqtt
+PATTERNS = yolo2msghub motion2mqtt
 SETUP = setup
 
 ALL = $(BASES) $(SERVICES) $(PATTERNS) # ${JETSONS}

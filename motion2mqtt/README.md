@@ -43,7 +43,7 @@ Monitors attached camera and provides [motion-project.github.io][motion-project-
 ## Service Variables
 + `MOTION_GROUP` - group name (aka top-level topic); defaults to `motion`
 + `MOTION_CLIENT` - device name; defaults to `HZN_CLIENT_ID` or `hostname`
-+ `MOTION_TIMEZONE` - 
++ `MOTION_TIMEZONE` - timezone; default: `GMT`
 + `MOTION_POST_PICTURES` - post pictures; default `off`; options: `on`, `first`, `last`, `best`, and `center`
 + `MOTION_LOCATE_MODE` - default `off`; options: `box`,`cross`,`redbox`,`redcross`
 + `MOTION_EVENT_GAP` - default: `30`
@@ -54,7 +54,7 @@ Monitors attached camera and provides [motion-project.github.io][motion-project-
 + `MOTION_NOISE_TUNE` - default: `true`
 + `MOTION_LOG_LEVEL` - level of logging for motion2mqtt; default `2`
 + `MOTION_LOG_TYPE` - type of logging for motion2mqtt; default `all`
-+ `MOTION_PERIOD` - default: 30
++ `MOTION_PERIOD` - watchdog check interval in seconds; default: 30
 + `MQTT_HOST` - IP or FQDN for mqtt host; default `mqtt`
 + `MQTT_PORT` - port number; defaults to `1883`
 + `MQTT_USERNAME` - MQTT username; defaults to ""
@@ -63,18 +63,6 @@ Monitors attached camera and provides [motion-project.github.io][motion-project-
 + `DEBUG` - default: `false`
 
 ## Required Services
-
-### [`cpu`](https://github.com/dcmartin/open-horizon/tree/master/cpu)
-+ `CPU_PERIOD`
-
-### [`hal`](https://github.com/dcmartin/open-horizon/tree/master/hal)
-+ `HAL_PERIOD`
-
-### [`mqtt`](https://github.com/dcmartin/open-horizon/tree/master/mqtt)
-+ `MQTT_PERIOD`
-+ `MQTT_PORT`
-+ `MQTT_USERNAME`
-+ `MQTT_PASSWORD`
 
 ### [`yolo4motion`](https://github.com/dcmartin/open-horizon/tree/master/yolo4motion)
 + `MOTION_GROUP`
@@ -91,6 +79,18 @@ Monitors attached camera and provides [motion-project.github.io][motion-project-
 + `MQTT_PORT`
 + `MQTT_USERNAME`
 + `MQTT_PASSWORD`
+
+### [`mqtt`](https://github.com/dcmartin/open-horizon/tree/master/mqtt)
++ `MQTT_PERIOD`
++ `MQTT_PORT`
++ `MQTT_USERNAME`
++ `MQTT_PASSWORD`
+
+### [`cpu`](https://github.com/dcmartin/open-horizon/tree/master/cpu)
++ `CPU_PERIOD`
+
+### [`hal`](https://github.com/dcmartin/open-horizon/tree/master/hal)
++ `HAL_PERIOD`
 
 ## Description
 This service detects [motion](http://motion-project.io), detects and identifies entities using [YOLO](http://darknet).  All image processing and AI classification is executed on the device; no GPU is currently utilized. Timing varies by device type; for example a 320x240 8-bit pixel image:

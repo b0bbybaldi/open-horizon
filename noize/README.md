@@ -52,14 +52,13 @@ Monitors attached microphone and provides [`sox`](https://linux.die.net/man/1/so
 + `NOIZE_INCLUDE_PNG` - include spectrogram as base64 encoded PNG; default: `true`
 + `NOIZE_THRESHOLD` - default: `none`; specify KHz
 + `NOIZE_LEVEL_TUNE` - default: `false`
-+ `LOGTO` - specify place to log; default: `"${TMPDIR}/${0##*/}.log"`; use `"/dev/stderr"` during development
++ `LOGTO` - specify place to log; default: `"/dev/stderr"`; use `""` for `${TMPDIR}/${0##*/}.log`
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`; currently ignored)
-+ `DEBUG` - default: `false`; very verbose
++ `DEBUG` - default: `false`
 
 ## Required Services
 
 ### [`mqtt`](https://github.com/dcmartin/open-horizon/blob/master/mqtt/README.md)
-+ `MQTT_HOST` - IP or FQDN for mqtt host; default `mqtt`
 + `MQTT_PORT` - port number; defaults to `1883`
 + `MQTT_USERNAME` - MQTT username; defaults to ""
 + `MQTT_PASSWORD` - MQTT password; defaults to ""
