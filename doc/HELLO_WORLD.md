@@ -154,8 +154,8 @@ The `run.sh` script is called when the container is launched (n.b. `CMD` instruc
 
 ```
 #!/bin/sh
-# listen to port 81 forever, fork a new process executing script /usr/bin/service.sh to return response
-socat TCP4-LISTEN:81,fork EXEC:/usr/bin/service.sh
+# listen to port 80 forever, fork a new process executing script /usr/bin/service.sh to return response
+socat TCP4-LISTEN:80,fork EXEC:/usr/bin/service.sh
 ```
 
 The `service.sh` script is called by the `run.sh` script every time it receives a status request.
@@ -220,7 +220,7 @@ Create `userinput.json` configuration file; this file will be used for testing t
 ```
 
 ## Step 10 
-Configure environment for to map container service port (`81`) to an open port on the development host:
+Configure environment for to map container service port (`80`) to an open port on the development host:
 
 ```
 export DOCKER_PORT=12345
@@ -359,7 +359,7 @@ Test nodes for correct output.
 
 ```
 % make nodes-test
->>> MAKE -- 19:51:22 -- testing: hello; node: localhost; port: 81; date: Wed Apr 10 19:51:22 PDT 2019
+>>> MAKE -- 19:51:22 -- testing: hello; node: localhost; port: 80; date: Wed Apr 10 19:51:22 PDT 2019
 ELAPSED: 0
 {"hello":"world"}
 ```
