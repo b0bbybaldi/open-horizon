@@ -19,7 +19,7 @@ else if ( -e /usr/bin/dateconv ) then
 else if ( -e /usr/local/bin/dateconv ) then
    set dateconv = /usr/local/bin/dateconv
 else
-  if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"ERROR":"'$0:t'","pid":"'$$'","error":"no date converter; install dateutils"}'
+  if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"ERROR":"'$0:t'","pid":"'$$'","error":"no date converter; install dateutils"}'
   goto done
 endif
 
@@ -57,25 +57,25 @@ set SN = `echo "$ID" | sed 's/.*-..-\(.*\).*/\1/'`
 
 set NOW = `$dateconv -i '%Y%m%d%H%M%S' -f "%s" "$TS"`
 
-if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"DEBUG":"'$0:t'","pid":"'$$'","camera":"'$CN'","time":'$NOW'}'
+if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"DEBUG":"'$0:t'","pid":"'$$'","camera":"'$CN'","time":'$NOW'}'
 
 ## create JSON
 set IJ = "$IF:r.json"
 
-set JSON = '{"device":"'$MOTION_DEVICE'","camera":"'"$CN"'","type":"jpeg","date":'"$NOW"',"seqno":"'"$SN"'","event":"'"$EN"'","id":"'"$ID"'","center":{"x":'"$MX"',"y":'"$MY"'},"width":'"$MW"',"height":'"$MH"',"size":'$SZ',"noise":'$NL'}'
+set JSON = '{"device":"'$MOTION_CLIENT'","camera":"'"$CN"'","type":"jpeg","date":'"$NOW"',"seqno":"'"$SN"'","event":"'"$EN"'","id":"'"$ID"'","center":{"x":'"$MX"',"y":'"$MY"'},"width":'"$MW"',"height":'"$MH"',"size":'$SZ',"noise":'$NL'}'
 
 echo "$JSON" > "$IJ"
 
-if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"DEBUG":"'$0:t'","pid":"'$$'","json":"'"$IJ"'","image":'"$JSON"'}'
+if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"DEBUG":"'$0:t'","pid":"'$$'","json":"'"$IJ"'","image":'"$JSON"'}'
 
 ## do MQTT
   if ( $MOTION_POST_PICTURES == 'all' ) then
     # POST IMAGE 
-    set MQTT_TOPIC = "$MOTION_GROUP/$MOTION_DEVICE/$CN/image"
+    set MQTT_TOPIC = "$MOTION_GROUP/$MOTION_CLIENT/$CN/image"
     motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -f "$IF"
   endif
   # POST JSON
-  set MQTT_TOPIC = "$MOTION_GROUP/$MOTION_DEVICE/$CN/event/image"
+  set MQTT_TOPIC = "$MOTION_GROUP/$MOTION_CLIENT/$CN/event/image"
   motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -f "$IJ"
 
 ##
@@ -84,5 +84,5 @@ if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEV
 
 done:
   if ($?DEBUG) echo "$0:t $$ -- END" `date` >& /dev/stderr
-  if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"DEBUG":"'$0:t'","pid":"'$$'","info":"END"}'
+  if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"DEBUG":"'$0:t'","pid":"'$$'","info":"END"}'
   exit

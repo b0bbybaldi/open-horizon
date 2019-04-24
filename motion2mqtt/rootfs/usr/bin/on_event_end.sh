@@ -15,7 +15,7 @@ unsetenv DEBUG_MQTT
 if ($?DEBUG) then
   set message = ( "START" `date` )
   echo "$0:t $$ -- $message" >& /dev/stderr
-  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
 endif
 
 ## REQUIRES date utilities
@@ -29,7 +29,7 @@ else
   if ($?DEBUG) then
     set message = "no dateutils(1) found; exiting"
     echo "$0:t $$ -- $message" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
   # quit
   goto done
@@ -78,7 +78,7 @@ set jsons = ( `echo "$dir"/??????????????"-${EN}".json` )
 if ($?DEBUG) then
   set message = "processing directory: ${dir}; camera: ${CN}; event: ${EN}; events: $#jsons"
   echo "$0:t $$ -- $message" >& /dev/stderr
-  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
 endif
 
 # find event start
@@ -88,7 +88,7 @@ if ($#jsons) then
     if ($?DEBUG) then
       set message = "cannot find last JSON ${EVENT_JSON}; exiting"
       echo "$0:t $$ -- $message" >& /dev/stderr
-      if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+      if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
     endif
     goto done
   else
@@ -99,7 +99,7 @@ else
   if ($?DEBUG) then
     set message = "found no events; exiting"
     echo "$0:t $$ -- $message" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
   goto done
 endif
@@ -107,7 +107,7 @@ endif
 if ($?DEBUG) then
   set message = "found $#jpgs candidate images for camera $CN in $dir for event $EN"
   echo "$0:t $$ -- $message" >& /dev/stderr
-  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
 endif
 
 ## process frames
@@ -123,7 +123,7 @@ if ($#jpgs) then
       if ($?DEBUG) then
 	set message = "cannot locate JSON $jsn for camera $CN image $jpg; skipping.."
 	echo "$0:t $$ -- $message" >& /dev/stderr
-	if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+	if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
       endif
       @ i--
       continue
@@ -143,7 +143,7 @@ else
   if ($?DEBUG) then
     set message = "no candidate images ($#jpgs) found for camera $CN; date $NOW; exiting"
     echo "$0:t $$ -- $message" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
   goto done
 endif
@@ -151,7 +151,7 @@ endif
 if ($?DEBUG) then
   set message = "found $#frames frames for camera $CN at date $NOW elapsed $elapsed"
   echo "$0:t $$ -- $message" >& /dev/stderr
-  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
 endif
 
 ###
@@ -173,7 +173,7 @@ foreach f ( $frames )
     if ($?DEBUG) then
       set message = "failed to find JSON $jpg:r.json; skipped"
       echo "$0:t $$ -- $message" >& /dev/stderr
-      if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+      if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
     endif
   endif
 end
@@ -183,14 +183,14 @@ if ($#jpgs < 1) then
   if ($?DEBUG) then
     set message = "insufficient ($#jpgs) images from $#frames frames; exiting"
     echo "$0:t $$ -- $message" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
   got done
 else
   if ($?DEBUG) then
     set message = "found $#jpgs images from $#frames frames"
     echo "$0:t $$ -- $message" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
 endif
 
@@ -224,25 +224,25 @@ if ( "${post}" != "${MOTION_POST_PICTURES}" ) then
   if ($?DEBUG) then
     set message = "unable to find ${MOTION_POST_PICTURES} image; using ${post} image: ${IF}"
     echo "$0:t $$ -- $message" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
 endif
 
 # PUBLISH 
 if ( -s "${IF}" ) then
-  set MQTT_TOPIC = "${MOTION_GROUP}/${MOTION_DEVICE}/${CN}/image"
+  set MQTT_TOPIC = "${MOTION_GROUP}/${MOTION_CLIENT}/${CN}/image"
   motion2mqtt_pub.sh -q 2 -r -t "${MQTT_TOPIC}" -f "${IF}"
   if ($?DEBUG) then
     set message = "sent file ${IF} to topic ${MQTT_TOPIC} at ${MQTT_HOST}"
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
   if ( -s "$IF:r.json" ) set POST_IMAGE_JSON = "$IF:r.json"
 else
   if ($?DEBUG) then
     set message = "cannot locate file: ${IF}; exiting"
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
   goto done
 endif
@@ -252,7 +252,7 @@ if ($#jpgs < 2) then
   if ($?DEBUG) then
     set message = "insufficient images ($#jpgs) for motion analysis; going to update"
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
   goto update
 endif
@@ -268,15 +268,15 @@ if ( ! -s "$average") then
   if ($?DEBUG) then
     set message = `cat "${tmpdir}/$$.out"`
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
 else
-  set MQTT_TOPIC = "$MOTION_GROUP/${MOTION_DEVICE}/${CN}/image-average"
+  set MQTT_TOPIC = "$MOTION_GROUP/${MOTION_CLIENT}/${CN}/image-average"
   motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -f "$average"
   if ($?DEBUG) then
     set message = "sent file ${average} to topic ${MQTT_TOPIC} at ${MQTT_HOST}"
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
 endif
 rm -f "${tmpdir}/$$.out"
@@ -288,15 +288,15 @@ if ( ! -s "$blend") then
   if ($?DEBUG) then
     set message = `cat "${tmpdir}/$$.out"`
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
 else 
-  set MQTT_TOPIC = "$MOTION_GROUP/${MOTION_DEVICE}/${CN}/image-blend"
+  set MQTT_TOPIC = "$MOTION_GROUP/${MOTION_CLIENT}/${CN}/image-blend"
   motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -f "$blend"
   if ($?DEBUG) then
     set message = "sent file ${blend} to topic ${MQTT_TOPIC} at ${MQTT_HOST}"
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
 endif
 rm -f "${tmpdir}/$$.out"
@@ -324,15 +324,15 @@ if ( ! -s "$gif" ) then
   if {$?DEBUG) then
     set message = "Failed to convert $#jpgs into GIF: $gif" 
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
 else 
-  set MQTT_TOPIC = "$MOTION_GROUP/${MOTION_DEVICE}/${CN}/image-animated"
+  set MQTT_TOPIC = "$MOTION_GROUP/${MOTION_CLIENT}/${CN}/image-animated"
   motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -f "$gif"
   if ($?DEBUG) then
     set message = "sent file ${gif} to topic ${MQTT_TOPIC} at ${MQTT_HOST}"
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
   cp -f "$gif" "$EVENT_JSON:r.gif"
 endif
@@ -390,7 +390,7 @@ while ( $i <= $#jpgs )
   if ($?DEBUG) then
     set message = "calculated difference for $jpgs[$i] as $diff"
     echo "$0:t $$ -- $message" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   endif
 
   # increment and continue
@@ -406,7 +406,7 @@ set AVGJSON = '{"count":'$#jpgs',"difference":'${avgdiff}',"size":'${avgsize}'}'
 if {$?DEBUG) then
   set message = "averages: ${AVGJSON}"
   echo "$0:t $$ -- ${message}" >& /dev/stderr
-  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"${message}"'"}'
+  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"${message}"'"}'
 endif
 
 ## COMPOSITE 
@@ -450,15 +450,15 @@ if (! -s "$composite") then
   if {$?DEBUG) then
     set message = "Failed to convert $#jpgs into a composite: $composite"
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"${message}"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"${message}"'"}'
   endif
 else 
-  set MQTT_TOPIC = "$MOTION_GROUP/${MOTION_DEVICE}/${CN}/image-composite"
+  set MQTT_TOPIC = "$MOTION_GROUP/${MOTION_CLIENT}/${CN}/image-composite"
   motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -f "$composite"
   if ($?DEBUG) then
     set message = "sent file ${composite} to topic ${MQTT_TOPIC} at ${MQTT_HOST}"
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"${message}"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"${message}"'"}'
   endif
 endif
 
@@ -471,15 +471,15 @@ if (! -s "$mask") then
   if ($?DEBUG) then
     set message = "failed to convert $#jpgs into a mask: $mask"
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"${message}"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"${message}"'"}'
   endif
 else
-  set MQTT_TOPIC = "$MOTION_GROUP/${MOTION_DEVICE}/${CN}/image-animated-mask"
+  set MQTT_TOPIC = "$MOTION_GROUP/${MOTION_CLIENT}/${CN}/image-animated-mask"
   motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -f "$mask"
   if ($?DEBUG) then
     set message = "sent file ${mask} to topic ${MQTT_TOPIC} at ${MQTT_HOST}"
     echo "$0:t $$ -- ${message}" >& /dev/stderr
-    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"${message}"'"}'
+    if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"${message}"'"}'
   endif
 endif
 
@@ -509,7 +509,7 @@ if ( ! -s "${EVENT_JSON}" ) then
   # no event JSON
   set message = "empty or not found: ${EVENT_JSON}"
   echo "$0:t $$ -- ${message}" >& /dev/stderr
-  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
   goto done
 endif
 
@@ -533,12 +533,12 @@ rm -f "${tmpdir}/pij.$$.json"
 #############
 
 ## do MQTT
-set MQTT_TOPIC = "${MOTION_GROUP}/${MOTION_DEVICE}/${CN}/event/end"
+set MQTT_TOPIC = "${MOTION_GROUP}/${MOTION_CLIENT}/${CN}/event/end"
 motion2mqtt_pub.sh -q 2 -r -t "${MQTT_TOPIC}" -f "${EVENT_JSON}"
 if ($?DEBUG) then
   set message = "sent file ${EVENT_JSON} to topic ${MQTT_TOPIC} at ${MQTT_HOST}"
   echo "$0:t $$ -- ${message}" >& /dev/stderr
-  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
 endif
 
 ## remove JSON's and JPEG's
@@ -560,6 +560,6 @@ endif
 if ($?DEBUG) then
   set message = ( "FINISH" `date` )
   echo "$0:t $$ -- ${message}" >& /dev/stderr
-  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"'${MOTION_DEVICE}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
+  if ($?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"'${MOTION_CLIENT}'":"'$0:t'","pid":'$$',"message":"'"$message"'"}'
 endif
 

@@ -10,6 +10,9 @@
   "sharable": "singleton",
   "requiredServices": [],
   "userInput": [
+    { "name": "MQTT_PORT", "label": "port number to use", "type": "string", "defaultValue": "1883" },
+    { "name": "MQTT_USERNAME", "label": "username for clients", "type": "string", "defaultValue": "" },
+    { "name": "MQTT_PASSWORD", "label": "password for clients", "type": "string", "defaultValue": "" },
     { "name": "MQTT_PERIOD", "label": "seconds between update", "type": "int", "defaultValue": "30" },
     { "name": "LOG_LEVEL", "label": "specify logging level", "type": "string", "defaultValue": "info" },
     { "name": "LOGTO", "label": "where to log", "type": "string", "defaultValue": "/dev/stderr" },

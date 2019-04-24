@@ -16,8 +16,8 @@
   ],
   "userInput": [
     { "name": "MOTION_TIMEZONE", "label": "database and group name for devices", "type": "string", "defaultValue": "GMT" },
-    { "name": "MOTION_GROUP", "label": "database and group name for devices", "type": "string", "defaultValue": "motion" },
-    { "name": "MOTION_DEVICE", "label": "name of device", "type": "string", "defaultValue": "" },
+    { "name": "MOTION_GROUP", "label": "database and group name for clients", "type": "string", "defaultValue": "motion" },
+    { "name": "MOTION_CLIENT", "label": "name of client", "type": "string", "defaultValue": "" },
     { "name": "MOTION_POST_PICTURES", "label": "post pictures; on, off, first, last, center, best", "type": "string", "defaultValue": "best" },
     { "name": "MOTION_LOCATE_MODE", "label": "location motion mode; off,box,cross,redbox,redcross", "type": "string", "defaultValue": "off" },
     { "name": "MOTION_EVENT_GAP", "label": "seconds of no motion indicating end of event", "type": "int", "defaultValue": "30" },

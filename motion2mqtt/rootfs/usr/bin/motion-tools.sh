@@ -67,15 +67,15 @@ motion_usb_camera()
 
 motion_device()
 {
-  if [ -z "${MOTION_DEVICE:-}" ] || [ "${MOTION_DEVICE}" == 'default' ]; then
+  if [ -z "${MOTION_CLIENT:-}" ] || [ "${MOTION_CLIENT}" == 'default' ]; then
     if [ -z "${HZN_DEVICE_ID}" ]; then
       IPADDR=$(hostname -i | awk '{ print $1 }' | awk -F\. '{ printf("%03d%03d%03d%03d\n", $1, $2, $3, $4) }')
-      export MOTION_DEVICE="$(hostname)-${IPADDR}"
+      export MOTION_CLIENT="$(hostname)-${IPADDR}"
     else
-      export MOTION_DEVICE="${HZN_DEVICE_ID}"
+      export MOTION_CLIENT="${HZN_DEVICE_ID}"
     fi
   fi
-  echo "${MOTION_DEVICE}"
+  echo "${MOTION_CLIENT}"
 }
 
 motion_init()

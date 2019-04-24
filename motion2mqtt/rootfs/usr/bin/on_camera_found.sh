@@ -19,7 +19,7 @@ else if ( -e /usr/bin/dateconv ) then
 else if ( -e /usr/local/bin/dateconv ) then
    set dateconv = /usr/local/bin/dateconv
 else
-  if ($?DEBUG_MQTT && $?DEBUG) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"ERROR":"'$0:t'","pid":"'$$'","error":"no date converter; install dateutils"}'
+  if ($?DEBUG_MQTT && $?DEBUG) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"ERROR":"'$0:t'","pid":"'$$'","error":"no date converter; install dateutils"}'
   goto done
 endif
 
@@ -45,18 +45,18 @@ set TS = "${YR}${MO}${DY}${HR}${MN}${SC}"
 # get time
 set NOW = `$dateconv -i '%Y%m%d%H%M%S' -f "%s" "$TS"`
 
-if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"DEBUG":"'$0:t'","pid":"'$$'","camera":"'$CN'","time":'$NOW'}'
+if ($?DEBUG && $?DEBUG_MQTT) motion2mqtt_pub.sh -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"DEBUG":"'$0:t'","pid":"'$$'","camera":"'$CN'","time":'$NOW'}'
 
 ## do MQTT
 if ($?MQTT_HOST && $?MQTT_PORT) then
   # POST JSON
-  set MQTT_TOPIC = "$MOTION_GROUP/$MOTION_DEVICE/$CN/status/found"
-  motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -m '{"device":"'$MOTION_DEVICE'","camera":"'"$CN"'","time":'"$NOW"',"status":"found"}'
+  set MQTT_TOPIC = "$MOTION_GROUP/$MOTION_CLIENT/$CN/status/found"
+  motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -m '{"device":"'$MOTION_CLIENT'","camera":"'"$CN"'","time":'"$NOW"',"status":"found"}'
   # POST test pattern jpg
-  set MQTT_TOPIC = "$MOTION_GROUP/$MOTION_DEVICE/$CN/image"
+  set MQTT_TOPIC = "$MOTION_GROUP/$MOTION_CLIENT/$CN/image"
   motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -f "/etc/motion/test.jpg"
   # POST test pattern gif
-  set MQTT_TOPIC = "$MOTION_GROUP/$MOTION_DEVICE/$CN/image-animated"
+  set MQTT_TOPIC = "$MOTION_GROUP/$MOTION_CLIENT/$CN/image-animated"
   motion2mqtt_pub.sh -q 2 -r -t "$MQTT_TOPIC" -f "/etc/motion/test.gif"
 endif
 
@@ -66,4 +66,4 @@ endif
 
 done:
   if ($?DEBUG) echo "$0:t $$ -- END" `date` >& /dev/stderr
-  if ($?DEBUG && $?DEBUG_MQTT) mosquitto_pub -h "$MQTT_HOST" -t "${MOTION_GROUP}/${MOTION_DEVICE}/debug" -m '{"DEBUG":"'$0:t'","pid":"'$$'","info":"END"}'
+  if ($?DEBUG && $?DEBUG_MQTT) mosquitto_pub -h "$MQTT_HOST" -t "${MOTION_GROUP}/${MOTION_CLIENT}/debug" -m '{"DEBUG":"'$0:t'","pid":"'$$'","info":"END"}'

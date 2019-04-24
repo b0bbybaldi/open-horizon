@@ -42,7 +42,7 @@ Monitors attached camera and provides [motion-project.github.io][motion-project-
 
 ## Service Variables
 + `MOTION_GROUP` - group name (aka top-level topic); defaults to `motion`
-+ `MOTION_DEVICE` - device name; defaults to `HZN_DEVICE_ID` or `hostname`
++ `MOTION_CLIENT` - device name; defaults to `HZN_CLIENT_ID` or `hostname`
 + `MOTION_TIMEZONE` - 
 + `MOTION_POST_PICTURES` - post pictures; default `off`; options: `on`, `first`, `last`, `best`, and `center`
 + `MOTION_LOCATE_MODE` - default `off`; options: `box`,`cross`,`redbox`,`redcross`
@@ -70,9 +70,15 @@ Monitors attached camera and provides [motion-project.github.io][motion-project-
 ### [`hal`](https://github.com/dcmartin/open-horizon/tree/master/hal)
 + `HAL_PERIOD`
 
+### [`mqtt`](https://github.com/dcmartin/open-horizon/tree/master/mqtt)
++ `MQTT_PERIOD`
++ `MQTT_PORT`
++ `MQTT_USERNAME`
++ `MQTT_PASSWORD`
+
 ### [`yolo4motion`](https://github.com/dcmartin/open-horizon/tree/master/yolo4motion)
-+ `YOLO4MOTION_GROUP`
-+ `YOLO4MOTION_DEVICE`
++ `MOTION_GROUP`
++ `MOTION_CLIENT`
 + `YOLO4MOTION_CAMERA`
 + `YOLO4MOTION_TOPIC_EVENT`
 + `YOLO4MOTION_TOPIC_PAYLOAD`
@@ -82,12 +88,6 @@ Monitors attached camera and provides [motion-project.github.io][motion-project-
 + `YOLO_ENTITY`
 + `YOLO_SCALE`
 + `MQTT_HOST`
-+ `MQTT_PORT`
-+ `MQTT_USERNAME`
-+ `MQTT_PASSWORD`
-
-### [`mqtt`](https://github.com/dcmartin/open-horizon/tree/master/mqtt)
-+ `MQTT_PERIOD`
 + `MQTT_PORT`
 + `MQTT_USERNAME`
 + `MQTT_PASSWORD`

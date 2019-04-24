@@ -7,6 +7,9 @@
       "versionRange": "[0.0.0,INFINITY)",
       "variables": {
         "MQTT_PERIOD": 30,
+        "MQTT_PORT": 1883,
+        "MQTT_USERNAME": "",
+        "MQTT_PASSWORD": "",
         "LOG_LEVEL": "info",
         "DEBUG": false
       }
