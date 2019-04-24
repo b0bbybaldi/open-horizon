@@ -1,4 +1,4 @@
-# `herald` - Announce discoveries from other heralds
+#  	&#128239; `herald` - Announce discoveries from other heralds
 
 This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.  The core Python in this service is from https://github.com/MegaMosquito/discovery
 
