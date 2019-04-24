@@ -1,4 +1,4 @@
-# `yolo2msghub` - count an entity and send to Kafka
+# &#128083; `yolo2msghub` - count an entity and send to Kafka
 
 Send YOLO classified image entity counts to Kafka; updates as often as underlying services provide.
 This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.
