@@ -2,6 +2,8 @@
 
 This [repository][repository] contains a set of examples to demonstrate a [CI/CD][cicd-md] process for services and patterns.
 
+Please see the ["hello world"](https://github.com/dcmartin/open-horizon/blob/master/doc/HELLO_WORLD.md) example for an introduction to developing for [Open Horizon](http://github.com/open-horizon)
+
 [design-md]: https://github.com/dcmartin/open-horizon/tree/master/doc/DESIGN.md
 
 # 1. [Status][status-md] ([_beta_][beta-md])
