@@ -1,17 +1,15 @@
+sh/
 HZN_SETUP_*
-test.*.gif
-.vscode
-LOGTO
-NOIZE_*
-darknet/
-FFT_*
+*.md
+*.json
+*.out
+yolo/darknet
 kafkacat.sh.*
 test-config-*
 test.json
 *.out
 *.zip
 .DS_Store
-MQTT_*
 DEBUG*
 APIKEY*
 TEST_TMP_*
@@ -19,7 +17,7 @@ DOCKER_*
 HZN_*
 CPU_*
 HAL_*
-dcmartin@us.ibm.com*
+IBM-*
 MOTION_*
 PRIVATE_KEY_FILE
 PUBLIC_KEY_FILE
@@ -36,5 +34,3 @@ horizon.json
 horizon/
 sdrconf*
 MQTT2KAFKA_*
-test.*.json
-test.*.jpeg

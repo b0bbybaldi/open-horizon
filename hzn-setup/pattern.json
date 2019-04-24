@@ -1,0 +1,37 @@
+{
+  "label": "hzn-setup",
+  "description": "hzn-setup as a pattern",
+  "public": true,
+  "services": [
+    {
+      "serviceUrl": "com.github.dcmartin.open-horizon.hzn-setup",
+      "serviceOrgid": "${HZN_ORG_ID}",
+      "serviceArch": "amd64",
+      "serviceVersions": [
+        {
+          "version": "0.0.1"
+        }
+      ]
+    },
+    {
+      "serviceUrl": "com.github.dcmartin.open-horizon.hzn-setup",
+      "serviceOrgid": "${HZN_ORG_ID}",
+      "serviceArch": "arm",
+      "serviceVersions": [
+        {
+          "version": "0.0.1"
+        }
+      ]
+    },
+    {
+      "serviceUrl": "com.github.dcmartin.open-horizon.hzn-setup",
+      "serviceOrgid": "${HZN_ORG_ID}",
+      "serviceArch": "arm64",
+      "serviceVersions": [
+        {
+          "version": "0.0.1"
+        }
+      ]
+    }
+  ]
+}
