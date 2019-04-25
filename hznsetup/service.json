@@ -11,7 +11,7 @@
   "requiredServices": [],
   "userInput": [
     { "name": "HZN_SETUP_EXCHANGE", "label": "exchange server", "type": "string", "defaultValue": "https://alpha.edge-fabric.com/v1" },
-    { "name": "HZN_SETUP_ORG", "label": "exchange server", "type": "string", "defaultValue": "${HZN_ORG_ID}" },
+    { "name": "HZN_SETUP_ORG", "label": "exchange server", "type": "string", "defaultValue": "" },
     { "name": "HZN_SETUP_APIKEY", "label": "exchange server API key", "type": "string", "defaultValue": "" },
     { "name": "HZN_SETUP_PATTERN", "label": "", "type": "string", "defaultValue": "" },
     { "name": "HZN_SETUP_APPROVE", "label": "", "type": "string", "defaultValue": "auto" },
