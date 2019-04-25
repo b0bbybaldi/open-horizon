@@ -11,10 +11,26 @@ ENV \
     PS1="$(whoami)@$(hostname):$(pwd)$ " \
     TERM="xterm"
 
-RUN apt-get update && apt-get install -q -y --no-install-recommends \
+
+RUN DEBIAN_FRONTEND=noninteractive \
   \
-  curl jq socat bash bc \
-  \ 
+  && apt-get update \
+  \
+  && apt-get install -qq -y ca-certificates gnupg curl jq socat bash bc software-properties-common \
+  \
+  && URL="http://pkg.bluehorizon.network/" \
+  && TYPE=linux \
+  && DIST=ubuntu \
+  && RELEASE=xenial \
+  && REPO=updates \
+  && KEY=${URL}/bluehorizon.network-public.key \
+  \
+  && curl -fsSL ${KEY} | apt-key add - \
+  \
+  && add-apt-repository "deb [arch=armhf,arm64,amd64,ppc64el] ${URL}/${TYPE}/${DIST} ${RELEASE}-${REPO} main" \
+  \
+  && apt-get update -qq && apt-get install -y -qq bluehorizon \
+  \
   && rm -fr \
       /tmp/* \
       /var/{cache,log}/* \
@@ -35,9 +51,9 @@ LABEL \
     org.label-schema.schema-version="1.0" \
     org.label-schema.build-date="${BUILD_DATE}" \
     org.label-schema.build-arch="${BUILD_ARCH}" \
-    org.label-schema.name="hzncli" \
+    org.label-schema.name="hzn_setup" \
     org.label-schema.description="horizon CLI base" \
-    org.label-schema.vcs-url="http://github.com/dcmartin/open-horizon/master/hzncli-ubuntu/" \
+    org.label-schema.vcs-url="http://github.com/dcmartin/open-horizon/master/hzn_setup-ubuntu/" \
     org.label-schema.vcs-ref="${BUILD_REF}" \
     org.label-schema.version="${BUILD_VERSION}" \
     org.label-schema.vendor="David C Martin <github@dcmartin.com>"
