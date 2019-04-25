@@ -91,7 +91,7 @@ hzn_setup_lookup()
 {
   args=(${*})
   if [ ${#args[@]} -gt 0 ]; then
-    serial="$args[0]"
+    serial="${args[0]}"
   fi
   if [ ${#args[@]} -gt 1 ]; then
     i=1; while [ ${i} -le ${#args[@]} ]; do

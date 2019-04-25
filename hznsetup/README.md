@@ -79,16 +79,7 @@ Devices are approved based on the following settings for `HZN_SETUP_APPROVE`:
 + `mac` - approve only devices which provide MAC addresses found in the database
 + `both` - approve only devices which provide both serial # and _matching_ MAC addresses found in the database
 
-Non-approved devices will receive JSON error payload. Approved devices will receive a JSON payload with identifier and token:
-
-```
-{
-  "id": "<node-identifier>",
-  "org": "<organization>",
-  "token": "<base64 encoded token>",
-  "pattern": "<pattern-name>" or null
-}
-```
+Non-approved devices will receive JSON error payload. Approved devices will receive a JSON payload with identifier and token.
 
 Devices automatically process the response and register with the exchange.
 
@@ -97,16 +88,7 @@ The database is updated with a date-time stamp and any previously missing inform
 The device database may be created using the [IBM Cloudant](https://www.ibm.com/cloud/cloudant) noSQL service.  The format of the database is a series of records in the following format:
 
 ```
-{
-  "date": "<timestamp>",
-  "id": "<node-identifier>",
-  "mac": ["<MAC address>"],
-  "serial": "<serial number>",
-  "vendor": "<vendor identifier>",
-  "pattern": "<pattern-name>",
-  "org": "<organization>",
-  "token": "<base64 encoded token>"
-}
+
 ```
 
 All the entries are optional when auto-approving; identifiers and tokens will be auto-generated based on serial number, MAC address, and any provided `HZN_SETUP_BASENAME`, for example: `"mynode-"`

@@ -43,7 +43,7 @@ hzn_init
 
 ## configure service
 #SERVICES='[{"name":"mqtt","url":"http://mqtt"}]'
-CONFIG='{"tmpdir":"'${TMPDIR}'","logto":"'${LOGTO:-}'","log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-true}',"org":"'${HZN_SETUP_ORG:-none}'","exchange":"'${HZN_SETUP_EXCHANGE:-none}'","pattern":"'${HZN_SETUP_PATTERN:-}'","port":'${HZN_SETUP_PORT:-0}',"db":"'${HZN_SETUP_DB}'","username":"'${HZN_SETUP_DB_USERNAME:-none}'","approve":"auto","vendor":"any","services":'"${SERVICES:-null}"'}'
+CONFIG='{"tmpdir":"'${TMPDIR}'","logto":"'${LOGTO:-}'","log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-true}',"org":"'${HZN_SETUP_ORG:-none}'","exchange":"'${HZN_SETUP_EXCHANGE:-none}'","pattern":"'${HZN_SETUP_PATTERN:-}'","port":'${HZN_SETUP_PORT:-0}',"db":"'${HZN_SETUP_DB}'","username":"'${HZN_SETUP_DB_USERNAME:-none}'","pkg":{"url":"'${HZN_SETUP_PKG_URL:-none}'","key":"'${HZN_SETUP_PKG_KEY:-none}'"},"approve":"auto","vendor":"any","services":'"${SERVICES:-null}"'}'
 
 ## initialize servive
 service_init ${CONFIG}
