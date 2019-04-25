@@ -1,4 +1,4 @@
-# &#127919; `hzn-setup` - new node configurator
+# &#127919; `hznsetup` - new node configurator
 
 Configure new devices into Open Horizon nodes in the specified _organization_ and _exchange_, with the specified _pattern_.  This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.
 
@@ -8,28 +8,28 @@ Configure new devices into Open Horizon nodes in the specified _organization_ an
 ## Status
 
 ![Supports amd64 Architecture][amd64-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/amd64_com.github.dcmartin.open-horizon.hzn-setup.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.hzn-setup "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/amd64_com.github.dcmartin.open-horizon.hzn-setup.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.hzn-setup "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/amd64_com.github.dcmartin.open-horizon.hznsetup.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.hznsetup "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/amd64_com.github.dcmartin.open-horizon.hznsetup.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.hznsetup "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-amd64]][docker-amd64]
 
-[docker-amd64]: https://hub.docker.com/r/dcmartin/amd64_com.github.dcmartin.open-horizon.hzn-setup
-[pulls-amd64]: https://img.shields.io/docker/pulls/dcmartin/amd64_com.github.dcmartin.open-horizon.hzn-setup.svg
+[docker-amd64]: https://hub.docker.com/r/dcmartin/amd64_com.github.dcmartin.open-horizon.hznsetup
+[pulls-amd64]: https://img.shields.io/docker/pulls/dcmartin/amd64_com.github.dcmartin.open-horizon.hznsetup.svg
 
 ![Supports armhf Architecture][arm-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/arm_com.github.dcmartin.open-horizon.hzn-setup.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.hzn-setup "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/arm_com.github.dcmartin.open-horizon.hzn-setup.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.hzn-setup "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/arm_com.github.dcmartin.open-horizon.hznsetup.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.hznsetup "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/arm_com.github.dcmartin.open-horizon.hznsetup.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.hznsetup "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-arm]][docker-arm]
 
-[docker-arm]: https://hub.docker.com/r/dcmartin/arm_com.github.dcmartin.open-horizon.hzn-setup
-[pulls-arm]: https://img.shields.io/docker/pulls/dcmartin/arm_com.github.dcmartin.open-horizon.hzn-setup.svg
+[docker-arm]: https://hub.docker.com/r/dcmartin/arm_com.github.dcmartin.open-horizon.hznsetup
+[pulls-arm]: https://img.shields.io/docker/pulls/dcmartin/arm_com.github.dcmartin.open-horizon.hznsetup.svg
 
 ![Supports aarch64 Architecture][arm64-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/arm64_com.github.dcmartin.open-horizon.hzn-setup.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.hzn-setup "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/arm64_com.github.dcmartin.open-horizon.hzn-setup.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.hzn-setup "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/arm64_com.github.dcmartin.open-horizon.hznsetup.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.hznsetup "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/arm64_com.github.dcmartin.open-horizon.hznsetup.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.hznsetup "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-arm64]][docker-arm64]
 
-[docker-arm64]: https://hub.docker.com/r/dcmartin/arm64_com.github.dcmartin.open-horizon.hzn-setup
-[pulls-arm64]: https://img.shields.io/docker/pulls/dcmartin/arm64_com.github.dcmartin.open-horizon.hzn-setup.svg
+[docker-arm64]: https://hub.docker.com/r/dcmartin/arm64_com.github.dcmartin.open-horizon.hznsetup
+[pulls-arm64]: https://img.shields.io/docker/pulls/dcmartin/arm64_com.github.dcmartin.open-horizon.hznsetup.svg
 
 [arm64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
@@ -37,7 +37,7 @@ Configure new devices into Open Horizon nodes in the specified _organization_ an
 
 ## Service discovery
 + `org` - `dcmartin@us.ibm.com`
-+ `url` - `com.github.dcmartin.open-horizon.hzn-setup`
++ `url` - `com.github.dcmartin.open-horizon.hznsetup`
 + `version` - `0.0.1`
 
 ## Variables
@@ -112,26 +112,125 @@ The device database may be created using the [IBM Cloudant](https://www.ibm.com/
 All the entries are optional when auto-approving; identifiers and tokens will be auto-generated based on serial number, MAC address, and any provided `HZN_SETUP_BASENAME`, for example: `"mynode-"`
 
 ## How To Use
-Copy this [repository][repository], change to the `hzn-setup` directory, then use the **make** command; see below:
+Copy this [repository][repository], change to the `hznsetup` directory, then use the **make** command; see below:
 
 ```
 % mkdir ~/gitdir
 % cd ~/gitdir
 % git clone http://github.com/dcmartin/open-horizon
-% cd open-horizon.hzn-setup
+% cd open-horizon.hznsetup
 % make
 ...
 ```
 
-The `hzn-setup` value will initially be incomplete until the service completes its initial execution.  Subsequent tests should return a completed payload, see below:
+The `hznsetup` value will initially be incomplete until the service completes its initial execution.  Subsequent tests should return a completed payload, see below:
 
 ```
 % make check
 ```
-
-should result in a service payload:
+Produce a status result:
 
 ```
+{
+  "hznsetup": {
+    "nodes": 48,
+    "date": 1556227120,
+    "pid": 51
+  },
+  "date": 1556227120,
+  "hzn": {
+    "agreementid": "393f54b46f6a9f8fda47bc19caac66271e10b31e20370e0d554b3d9375d5855f",
+    "arch": "amd64",
+    "cpus": 1,
+    "device_id": "davidsimac.local",
+    "exchange_url": "https://alpha.edge-fabric.com/v1",
+    "host_ips": [
+      "127.0.0.1",
+      "192.168.1.27",
+      "192.168.1.26",
+      "9.80.94.82"
+    ],
+    "organization": "dcmartin@us.ibm.com",
+    "ram": 1024,
+    "pattern": null
+  },
+  "config": {
+    "tmpdir": "/tmp",
+    "logto": "/dev/stderr",
+    "log_level": "info",
+    "debug": true,
+    "org": "dcmartin@us.ibm.com",
+    "exchange": "https://alpha.edge-fabric.com/v1",
+    "pattern": "",
+    "port": 3093,
+    "db": "https://515bed78-9ddc-408c-bf41-32502db2ddf8-bluemix.cloudant.com",
+    "username": "515bed78-9ddc-408c-bf41-32502db2ddf8-bluemix",
+    "approve": "auto",
+    "vendor": "any",
+    "services": null
+  },
+  "service": {
+    "label": "hznsetup",
+    "version": "0.0.1"
+  }
+}
+```
+
+## EXAMPLE
+
+### Client request
+Clients request node status by submitting a JSON payload containing device details, for example:
+
+```
+curl 'localhost:3093' -X POST -H "Content-Type: application/json" --data-binary @client-request.json 
+```
+
+The `client-request.json` file contains the device specific details:
+
+```
+{
+  "serial": "000000003eb8a500",
+  "mac": [
+    "b8:27:eb:b8:a5:00",
+    "b8:27:eb:ed:f0:55"
+  ]
+}
+```
+
+When the service registers the device, the service response (JSON) provides node information to the device:
+
+```
+{
+  "exchange": "https://alpha.edge-fabric.com/v1",
+  "org": "dcmartin@us.ibm.com",
+  "pattern": "none",
+  "node": {
+    "serial": "000000003eb8a500[0]",
+    "device": "node-b827ebb8a500",
+    "token": "27e8097388f301fa84e61c7bfa7a3926d067e3e2",
+    "timestamp": "04/25/19-21:18:44",
+    "exchange": {
+      "token": "********",
+      "name": "node-b827ebb8a500",
+      "owner": "dcmartin@us.ibm.com/dcmartin@us.ibm.com",
+      "pattern": "",
+      "registeredServices": [],
+      "msgEndPoint": "",
+      "softwareVersions": {},
+      "lastHeartbeat": "2019-04-25T21:18:45.077Z[UTC]",
+      "publicKey": "",
+      "id": "dcmartin@us.ibm.com/node-b827ebb8a500"
+    }
+  },
+  "input": {
+    "serial": "000000003eb8a500",
+    "mac": [
+      "b8:27:eb:b8:a5:00",
+      "b8:27:eb:ed:f0:55"
+    ]
+  },
+  "date": 1556227125
+}
 ```
 
 ## Changelog & Releases
@@ -148,10 +247,10 @@ based on the following:
 
 [David C Martin][dcmartin] (github@dcmartin.com)
 
-[userinput]: https://github.com/dcmartin/open-horizon/blob/master/hzn-setup/userinput.json
-[service-json]: https://github.com/dcmartin/open-horizon/blob/master/hzn-setup/service.json
-[build-json]: https://github.com/dcmartin/open-horizon/blob/master/hzn-setup/build.json
-[dockerfile]: https://github.com/dcmartin/open-horizon/blob/master/hzn-setup/Dockerfile
+[userinput]: https://github.com/dcmartin/open-horizon/blob/master/hznsetup/userinput.json
+[service-json]: https://github.com/dcmartin/open-horizon/blob/master/hznsetup/service.json
+[build-json]: https://github.com/dcmartin/open-horizon/blob/master/hznsetup/build.json
+[dockerfile]: https://github.com/dcmartin/open-horizon/blob/master/hznsetup/Dockerfile
 
 
 [dcmartin]: https://github.com/dcmartin

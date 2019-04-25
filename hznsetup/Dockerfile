@@ -11,6 +11,13 @@ ENV \
     PS1="$(whoami)@$(hostname):$(pwd)$ " \
     TERM="xterm"
 
+## horizon package and key
+ARG HZN_SETUP_PKG_URL="http://pkg.bluehorizon.network/"
+ARG HZN_SETUP_PKG_KEY="${HZN_SETUP_PKG_URL}/bluehorizon.network-public.key"
+
+## make available inside the container to advise clients
+ENV HZN_SETUP_PKG_URL=${HZN_SETUP_PKG_URL}
+ENV HZN_SETUP_PKG_KEY="${HZN_SETUP_PKG_KEY}"
 
 RUN DEBIAN_FRONTEND=noninteractive \
   \
@@ -18,12 +25,12 @@ RUN DEBIAN_FRONTEND=noninteractive \
   \
   && apt-get install -qq -y ca-certificates gnupg curl jq socat bash bc software-properties-common \
   \
-  && URL="http://pkg.bluehorizon.network/" \
+  && URL=${HZN_SETUP_PKG_URL} \
+  && KEY=${HZN_SETUP_PKG_KEY} \
   && TYPE=linux \
   && DIST=ubuntu \
   && RELEASE=xenial \
   && REPO=updates \
-  && KEY=${URL}/bluehorizon.network-public.key \
   \
   && curl -fsSL ${KEY} | apt-key add - \
   \

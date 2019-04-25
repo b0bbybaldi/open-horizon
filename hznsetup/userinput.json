@@ -1,0 +1,17 @@
+{
+  "global": [],
+  "services": [
+    {
+      "org": "${HZN_ORG_ID}",
+      "url": "com.github.dcmartin.open-horizon.hznsetup",
+      "versionRange": "[0.0.0,INFINITY)",
+      "variables": {
+	"HZN_SETUP_ORG": "${HZN_ORG_ID}",
+	"HZN_SETUP_APIKEY": "${HZN_EXCHANGE_APIKEY}",
+	"HZN_SETUP_PATTERN": "",
+        "LOG_LEVEL": "info",
+        "DEBUG": true
+      }
+    }
+  ]
+}

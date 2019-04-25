@@ -1,0 +1,31 @@
+{
+  "exchange": "https://alpha.edge-fabric.com/v1",
+  "org": "dcmartin@us.ibm.com",
+  "pattern": "none",
+  "node": {
+    "serial": "000000003eb8a500[0]",
+    "device": "node-b827ebb8a500",
+    "token": "27e8097388f301fa84e61c7bfa7a3926d067e3e2",
+    "timestamp": "04/25/19-21:18:44",
+    "exchange": {
+      "token": "********",
+      "name": "node-b827ebb8a500",
+      "owner": "dcmartin@us.ibm.com/dcmartin@us.ibm.com",
+      "pattern": "",
+      "registeredServices": [],
+      "msgEndPoint": "",
+      "softwareVersions": {},
+      "lastHeartbeat": "2019-04-25T21:18:45.077Z[UTC]",
+      "publicKey": "",
+      "id": "dcmartin@us.ibm.com/node-b827ebb8a500"
+    }
+  },
+  "input": {
+    "serial": "000000003eb8a500",
+    "mac": [
+      "b8:27:eb:b8:a5:00",
+      "b8:27:eb:ed:f0:55"
+    ]
+  },
+  "date": 1556227125
+}

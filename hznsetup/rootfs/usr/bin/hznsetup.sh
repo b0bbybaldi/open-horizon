@@ -7,9 +7,9 @@ if [ -d '/tmpfs' ]; then TMPDIR='/tmpfs'; else TMPDIR='/tmp'; fi
 if [ -z "${LOGTO:-}" ]; then LOGTO="${TMPDIR}/${0##*/}.log"; fi
 
 ###
-### hzn-setup.sh
+### hznsetup.sh
 ###
-### Run forever sending requests to hzn-setup-node.sh
+### Run forever sending requests to hznsetup-node.sh
 ###
 
 if [ "${HZN_SETUP_VENDOR:-any}" = 'any' ]; then HZN_SETUP_VENDOR="*"; fi
@@ -28,10 +28,10 @@ if [ -z "${HZN_SETUP_PERIOD:-}" ]; then HZN_SETUP_PERIOD=30; echo "--- INFO -- $
 
 ## FUNCTIONS
 source /usr/bin/service-tools.sh
-source /usr/bin/hzn-setup-tools.sh
+source /usr/bin/hznsetup-tools.sh
 
 ## setup response script
-if [ -z "${HZN_SETUP_SCRIPT:-}" ]; then HZN_SETUP_SCRIPT="hzn-setup-node.sh"; fi
+if [ -z "${HZN_SETUP_SCRIPT:-}" ]; then HZN_SETUP_SCRIPT="hznsetup-node.sh"; fi
 HZN_SETUP_SCRIPT=$(command -v "${HZN_SETUP_SCRIPT}")
 
 ###
@@ -77,7 +77,7 @@ while true; do
   fi
 
   # update service
-  echo '{"date":'$(date +%s)',"pid":'${PID:-0}',"nodes":'$(hzn_setup_exchange_nodes)'}' > "${OUTPUT_FILE}"
+  hzn_setup_exchange_nodes | jq '.date='$(date +%s)'|.pid='${PID:-0} > "${OUTPUT_FILE}"
   service_update "${OUTPUT_FILE}"
 
   # wait for ..

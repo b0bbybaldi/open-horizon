@@ -10,10 +10,10 @@ if [ -z "${LOGTO:-}" ]; then LOGTO="${TMPDIR}/${0##*/}.log"; fi
 ## functions
 ##
 
-source /usr/bin/hzn-setup-tools.sh
+source /usr/bin/hznsetup-tools.sh
 
 ###
-### hzn-setup-node.sh
+### hznsetup-node.sh
 ### 
 
 ## read request
