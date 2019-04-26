@@ -36,7 +36,6 @@ This container may be run locally using Docker, pushed to a Docker registry, and
 + `org` - `dcmartin@us.ibm.com`
 + `url` - `com.github.dcmartin.open-horizon.mqtt2mqtt`
 + `version` - `0.0.1`
-+ `arch` - `arm`, `arm64`, `amd64`
 
 ## Service variables
 + `MQTT2MQTT_HOST` - **REQUIRED** IP or FQDN for mqtt host to receive; defaults to `""`
