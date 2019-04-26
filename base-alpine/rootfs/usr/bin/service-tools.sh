@@ -126,15 +126,12 @@ service_output()
   HCF=$(mktemp)
   # get horizon config
   hzn_config > "${HCF}"
-  if [ "${DEBUG}" == 'true' ]; then echo "--- INFO -- $0 $$ -- service_output: checkpoint 1: ${HCF}:" $(wc -c ${HCF}) >> ${LOGTO} 2>&1; fi
   # get service config
   SCF=$(mktemp)
   service_config > "${SCF}"
-  if [ "${DEBUG}" == 'true' ]; then echo "--- INFO -- $0 $$ -- service_output: checkpoint 2: ${SCF}:" $(wc -c ${SCF}) >> ${LOGTO} 2>&1; fi
-  # add
+  # add configurations together
   jq -s add "${HCF}" "${SCF}" > "${OUTPUT}"
-  if [ "${DEBUG}" == 'true' ]; then echo "--- INFO -- $0 $$ -- service_output: checkpoint 3: ${OUTPUT}:" $(wc -c ${OUTPUT}) >> ${LOGTO} 2>&1; fi
-  # remove
+  # remove files
   rm -f "${HCF}" "${SCF}"
   # get service output
   SOF=$(mktemp)
@@ -147,7 +144,6 @@ service_output()
     echo 'null' >> "${SOF}"
   fi
   echo '}' >> "${SOF}"
-  if [ "${DEBUG}" == 'true' ]; then echo "--- INFO -- $0 $$ -- service_output: checkpoint 4: ${SERVICE_LABEL}:" $(wc -c ${SOF}) >> ${LOGTO} 2>&1; fi
   # get required services
   RSOF=$(mktemp)
   if [ $(service_otherServices_output ${RSOF}) != 0 ]; then
