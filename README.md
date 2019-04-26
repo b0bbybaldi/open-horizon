@@ -28,7 +28,7 @@ Please see the ["hello world"](https://github.com/dcmartin/open-horizon/blob/mas
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
 [arm-shield]: https://img.shields.io/badge/armhf-yes-green.svg
 
-## 1.1 Registry & Exchange
+## 1. Introduction
 
 These services and patterns are built and pushed to designated Docker registry & namespace as well as Open Horizon exchange and organization.  The default build configuration is:
 
@@ -39,7 +39,38 @@ These services and patterns are built and pushed to designated Docker registry &
 
 [docker-dcmartin]: https://hub.docker.com/?namespace=dcmartin
 
-**NOTE**: The `HZN_ORG_ID` and `DOCKER_NAMESPACE` should be specified appropriately prior to any build.
+### 1.1 Variables
+The `HZN_ORG_ID` and `DOCKER_NAMESPACE` should be specified appropriately prior to any build; substitute values appropriately, for example:
+
+```
+% export HZN_ORG_ID="dcmartin@us.ibm.com"
+% export DOCKER_NAMESPACE="dcmartin"
+```
+
+To make those environment variables persistent, copy them into files with the same names:
+
+```
+% echo "${HZN_ORG_ID}" > HZN_ORG_ID
+% echo "${DOCKER_NAMESPACE}" > DOCKER_NAMESPACE
+```
+
+An IBM Cloud Platform API key is required to publish any service or pattern; please refer to the IBM [IAM](http://cloud.ibm.com/iam/) service to download a JSON API key file.  Then copy that file into the top-level directory of the forked or cloned repository; for example:
+
+```
+% cp ~/Downloads/apiKey.json ~/gitdir/open-horizon/
+```
+
+The API key will be automatically extracted and saved in a local `APIKEY` file for use in the build process.
+
+### 1.2 Dependencies
+Docker provides for build dependencies through the `FROM ` directive in the `Dockerfile`; most services depend on the base service containers for `base-ubuntu` or `base-alpine`.
+
+Build all services and containers from the top-level using the following command:
+
+```
+% make service-build
+```
+
 
 # 2. Services & Patterns
 
