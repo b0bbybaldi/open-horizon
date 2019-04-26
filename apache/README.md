@@ -39,7 +39,8 @@ Provides a base service for an [Apache](https://httpd.apache.org/) web server.  
 + `url` - `com.github.dcmartin.open-horizon.apache`
 + `version` - `0.0.1`
 
-## Variables
+## Service variables
+
 + `APACHE_CONF` - location of configuration file; default: /etc/apache2/httpd.conf
 + `APACHE_HTDOCS` - location of HTML files; default: /var/www/localhost/htdocs
 + `APACHE_CGIBIN` - location of CGI scripts; default: /var/www/localhost/cgi-bin

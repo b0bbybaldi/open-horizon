@@ -37,7 +37,7 @@ Processes sound and recognizes hotwords from a specified model. This container m
 + `url` - `com.github.dcmartin.open-horizon.hotword`
 + `version` - `0.0.1`
 
-## Variables
+## Service variables
 + `HOTWORD_GROUP` - group name (aka top-level topic); defaults to `"hotword"`
 + `HOTWORD_CLIENT` - client name; default: `""`; set to `HZN_DEVICE_ID` or `hostname`
 + `HOTWORD_EVENT` - topic for sound event detected; default: `"+/+/+/event/start"`

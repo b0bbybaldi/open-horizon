@@ -37,7 +37,7 @@ Monitors attached microphone using `record` service and provides FFT functionali
 + `url` - `com.github.dcmartin.open-horizon.fft`
 + `version` - `0.0.1`
 
-## Service Variables
+## Service variables
 
 + `FFT_ANOMALY_GROUP` - group for MQTT topics; default `fft`
 + `FFT_ANOMALY_CLIENT` - client identifier; defaults to `HZN_DEVICE_ID` or `hostname`

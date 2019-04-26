@@ -40,7 +40,7 @@ Monitors attached microphone and provides [`sox`](https://linux.die.net/man/1/so
 + `url` - `com.github.dcmartin.open-horizon.noize`
 + `version` - `0.0.1`
 
-## Variables
+## Service variables
 + `NOIZE_GROUP` - group name (aka top-level topic); defaults to `noize`
 + `NOIZE_CLIENT` - client name; defaults to `HZN_DEVICE_ID` or `hostname`
 + `NOIZE_DEVICE` - device to record sound; default: *system default device*

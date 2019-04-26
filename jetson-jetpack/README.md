@@ -37,7 +37,7 @@ This container may be run locally using Docker, pushed to a Docker registry, and
 + `url` - `com.github.dcmartin.open-horizon.jetson-jetpack`
 + `version` - `0.0.1`
 
-#### Optional variables
+## Service variables
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - force debug settings; boolean; default `false`
 

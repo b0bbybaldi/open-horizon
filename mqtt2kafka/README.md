@@ -36,9 +36,8 @@ This container may be run locally using Docker, pushed to a Docker registry, and
 + `org` - `dcmartin@us.ibm.com`
 + `url` - `com.github.dcmartin.open-horizon.mqtt2kafka`
 + `version` - `0.0.1`
-+ `arch` - `arm`, `arm64`, `amd64`
 
-## Variables
+## Service variables
 + `MQTT_HOST` - IP or FQDN for mqtt host; defaults to `mqtt` on local VPN
 + `MQTT_PORT` - MQTT port number; defaults to 1883
 + `MQTT_USERNAME` - MQTT username; default "" (_empty string_); indicating no username

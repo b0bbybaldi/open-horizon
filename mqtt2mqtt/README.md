@@ -38,7 +38,7 @@ This container may be run locally using Docker, pushed to a Docker registry, and
 + `version` - `0.0.1`
 + `arch` - `arm`, `arm64`, `amd64`
 
-## Variables
+## Service variables
 + `MQTT2MQTT_HOST` - **REQUIRED** IP or FQDN for mqtt host to receive; defaults to `""`
 + `MQTT_HOST` - MQTT host for in-bound topics; default: `mqtt`
 + `MQTT_PORT` - MQTT port number; defaults to 1883

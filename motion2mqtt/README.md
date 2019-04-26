@@ -40,7 +40,7 @@ Monitors attached camera and provides [motion-project.github.io][motion-project-
 + `url` - `com.github.dcmartin.open-horizon.motion2mqtt`
 + `version` - `0.0.10`
 
-## Service Variables
+## Service variables
 + `MOTION_GROUP` - group name (aka top-level topic); defaults to `motion`
 + `MOTION_CLIENT` - device name; defaults to `HZN_CLIENT_ID` or `hostname`
 + `MOTION_TIMEZONE` - timezone; default: `GMT`
