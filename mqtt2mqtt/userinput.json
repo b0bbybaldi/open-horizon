@@ -14,8 +14,7 @@
         "MQTT2MQTT_PORT": 1883,
         "MQTT2MQTT_USERNAME": "",
         "MQTT2MQTT_PASSWORD": "",
-        "MQTT2MQTT_TOPIC_EVENT": "",
-        "MQTT2MQTT_TOPIC_PAYLOAD": "",
+        "MQTT2MQTT_PUBLISH": "",
         "MQTT2MQTT_PERIOD": 30,
         "LOG_LEVEL": "info",
         "DEBUG": false
