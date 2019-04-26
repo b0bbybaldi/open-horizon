@@ -8,13 +8,26 @@
       "variables": {
         "HZN_EXCHANGE_APIKEY": "${HZN_EXCHANGE_APIKEY}",
         "MOTION_TIMEZONE": "America/Los_Angeles",
-        "MOTION_DEVICE": "",
+        "MOTION_GROUP": "nextone",
+        "MOTION_CLIENT": "",
         "MOTION_POST_PICTURES": "center",
         "MOTION_LOG_LEVEL": 6,
         "MOTION_LOG_TYPE": "all",
         "MQTT_HOST": "mqtt",
         "MQTT_USERNAME": "",
         "MQTT_PASSWORD": "",
+        "MQTT_PORT": 1883,
+        "DEBUG": true
+      }
+    },
+    {
+      "org": "${HZN_ORG_ID}",
+      "url": "com.github.dcmartin.open-horizon.mqtt",
+      "versionRange": "[0.0.0,INFINITY)",
+      "variables": {
+        "MQTT_USERNAME": "",
+        "MQTT_PASSWORD": "",
+        "MQTT_PORT": 1883,
         "DEBUG": true
       }
     },
@@ -23,12 +36,13 @@
       "url": "com.github.dcmartin.open-horizon.mqtt2kafka",
       "versionRange": "[0.0.0,INFINITY)",
       "variables": {
-	"MQTT_HOST": "mqtt",
+        "MQTT_HOST": "mqtt",
         "MQTT_USERNAME": "",
         "MQTT_PASSWORD": "",
+        "MQTT_PORT": 1883,
         "MQTT2KAFKA_APIKEY": "${MQTT2KAFKA_APIKEY}",
         "MQTT2KAFKA_PAYLOAD": "image",
-        "MQTT2KAFKA_SUBSCRIBE": "+/+/+/event/end",
+        "MQTT2KAFKA_SUBSCRIBE": "nextone/+/+/event/end",
         "MQTT2KAFKA_PUBLISH": "",
         "MQTT2KAFKA_TOO_OLD": 300,
         "DEBUG": true
@@ -42,10 +56,13 @@
         "MQTT_HOST": "mqtt",
         "MQTT_USERNAME": "",
         "MQTT_PASSWORD": "",
-        "MOTION_GROUP": "newman",
-	"YOLO_CONFIG": "tiny",
-	"YOLO_ENTITY": "all",
-	"YOLO_SCALE": "none",
+        "MQTT_PORT": 1883,
+        "MOTION_GROUP": "nextone",
+        "MOTION_CLIENT": "+",
+        "YOLO4MOTION_CAMERA": "+",
+        "YOLO_CONFIG": "tiny",
+        "YOLO_ENTITY": "all",
+        "YOLO_SCALE": "none",
         "DEBUG": true
       }
     }

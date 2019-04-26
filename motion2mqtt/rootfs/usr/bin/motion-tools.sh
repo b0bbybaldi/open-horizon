@@ -57,7 +57,7 @@ motion_usb_camera()
     for mid in $(echo "${lsusb}" | jq -r '.[].manufacture_id'); do
       for id in $(echo "${KNOWN_CAMERAS}" | jq -r '.[].usb'); do
 	usb=$(echo "${lsusb}" | jq '.[]|select(.manufacture_id|test("'${id}'")')
-	if [ -z "${usb} ] || [ "${usb}" == 'null' ]; then continue; fi
+	if [ -z "${usb}" ] || [ "${usb}" == 'null' ]; then continue; fi
 	device=$(echo "${usb}" | jq -r '.manufacture_id' | sed 's/.*Device \([0-9]*\).*/\1/')
       done
     done
