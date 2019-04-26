@@ -25,11 +25,11 @@
         ],
         "specific_ports": [
           {
-            "HostPort": "5959/udp",
+            "HostPort": "5960/tcp",
             "HostIP": "0.0.0.0"
           },
           {
-            "HostPort": "5960/tcp",
+            "HostPort": "5959/udp",
             "HostIP": "0.0.0.0"
           }
         ],

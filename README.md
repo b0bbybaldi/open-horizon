@@ -142,17 +142,18 @@ David C Martin (github@dcmartin.com)
 
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
-Markdown|42|1731|0|10769
-JSON|100|1|0|8836
-Bourne Shell|75|898|962|5786
-Dockerfile|20|278|174|1026
+Markdown|49|1986|0|12122
+JSON|130|1|0|11538
+Bourne Shell|105|1144|1335|7096
+Dockerfile|26|311|191|1182
 Bourne Again Shell|5|83|103|441
-make|2|93|66|287
-Python|1|10|20|48
-YAML|1|5|16|40
+make|2|96|66|304
+Python|6|84|108|293
+YAML|1|0|39|148
+awk|1|4|0|16
 Expect|1|0|0|5
 --------|--------|--------|--------|--------
-SUM:|247|3099|1341|27238
+SUM:|326|3709|1842|33145
 
 ## MAP
 
