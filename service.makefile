@@ -278,7 +278,7 @@ $(TEST_NODE_NAMES):
 nodes-list:
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- nodes-list: ${TEST_NODE_NAMES}""${NC}" &> /dev/stderr
 	@for machine in $(TEST_NODE_NAMES); do \
-	  echo "${MC}>>> MAKE --" $$(date +%T) "-- listing $${machine}""${NC}" &> /dev/stderr; \
+	  echo "${MC}>>> MAKE --" $$(date +%T) "-- running: ./sh/nodelist.sh $${machine}""${NC}" &> /dev/stderr; \
 	  ./sh/nodelist.sh $${machine}; \
 	done
 
