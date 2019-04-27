@@ -91,15 +91,18 @@ The device database may be created using the [IBM Cloudant](https://www.ibm.com/
 ```
 {
   "serial": "<string>",
-  "mac":["00:04:4B:CC:4A:A6",..],
-  "
-
+  "mac":"<string>",
+  "product": "<string>",
+  "pattern": "<string>",
+  "device": "<string>",
+  "token": "<string>"
+}
 ```
 
 All the entries are optional when auto-approving; identifiers and tokens will be auto-generated based on serial number, MAC address, and any provided `HZN_SETUP_BASENAME`, for example: `"mynode-"`
 
 ## How To Use
-Copy this [repository][repository], change to the `hznsetup` directory, then use the **make** command; see below:
+Copy this [repository][repository], change to the repository directory (e.g. `~/gitdir`), and then the `hznsetup` directory; then use the **make** command; see below:
 
 ```
 % mkdir ~/gitdir
@@ -185,9 +188,13 @@ The `client-request.json` file contains the device specific details:
     "serial": "042111900396808083fb",
     "mac": "00:04:4b:cc:4a:a6",
     "inet": "192.168.1.87/24"
-  }
+}
 ```
 
+There are multiple samples provides in the `samples/` directory.
+
+
+### Service reponse
 When the service registers the device, the service response (JSON) provides node information to the device:
 
 ```
