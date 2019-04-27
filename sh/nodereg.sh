@@ -86,7 +86,7 @@ node_aptget()
   && URL=http://pkg.bluehorizon.network \
   && KEY=${URL}/bluehorizon.network-public.key \
   && wget -qO - "${KEY}" | sudo apt-key add - \
-  && echo "deb [arch=armhf,arm64,amd64,ppc64le] ${URL}/linux/ubuntu xenial-${APT_REPO} main" > /tmp/$$ \
+  && echo "deb [arch=armhf,arm64,amd64,ppc64el] ${URL}/linux/ubuntu xenial-${APT_REPO} main" > /tmp/$$ \
   && sudo mv /tmp/$$ "${APT}"'
   ssh ${machine} 'sudo apt-get update &> update.log'
   ssh ${machine} 'sudo apt-get upgrade -y &> upgrade.log'
