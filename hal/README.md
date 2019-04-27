@@ -37,9 +37,10 @@ Provides hardware information as micro-service; updates periodically (default `6
 + `url` - `com.github.dcmartin.open-horizon.hal`
 + `version` - `0.0.3`
 
-#### Optional variables
+## Service variables
 + `HAL_PERIOD` - seconds between updates; defaults to `60`
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
+
 ## How To Use
 
 Copy this [repository][repository], change to the `hal` directory, then use the **make** command; see below:

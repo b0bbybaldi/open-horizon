@@ -37,7 +37,7 @@ This container may be run locally using Docker, pushed to a Docker registry, and
 + `url` - `com.github.dcmartin.open-horizon.mqtt`
 + `version` - `0.0.2`
 
-#### Optional variables
+## Service variables
 + `MQTT_PERIOD` - update time in seconds for server statistics
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - force debug settings; boolean; default `false`

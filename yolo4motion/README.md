@@ -37,7 +37,7 @@ Provides entity count information as micro-service; updates periodically (defaul
 + `url` - `com.github.dcmartin.open-horizon.yolo4motion`
 + `version` - `0.0.1`
 
-## Variables
+## Service variables 
 + `YOLO_CONFIG` - configuration: `tiny`|`tinyv2`, `tinyv3`, `v2`, `v3`; default: `tiny`
 + `YOLO_SCALE` - width and height to scale image; defaults to `none`
 + `YOLO_ENTITY` - entity to count; defaults to `all`

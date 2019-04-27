@@ -40,7 +40,8 @@ Configure new devices into Open Horizon nodes in the specified _organization_ an
 + `url` - `com.github.dcmartin.open-horizon.hznsetup`
 + `version` - `0.0.1`
 
-## Variables
+## Service variables
+
 + `HZN_SETUP_EXCHANGE` - URL of exchange in which to setup device; default: `${HZN_EXCHANGE_URL}`
 + `HZN_SETUP_ORG` - organization in which to setup device; default `${HZN_ORG_ID}`
 + `HZN_SETUP_APIKEY` - IBM Cloud platform API key; default `${HZN_EXCHANGE_APIKEY}`

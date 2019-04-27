@@ -1,32 +1,32 @@
-# 	&#128228; `mqtt2kafka` - MQTT to Kafka relay
+# &#128228; `mqtt2mqtt` - MQTT broker relay
 
 This container may be run locally using Docker, pushed to a Docker registry, and published to any [_Open Horizon_][open-horizon] exchange.
 
 ## Status
 
 ![Supports amd64 Architecture][amd64-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2mqtt.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2mqtt "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2mqtt.svg)](https://microbadger.com/images/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2mqtt "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-amd64]][docker-amd64]
 
-[docker-amd64]: https://hub.docker.com/r/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka
-[pulls-amd64]: https://img.shields.io/docker/pulls/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka.svg
+[docker-amd64]: https://hub.docker.com/r/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2mqtt
+[pulls-amd64]: https://img.shields.io/docker/pulls/dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2mqtt.svg
 
 ![Supports armhf Architecture][arm-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2kafka.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2kafka "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2kafka.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2kafka "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2mqtt.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2mqtt "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2mqtt.svg)](https://microbadger.com/images/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2mqtt "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-arm]][docker-arm]
 
-[docker-arm]: https://hub.docker.com/r/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2kafka
-[pulls-arm]: https://img.shields.io/docker/pulls/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2kafka.svg
+[docker-arm]: https://hub.docker.com/r/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2mqtt
+[pulls-arm]: https://img.shields.io/docker/pulls/dcmartin/arm_com.github.dcmartin.open-horizon.mqtt2mqtt.svg
 
 ![Supports aarch64 Architecture][arm64-shield]
-[![](https://images.microbadger.com/badges/image/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2kafka.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2kafka "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2kafka.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2kafka "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2mqtt.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2mqtt "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2mqtt.svg)](https://microbadger.com/images/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2mqtt "Get your own version badge on microbadger.com")
 [![Docker Pulls][pulls-arm64]][docker-arm64]
 
-[docker-arm64]: https://hub.docker.com/r/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2kafka
-[pulls-arm64]: https://img.shields.io/docker/pulls/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2kafka.svg
+[docker-arm64]: https://hub.docker.com/r/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2mqtt
+[pulls-arm64]: https://img.shields.io/docker/pulls/dcmartin/arm64_com.github.dcmartin.open-horizon.mqtt2mqtt.svg
 
 [arm64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
@@ -34,21 +34,19 @@ This container may be run locally using Docker, pushed to a Docker registry, and
 
 ## Service discovery
 + `org` - `dcmartin@us.ibm.com`
-+ `url` - `com.github.dcmartin.open-horizon.mqtt2kafka`
++ `url` - `com.github.dcmartin.open-horizon.mqtt2mqtt`
 + `version` - `0.0.1`
 
 ## Service variables
-+ `MQTT_HOST` - IP or FQDN for mqtt host; defaults to `mqtt` on local VPN
++ `MQTT2MQTT_HOST` - **REQUIRED** IP or FQDN for mqtt host to receive; defaults to `""`
++ `MQTT_HOST` - MQTT host for in-bound topics; default: `mqtt`
 + `MQTT_PORT` - MQTT port number; defaults to 1883
-+ `MQTT_USERNAME` - MQTT username; default "" (_empty string_); indicating no username
-+ `MQTT_PASSWORD` - MQTT password; default "" (_empty string_); indicating no password
-+ `MQTT2KAFKA_APIKEY` - API key for Kafka broker
-+ `MQTT2KAFKA_ADMIN_URL` - administrative URL; **no changes necessary**
-+ `MQTT2KAFKA_BROKER`- message hub broker list; **no changes necessary**
-+ `MQTT2KAFKA_SUBSCRIBE` - MQTT topic on which to listen for event; defaults to `+/+/+/event/end`
-+ `MQTT2KAFKA_PAYLOAD` - MQTT topic extension for corresponding payload (if any); defaults to `image`
-+ `MQTT2KAFKA_PUBLISH` - Kafka topic on which to publish; defaults to MQTT receive topic
-+ `MQTT2KAFKA_TOO_OLD` - events older in seconds are ignored; default `300`
++ `MQTT_USERNAME` - MQTT username; default `""` (_empty string_); indicating no username
++ `MQTT_PASSWORD` - MQTT password; default `""` (_empty string_); indicating no password
++ `MQTT2MQTT_SUBSCRIBE` - MQTT topic on which to listen for event; defaults to `"+/+/+/event/end"`
++ `MQTT2MQTT_PAYLOAD` - MQTT topic extension for corresponding payload (if any); defaults to `"sound"`
++ `MQTT2MQTT_PUBLISH` - MQTT topic on which to publish; defaults to MQTT receive topic
++ `MQTT2MQTT_TOO_OLD` - events older in seconds are ignored; default `300`
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - force debug settings; boolean; default `false`
 
@@ -64,29 +62,29 @@ This container may be run locally using Docker, pushed to a Docker registry, and
 + `WAN_PERIOD`
 
 ## Description
-Transmit data received from MQTT broker on specified event and payload topics to specified Kafka broker.
+Transmit data received from MQTT broker on specified event and payload topics to specified MQTT broker.
 
-The `MQTT2KAFKA_SUBCRIBE` topic is intended to receive JSON payloads containing information about a new sensor event, e.g. motion detection and image classification.
+The `MQTT2MQTT_SUBCRIBE` topic is intended to receive JSON payloads containing information about a new sensor event, e.g. motion detection and image classification.
 
-If the `MQTT2KAFKA_PAYLOAD` variable is defined, a corresponding payload is retrieved by appending to the receiving topic.
+If the `MQTT2MQTT_PAYLOAD` variable is defined, a corresponding payload is retrieved by appending to the receiving topic.
 
 For example, the default `+/+/+/event/end` topic is received as `<group>/<client>/<camera>/event/end`; in the default case, a corresponding payload is expected on the topic `<group>/<client>/<camera>/event/end/image`.
 
 ## How To use
 
-Copy this [repository][repository], change to the `mqtt2kafka` directory, then use the **make** command; see below:
+Copy this [repository][repository], change to the `mqtt2mqtt` directory, then use the **make** command; see below:
 
 ```
 % mkdir ~/gitdir
 % cd ~/gitdir
 % git clone http://github.com/dcmartin/open-horizon
-% cd open-horizon/mqtt2kafka
+% cd open-horizon/mqtt2mqtt
 % make
 ...
 {
   "mqtt": null,
   "wan": null,
-  "mqtt2kafka": {
+  "mqtt2mqtt": {
     "date": 1554326429
   },
   "date": 1554326429,
@@ -128,7 +126,7 @@ Copy this [repository][repository], change to the `mqtt2kafka` directory, then u
     "wan": null
   },
   "service": {
-    "label": "mqtt2kafka",
+    "label": "mqtt2mqtt",
     "version": "0.0.1.2"
   }
 }
@@ -153,24 +151,24 @@ make test
 The output of the test:
 
 ```
->>> MAKE -- 14:27:22 -- testing container: mqtt2kafka; tag: dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka:0.0.1
-./test.sh "dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka:0.0.1"
+>>> MAKE -- 14:27:22 -- testing container: mqtt2mqtt; tag: dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2mqtt:0.0.1
+./test.sh "dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2mqtt:0.0.1"
 --- INFO -- ./test.sh 73518 -- No host specified; assuming 127.0.0.1
 +++ WARN ./test.sh 73518 -- No port specified; assuming port 80
 +++ WARN ./test.sh 73518 -- No protocol specified; assuming http
---- INFO -- ./test.sh 73518 -- Testing mqtt2kafka in container tagged: dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2kafka:0.0.1 at Wed Apr 3 14:27:22 PDT 2019
-{"mqtt":{"date":"number","pid":"number","version":"string","broker":{"bytes":{"received":"number","sent":"number"},"clients":{"connected":"number"},"load":{"messages":{"messages":"object"}},"publish":{"messages":{"messages":"object"}},"subscriptions":{"count":"number"}}},"wan":{"date":"number"},"mqtt2kafka":{"date":"number"},"date":"number","hzn":{"agreementid":"string","arch":"string","cpus":"number","device_id":"string","exchange_url":"string","host_ips":["string","string","string","string"],"organization":"string","ram":"number","pattern":"null"},"config":{"log_level":"string","debug":"boolean","subscribe":"string","payload":"string","publish":"string","services":["object","object"],"mqtt":{"host":"string","port":"number","username":"string","password":"string"},"wan":"null"},"service":{"label":"string","version":"string"}}
-!!! SUCCESS -- ./test.sh 73518 -- test /Volumes/dcmartin/GIT/master/open-horizon/mqtt2kafka/test-mqtt2kafka.sh returned true
+--- INFO -- ./test.sh 73518 -- Testing mqtt2mqtt in container tagged: dcmartin/amd64_com.github.dcmartin.open-horizon.mqtt2mqtt:0.0.1 at Wed Apr 3 14:27:22 PDT 2019
+{"mqtt":{"date":"number","pid":"number","version":"string","broker":{"bytes":{"received":"number","sent":"number"},"clients":{"connected":"number"},"load":{"messages":{"messages":"object"}},"publish":{"messages":{"messages":"object"}},"subscriptions":{"count":"number"}}},"wan":{"date":"number"},"mqtt2mqtt":{"date":"number"},"date":"number","hzn":{"agreementid":"string","arch":"string","cpus":"number","device_id":"string","exchange_url":"string","host_ips":["string","string","string","string"],"organization":"string","ram":"number","pattern":"null"},"config":{"log_level":"string","debug":"boolean","subscribe":"string","payload":"string","publish":"string","services":["object","object"],"mqtt":{"host":"string","port":"number","username":"string","password":"string"},"wan":"null"},"service":{"label":"string","version":"string"}}
+!!! SUCCESS -- ./test.sh 73518 -- test /Volumes/dcmartin/GIT/master/open-horizon/mqtt2mqtt/test-mqtt2mqtt.sh returned true
 true
 ```
 
 The resulting status JSON file may also be inspected; it will be named (or something similar):
 
 ```
-test.amd64_com.github.dcmartin.open-horizon.mqtt2kafka:0.0.1.json
+test.amd64_com.github.dcmartin.open-horizon.mqtt2mqtt:0.0.1.json
 ```
 
-### Example `mqtt2kafka` status
+### Example `mqtt2mqtt` status
 
 ```
 {
@@ -249,7 +247,7 @@ test.amd64_com.github.dcmartin.open-horizon.mqtt2kafka:0.0.1.json
       }
     }
   },
-  "mqtt2kafka": {
+  "mqtt2mqtt": {
     "date": 1554331865
   },
   "date": 1554331865,
@@ -294,33 +292,11 @@ test.amd64_com.github.dcmartin.open-horizon.mqtt2kafka:0.0.1.json
     "wan": null
   },
   "service": {
-    "label": "mqtt2kafka",
+    "label": "mqtt2mqtt",
     "version": "0.0.1.2"
   }
 }
 ```
-
-# Open Horizon
-
-This service may be published to an Open Horizon exchange for an organization.  Please see the documentation for additional details.
-
-## About Open Horizon
-
-Open Horizon is a distributed, decentralized, automated system for the orchestration of workloads at the _edge_ of the *cloud*.  More information is available on [Github][open-horizon].  Devices with Horizon installed may _register_ for patterns using services provided by the IBM Cloud.
-
-## Credentials
-
-**Note:** _You will need an IBM Cloud [account][ibm-registration]_
-
-Credentials are required to participate; request access on the IBM Applied Sciences [Slack][edge-slack] by providing an IBM Cloud Platform API key, which can be [created][ibm-apikeys] using your IBMid.  An API key will be provided for an IBM sponsored Kafka service during the alpha phase.  The same API key is used for both the CPU and SDR addon-patterns.
-
-# Setup
-
-Refer to these [instructions][setup].
-
-# Further Information
-
-Refer to the following for more information on [getting started][edge-fabric] and [installation][edge-install].
 
 ## Changelog & Releases
 
@@ -336,10 +312,10 @@ based on the following:
 
 [David C Martin][dcmartin] (github@dcmartin.com)
 
-[userinput]: https://github.com/dcmartin/open-horizon/blob/master/mqtt2kafka/userinput.json
-[service-json]: https://github.com/dcmartin/open-horizon/blob/master/mqtt2kafka/service.json
-[build-json]: https://github.com/dcmartin/open-horizon/blob/master/mqtt2kafka/build.json
-[dockerfile]: https://github.com/dcmartin/open-horizon/blob/master/mqtt2kafka/Dockerfile
+[userinput]: https://github.com/dcmartin/open-horizon/blob/master/mqtt2mqtt/userinput.json
+[service-json]: https://github.com/dcmartin/open-horizon/blob/master/mqtt2mqtt/service.json
+[build-json]: https://github.com/dcmartin/open-horizon/blob/master/mqtt2mqtt/build.json
+[dockerfile]: https://github.com/dcmartin/open-horizon/blob/master/mqtt2mqtt/Dockerfile
 
 
 [dcmartin]: https://github.com/dcmartin
