@@ -88,6 +88,10 @@ The database is updated with a date-time stamp and any previously missing inform
 The device database may be created using the [IBM Cloudant](https://www.ibm.com/cloud/cloudant) noSQL service.  The format of the database is a series of records in the following format:
 
 ```
+{
+  "serial": "<string>",
+  "mac":["00:04:4B:CC:4A:A6",..],
+  "
 
 ```
 
@@ -115,13 +119,13 @@ Produce a status result:
 ```
 {
   "hznsetup": {
-    "nodes": 48,
-    "date": 1556227120,
-    "pid": 51
+    "nodes": 56,
+    "date": 1556325635,
+    "pid": 52
   },
-  "date": 1556227120,
+  "date": 1556325635,
   "hzn": {
-    "agreementid": "393f54b46f6a9f8fda47bc19caac66271e10b31e20370e0d554b3d9375d5855f",
+    "agreementid": "175ac3b3a3bb6485f22486fda800ff772b5ac7cfdfb8d698f005d3185e6bcb5a",
     "arch": "amd64",
     "cpus": 1,
     "device_id": "davidsimac.local",
@@ -147,6 +151,11 @@ Produce a status result:
     "port": 3093,
     "db": "https://515bed78-9ddc-408c-bf41-32502db2ddf8-bluemix.cloudant.com",
     "username": "515bed78-9ddc-408c-bf41-32502db2ddf8-bluemix",
+    "pkg": {
+      "url": "http://pkg.bluehorizon.network/",
+      "key": "http://pkg.bluehorizon.network/bluehorizon.network-public.key"
+    },
+    "basename": "test-",
     "approve": "auto",
     "vendor": "any",
     "services": null
@@ -171,12 +180,11 @@ The `client-request.json` file contains the device specific details:
 
 ```
 {
-  "serial": "000000003eb8a500",
-  "mac": [
-    "b8:27:eb:b8:a5:00",
-    "b8:27:eb:ed:f0:55"
-  ]
-}
+    "product": "jetson-nano",
+    "serial": "042111900396808083fb",
+    "mac": "00:04:4b:cc:4a:a6",
+    "inet": "192.168.1.87/24"
+  }
 ```
 
 When the service registers the device, the service response (JSON) provides node information to the device:
@@ -187,32 +195,25 @@ When the service registers the device, the service response (JSON) provides node
   "org": "dcmartin@us.ibm.com",
   "pattern": "none",
   "node": {
-    "serial": "000000003eb8a500[0]",
-    "device": "node-b827ebb8a500",
-    "token": "27e8097388f301fa84e61c7bfa7a3926d067e3e2",
-    "timestamp": "04/25/19-21:18:44",
+    "serial": "042111900396808083fb",
+    "device": "test-00044bcc4aa6",
     "exchange": {
       "token": "********",
-      "name": "node-b827ebb8a500",
+      "name": "test-00044bcc4aa6",
       "owner": "dcmartin@us.ibm.com/dcmartin@us.ibm.com",
       "pattern": "",
       "registeredServices": [],
       "msgEndPoint": "",
       "softwareVersions": {},
-      "lastHeartbeat": "2019-04-25T21:18:45.077Z[UTC]",
+      "lastHeartbeat": "2019-04-27T00:40:58.904Z[UTC]",
       "publicKey": "",
-      "id": "dcmartin@us.ibm.com/node-b827ebb8a500"
-    }
+      "id": "dcmartin@us.ibm.com/test-00044bcc4aa6"
+    },
+    "token": "e16b73d92d490df288fdfea68406d74935b90124"
   },
-  "input": {
-    "serial": "000000003eb8a500",
-    "mac": [
-      "b8:27:eb:b8:a5:00",
-      "b8:27:eb:ed:f0:55"
-    ]
-  },
-  "date": 1556227125
+  "date": 1556325659
 }
+
 ```
 
 ## Changelog & Releases

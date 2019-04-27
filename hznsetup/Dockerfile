@@ -12,7 +12,7 @@ ENV \
     TERM="xterm"
 
 ## horizon package and key
-ARG HZN_SETUP_PKG_URL="http://pkg.bluehorizon.network/"
+ARG HZN_SETUP_PKG_URL="http://pkg.bluehorizon.network"
 ARG HZN_SETUP_PKG_KEY="${HZN_SETUP_PKG_URL}/bluehorizon.network-public.key"
 
 ## make available inside the container to advise clients

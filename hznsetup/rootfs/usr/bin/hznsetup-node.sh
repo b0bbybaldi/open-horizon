@@ -51,7 +51,7 @@ done
 if [ "${POST:-false}" = true ]; then
   if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- reading ${BYTES} bytes" >> ${LOGTO} 2>&1; fi
   ## read request
-  INPUT=$(dd count=${BYTES} bs=1 | tr '\n' ' ' | tr '\r' ' ')
+  INPUT=$(dd count=${BYTES} bs=1 2> /dev/null | tr '\n' ' ' | tr '\r' ' ')
   if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- processing: ${INPUT}" >> ${LOGTO} 2>&1; fi
   ## validate JSON
   INPUT=$(echo "${INPUT:-null}" | jq -c '.')
@@ -63,7 +63,7 @@ if [ "${POST:-false}" = true ]; then
     NODE=$(hzn_setup_process "${INPUT}")
     ## update response
     if [ -z "${NODE:-}" ] || [ "${NODE:-}" = 'null' ]; then
-      RESPONSE=$(echo "${RESPONSE}" | jq '.node=null|.error="not found"')
+      RESPONSE=$(echo "${RESPONSE}" | jq '.exchange=null|.error="not found"')
     else
       if [ "${DEBUG:-}" = true ]; then echo "--- INFO -- $0 $$ -- approved node:" $(echo "${NODE}" | jq -c '.' ) >> ${LOGTO} 2>&1; fi
       RESPONSE=$(echo "${RESPONSE}" | jq '.node='$(echo "${NODE:-null}" | jq -c '.'))
@@ -78,7 +78,7 @@ if [ "${POST:-false}" = false ] || [ -z "${INPUT}" ]; then
 fi
 
 ## iff DEBUG add input received
-if [ "${DEBUG:-}" = true ]; then RESPONSE=$(echo "${RESPONSE:-null}" | jq '.|.input='${INPUT:-null}); fi
+if [ "${DEBUG:-}" = true ]; then RESPONSE=$(echo "${RESPONSE:-null}" | jq '.|.request='"${INPUT:-null}"); fi
 
 ## add date
 RESPONSE=$(echo "${RESPONSE}" | jq '.|.date='$(date +%s))

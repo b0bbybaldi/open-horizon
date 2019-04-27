@@ -34,3 +34,4 @@ sh/
 test-config-*
 test.json
 yolo/darknet
+*.sh
