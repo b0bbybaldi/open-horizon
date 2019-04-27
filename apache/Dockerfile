@@ -10,16 +10,14 @@ ENV \
     TERM="xterm"
 
 RUN apk add --no-cache \
-  apache2 \
-  apache2-utils \
   bc \
   coreutils \
   curl \
+  jq \
   dateutils \
   findutils \
-  inotify-tools \
-  jq \
-  mosquitto-clients 
+  apache2 \
+  apache2-utils
 
 # Copy rootts
 COPY rootfs /
