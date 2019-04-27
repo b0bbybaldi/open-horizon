@@ -101,17 +101,26 @@ Services include:
 + [`motion2mqtt`][motion2mqtt-service] - transmit motion detected images to MQTT
 + [`yolo4motion`][yolo4motion-service] - subscribe to MQTT _topics_ from `motion2mqtt`,  recognize entities, and publish results
 + [`mqtt2kafka`][mqtt2kafka-service] - relay MQTT traffic to Kafka
-+ [`jetson-caffe`][jetson-caffe-service] - BVLC Caffe with CUDA and OpenCV for nVidia Jetson TX
-+ [`jetson-yolo`][jetson-yolo-service] - Darknet YOLO with CUDA and OpenCV for nVidia Jetson TX
-+ [`jetson-digits`][jetson-digits] - nVidia DIGITS with CUDA
++ [`fft`](https://github.com/dcmartin/open-horizon/tree/master/fft/README.md) - Perform FFT analysis on sound
++ [`noize`](https://github.com/dcmartin/open-horizon/tree/master/noize/README.md) - Capture noise from silence
++ [`mqtt2mqtt`](https://github.com/dcmartin/open-horizon/tree/master/mqtt2mqtt/README.md) - Relay MQTT traffic
++ [`record`](https://github.com/dcmartin/open-horizon/tree/master/record/README.md) - Record audio from a microphone
++ [`hznsetup`](https://github.com/dcmartin/open-horizon/tree/master/hznsetup/README.md) - Setup new devices as nodes
+
 
 There are also _base_ containers that are used by the other services:
 
 + [`base-alpine`][base-alpine] - base container for Alpine LINUX
 + [`base-ubuntu`][base-ubuntu] - base container for Ubuntu LINUX
+
+Finally, there are services specialized for the [nVidia](http://nvidia.com) Jetson computers:
+
 + [`jetson-jetpack`][jetson-jetpack] - base container for Jetson devices
 + [`jetson-cuda`][jetson-cuda] - base container for Jetson devices with CUDA
 + [`jetson-opencv`][jetson-opencv] - base container for Jetson devices with CUDA & OpenCV
++ [`jetson-caffe`][jetson-caffe-service] - BVLC Caffe with CUDA and OpenCV for nVidia Jetson TX
++ [`jetson-yolo`][jetson-yolo-service] - Darknet YOLO with CUDA and OpenCV for nVidia Jetson TX
++ [`jetson-digits`][jetson-digits] - nVidia DIGITS with CUDA
 
 [yolo-service]: https://github.com/dcmartin/open-horizon/tree/master/yolo/README.md
 [hal-service]: https://github.com/dcmartin/open-horizon/tree/master/hal/README.md
