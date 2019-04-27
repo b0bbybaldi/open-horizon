@@ -39,6 +39,13 @@ These services and patterns are built and pushed to designated Docker registry &
 
 [docker-dcmartin]: https://hub.docker.com/?namespace=dcmartin
 
+This repository works best on a &#63743; macOS computer.  However, macOS need some additional software install the [HomeBrew](http://brew.sh) package manager and install the necessary software:
+
+```
+% brew install gettext
+% cd /usr/local/bin && ln -s ../Cellar/gettext/0.19.8.1/bin/envsubst .
+```
+
 ### 1.1 Variables
 The `HZN_ORG_ID` and `DOCKER_NAMESPACE` should be specified appropriately prior to any build; substitute values appropriately, for example:
 
