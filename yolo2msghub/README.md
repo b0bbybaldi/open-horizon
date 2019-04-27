@@ -38,10 +38,8 @@ This container may be run locally using Docker, pushed to a Docker registry, and
 + `url` - `com.github.dcmartin.open-horizon.yolo2msghub`
 + `version` - `0.0.11`
 
-### Required variables
-+ `YOLO2MSGHUB_APIKEY` - message hub API key
-
-### Optional variables
+## Service variables 
++ `YOLO2MSGHUB_APIKEY` - **REQUIRED** message hub API key
 + `YOLO2MSGHUB_PERIOD` - seconds between updates; defaults to `30`
 + `YOLO2MSGHUB_ADMIN_URL` - administrative URL for REStful API
 + `YOLO2MSGHUB_BROKER` - message hub brokers

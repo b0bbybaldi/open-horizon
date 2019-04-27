@@ -34,12 +34,13 @@ Provides CPU usage information as micro-service; updates periodically (default `
 + `url` - `com.github.dcmartin.open-horizon.cpu`
 + `version` - `0.0.3`
 
-#### Optional variables
+## Service variables
+
 + `CPU_PERIOD` - seconds between updates; defaults to `60`
 + `CPU_INTERVAL` - seconds between CPU tests; defaults to `1`
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
-## How To Use
 
+## How To Use
 Copy this [repository][repository], change to the `cpu` directory, then use the **make** command; see below:
 
 ```

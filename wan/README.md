@@ -37,7 +37,7 @@ Monitors Internet access information as micro-service; updates periodically (def
 + `url` - `com.github.dcmartin.open-horizon.wan`
 + `version` - `0.0.1`
 
-#### Optional variables
+## Service variables
 + `WAN_PERIOD` - seconds between updates; defaults to `1800`
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 

@@ -33,11 +33,13 @@ This container may be run locally using Docker, pushed to a Docker registry, and
 [arm-shield]: https://img.shields.io/badge/armhf-yes-green.svg
 
 ## Service discovery
+
 + `org` - `dcmartin@us.ibm.com`
 + `url` - `com.github.dcmartin.open-horizon.base-ubuntu`
 + `version` - `0.0.4`
 
-#### Optional variables
+## Service variables
+
 + `LOG_LEVEL` - specify level of logging; default `info`; options include (`debug` and `none`)
 + `DEBUG` - force debug settings; boolean; default `false`
 

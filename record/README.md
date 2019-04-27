@@ -37,7 +37,7 @@ Monitors attached microphone and provides `arecord` functionality as micro-servi
 + `url` - `com.github.dcmartin.open-horizon.record`
 + `version` - `0.0.1`
 
-## Variables
+## Service variables
 + `RECORD_DEVICE` - device to record sound; default: `PS3 Eye camera microphone identifier`
 + `RECORD_PERIOD` - interval to poll audio device; default: `10` seconds
 + `RECORD_SECONDS` - amount of time to record; default: `5` seconds
