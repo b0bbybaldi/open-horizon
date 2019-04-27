@@ -283,6 +283,7 @@ nodes-list:
 	    && ssh $${machine} 'hzn node list' | jq -c '{"node":.id}' \
 	    && ssh $${machine} 'hzn agreement list' | jq -c '{"agreements":[.[].workload_to_run]}' \
 	    && ssh $${machine} 'hzn service list 2> /dev/null' | jq -c '{"services":[.[]?.url]}' \
+	    && ssh $${machine} 'hzn eventlog list 2> /dev/null' | jq -r '.[]' | egrep "Error" | head -1 | awk -F':   ' 'BEGIN { printf("{\"errors\":["); x=0 } { if(x++>0) printf(","); printf("{\"time\":\"%s\",\"message\":\"%s\"}",$$1,$$2); } END { printf("]}\n") }' | jq -c '.' \
 	    && ssh $${machine} 'docker ps --format "{{.Names}},{{.Image}}"' | awk -F, '{ printf("{\"name\":\"%s\",\"image\":\"%s\"}\n", $$1, $$2) }' | jq -c '{"container":.name}' \
 	    || echo "${RED}>>> MAKE **" $$(date +%T) "** not found $${machine}""${NC}" &> /dev/stderr; \
 	done
