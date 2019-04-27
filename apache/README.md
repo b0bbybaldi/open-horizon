@@ -39,13 +39,17 @@ Provides a base service for an [Apache](https://httpd.apache.org/) web server.  
 + `url` - `com.github.dcmartin.open-horizon.apache`
 + `version` - `0.0.1`
 
+## Service ports
++ `8080` - `apache` service status; returns `application/json`
++ `8888` - Web service for HTML at `/` and CGI scripts at `/cgi-bin`
+
 ## Service variables
 
 + `APACHE_CONF` - location of configuration file; default: `"/etc/apache2/httpd.conf"`
 + `APACHE_HTDOCS` - location of HTML files; default: `"/var/www/localhost/htdocs"`
 + `APACHE_CGIBIN` - location of CGI scripts; default: `"/var/www/localhost/cgi-bin"`
 + `APACHE_HOST` - hostname; default: `"localhost"`
-+ `APACHE_PORT` - port; default: `8000`
++ `APACHE_PORT` - port; default: `8888`
 + `APACHE_ADMIN` - administrative email; default: `"root@localhost
 + `LOG_LEVEL` - specify level of logging; default: `"info"`; options below
 + `DEBUG` - default: `false`
