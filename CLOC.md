@@ -1,18 +1,19 @@
 
-cloc|github.com/AlDanial/cloc v 1.80  T=0.80 s (407.2 files/s, 48331.4 lines/s)
+cloc|github.com/AlDanial/cloc v 1.80  T=0.64 s (553.1 files/s, 57604.4 lines/s)
 --- | ---
 
 Language|files|blank|comment|code
 :-------|-------:|-------:|-------:|-------:
-Markdown|49|1986|0|12122
-JSON|130|1|0|11538
-Bourne Shell|105|1144|1335|7096
-Dockerfile|26|311|191|1182
-Bourne Again Shell|5|83|103|441
-make|2|96|66|304
+Markdown|51|2078|0|12687
+JSON|144|1|0|8258
+Bourne Shell|112|1207|1429|7396
+Dockerfile|27|320|193|1253
+HTML|4|69|0|499
+Bourne Again Shell|7|70|63|394
+make|2|96|66|301
 Python|6|84|108|293
 YAML|1|0|39|148
 awk|1|4|0|16
 Expect|1|0|0|5
 --------|--------|--------|--------|--------
-SUM:|326|3709|1842|33145
+SUM:|356|3929|1898|31250

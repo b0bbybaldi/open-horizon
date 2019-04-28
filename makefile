@@ -18,11 +18,12 @@ BUILD_ARCH ?= $(if $(wildcard BUILD_ARCH),$(shell cat BUILD_ARCH),)
 ## things NOT TO change
 ##
 
-BASES = base-alpine base-ubuntu 
-SERVICES = cpu hal wan yolo fft mqtt hzncli herald yolo4motion mqtt2kafka noize hznsetup apache # record mqtt2mqtt hotword
-JETSONS = jetson-jetpack jetson-cuda jetson-opencv jetson-yolo # jetson-caffe # jetson-digits
-PATTERNS = yolo2msghub motion2mqtt
-SETUP = setup
+BASES := base-alpine base-ubuntu 
+SERVICES := cpu hal wan yolo fft mqtt hzncli herald yolo4motion mqtt2kafka noize hznsetup apache 
+WIP := mqtt2mqtt hznmonitor record hotword 
+JETSONS := jetson-jetpack jetson-cuda jetson-opencv jetson-yolo jetson-caffe jetson-digits
+PATTERNS := yolo2msghub motion2mqtt
+MISC := setup sh doc
 
 ALL = $(BASES) $(SERVICES) $(PATTERNS) # ${JETSONS}
 
@@ -62,9 +63,10 @@ pattern-validate:
 
 sync: ../ibm/open-horizon .gitignore CLOC.md 
 	@echo "${MC}>>> MAKE --" $$(date +%T) "-- synching ${ALL}""${NC}" &> /dev/stderr
-	@rsync -av makefile service.makefile *.md *.sh .gitignore .travis.yml ../ibm/open-horizon
-	@for dir in $(ALL) ${SETUP}; do \
-	  rsync -a --info=name --exclude='service.json' --exclude='userinput.json' --exclude='pattern.json' --exclude-from=./.gitignore $${dir}/ ../ibm/open-horizon/$${dir}/ ; \
+	@rsync -av makefile service.makefile .travis *.md .gitignore .travis.yml ../ibm/open-horizon
+	export DIRS="${BASES} $(SERVICES) ${MISC} ${JETSONS} ${WIP}" && for dir in $${DIRS}; do \
+	  echo "$${dir}"; \
+	  rsync -av --info=name --exclude-from=./.gitignore $${dir}/ ../ibm/open-horizon/$${dir}/ ; \
 	done
 	
 CLOC.md: .gitignore .
