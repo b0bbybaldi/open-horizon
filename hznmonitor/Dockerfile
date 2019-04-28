@@ -37,9 +37,9 @@ LABEL \
     org.label-schema.schema-version="1.0" \
     org.label-schema.build-date="${BUILD_DATE}" \
     org.label-schema.build-arch="${BUILD_ARCH}" \
-    org.label-schema.name="apache" \
+    org.label-schema.name="hznmonitor" \
     org.label-schema.description="PouchDB Server" \ 
-    org.label-schema.vcs-url="http://github.com/dcmartin/open-horizon/master/apache/" \ 
+    org.label-schema.vcs-url="http://github.com/dcmartin/open-horizon/master/hznmonitor/" \ 
     org.label-schema.vcs-ref="${BUILD_REF}" \ 
     org.label-schema.version="${BUILD_VERSION}" \
     org.label-schema.vendor="David C Martin <github@dcmartin.com>"

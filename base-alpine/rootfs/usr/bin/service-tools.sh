@@ -31,6 +31,11 @@ service_version()
   echo "${SERVICE_VERSION:-}"
 }
 
+service_port()
+{
+  echo "${SERVICE_PORT:-0}"
+}
+
 ## configuration
 
 SERVICE_CONFIG_FILE=${TMPDIR}/config.json
@@ -60,7 +65,7 @@ service_config()
   else
     CONFIG=$(jq -c '.' ${SERVICE_CONFIG_FILE})
   fi
-  OUT='{"config":'${CONFIG}',"service":{"label":"'$(service_label)'","version":"'$(service_version)'"}}' 
+  OUT='{"config":'${CONFIG}',"service":{"label":"'$(service_label)'","version":"'$(service_version)'","port":'$(service_port)'}}' 
   if [ "${DEBUG}" == 'true' ]; then echo "--- INFO -- $0 $$ -- service_config: ${OUT}" >> ${LOGTO} 2>&1; fi
   echo "${OUT}"
 }

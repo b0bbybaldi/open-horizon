@@ -13,9 +13,7 @@ if [ -z "${LOGTO:-}" ]; then LOGTO="${TMPDIR}/${0##*/}.log"; fi
 
 ## parent functions
 source /usr/bin/service-tools.sh
-
-  if [ "${DEBUG:-}" = true ]; then echo "::: DEBUG -- $0 $$ -- ${1}" > /dev/stderr; fi
-
+source /usr/bin/apache-tools.sh
 
 ###
 ### MAIN
@@ -35,24 +33,8 @@ CONFIG='{"conf":"'${APACHE_CONF}'","htdocs": "'${APACHE_HTDOCS}'","cgibin": "'${
 ## initialize service
 service_init ${CONFIG}
 
-## START HTTPD
-if [ -s "${APACHE_CONF}" ]; then
-  # edit defaults
-  sed -i 's|^Listen \(.*\)|Listen '${APACHE_PORT}'|' "${APACHE_CONF}"
-  sed -i 's|^ServerName \(.*\)|ServerName '"${APACHE_HOST}:${APACHE_PORT}"'|' "${APACHE_CONF}"
-  sed -i 's|^ServerAdmin \(.*\)|ServerAdmin '"${APACHE_ADMIN}"'|' "${APACHE_CONF}"
-  # enable CGI
-  sed -i 's|^\([^#]\)#LoadModule cgi|\1LoadModule cgi|' "${APACHE_CONF}"
-  # set environment
-  echo "SetEnv HZN ${HZN}" >> "${APACHE_CONF}"
-  # make /run/apache2 for PID file
-  mkdir -p ${APACHE_RUN_DIR}
-  # start HTTP daemon 
-  httpd -E /dev/stderr -e ${LOG_LEVEL:-debug} -f "${APACHE_CONF}" &
-  PID=$!
-else
-  if [ "${DEBUG:-}" = true ]; then echo "+++ WARN -- $0 $$ -- no configuration: ${APACHE_CONF}" > /dev/stderr; fi
-fi
+# start apache
+PID=$(apache_start)
 
 # create output file
 OUTPUT_FILE=$(mktemp)
