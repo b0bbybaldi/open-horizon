@@ -2,7 +2,7 @@
   "org": "${HZN_ORG_ID}",
   "label": "yolo4motion",
   "description": "Listen to MQTT topic and run YOLO on image received",
-  "documentation": "https://github.com/dcmartin/open-horizon/yolo4motion/README.md",
+  "documentation": "https://github.com/dcmartin/open-horizon/tree/master/yolo4motion/README.md",
   "url": "com.github.dcmartin.open-horizon.yolo4motion",
   "version": "0.0.4",
   "arch": null,

@@ -2,7 +2,7 @@
   "org": "${HZN_ORG_ID}",
   "label": "apache",
   "description": "Apache Web server",
-  "documentation": "https://github.com/dcmartin/open-horizon/apache/README.md",
+  "documentation": "https://github.com/dcmartin/open-horizon/tree/master/apache/README.md",
   "url": "com.github.dcmartin.open-horizon.apache",
   "version": "0.0.1",
   "arch": null,

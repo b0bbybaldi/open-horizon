@@ -60,7 +60,7 @@ LABEL \
     org.label-schema.build-arch="${BUILD_ARCH}" \
     org.label-schema.name="hzn_setup" \
     org.label-schema.description="horizon CLI base" \
-    org.label-schema.vcs-url="http://github.com/dcmartin/open-horizon/master/hzn_setup-ubuntu/" \
+    org.label-schema.vcs-url="http://github.com/dcmartin/open-horizon/tree/master/hzn_setup-ubuntu/" \
     org.label-schema.vcs-ref="${BUILD_REF}" \
     org.label-schema.version="${BUILD_VERSION}" \
     org.label-schema.vendor="David C Martin <github@dcmartin.com>"

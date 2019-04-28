@@ -45,7 +45,7 @@ LABEL \
     org.label-schema.build-arch="${BUILD_ARCH}" \
     org.label-schema.name="hzncli" \
     org.label-schema.description="horizon CLI base" \
-    org.label-schema.vcs-url="http://github.com/dcmartin/open-horizon/master/hzncli-ubuntu/" \
+    org.label-schema.vcs-url="http://github.com/dcmartin/open-horizon/tree/master/hzncli-ubuntu/" \
     org.label-schema.vcs-ref="${BUILD_REF}" \
     org.label-schema.version="${BUILD_VERSION}" \
     org.label-schema.vendor="David C Martin <github@dcmartin.com>"
