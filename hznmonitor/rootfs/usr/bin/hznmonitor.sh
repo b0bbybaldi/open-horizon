@@ -28,7 +28,7 @@ if [ -z "${APACHE_RUN_DIR:-}" ]; then export APACHE_RUN_DIR="/var/run/apache2"; 
 if [ -z "${APACHE_ADMIN:-}" ]; then export APACHE_ADMIN="${HZN_ORG_ID}"; fi
 
 ## configuration
-CONFIG='{"conf":"'${APACHE_CONF}'","htdocs": "'${APACHE_HTDOCS}'","cgibin": "'${APACHE_CGIBIN}'","host": "'${APACHE_HOST}'","port": "'${APACHE_PORT}'","admin": "'${APACHE_ADMIN}'","pidfile":"'${APACHE_PID_FILE:-none}'","rundir":"'${APACHE_RUN_DIR:-none}'"}'
+CONFIG='{"tmpdir":"'${TMPDIR}'","logto":"'${LOGTO:-}'","log_level":"'${LOG_LEVEL:-}'","debug":'${DEBUG:-true}',"org":"'${HZN_SETUP_ORG:-none}'","exchange":"'${HZN_SETUP_EXCHANGE:-none}'","db":"'${HZN_SETUP_DB}'","username":"'${HZN_SETUP_DB_USERNAME:-none}'","conf":"'${APACHE_CONF}'","htdocs": "'${APACHE_HTDOCS}'","cgibin": "'${APACHE_CGIBIN}'","host": "'${APACHE_HOST}'","port": "'${APACHE_PORT}'","admin": "'${APACHE_ADMIN}'","pidfile":"'${APACHE_PID_FILE:-none}'","rundir":"'${APACHE_RUN_DIR:-none}'","services":'"${SERVICES:-null}"'}'
 
 ## initialize service
 service_init ${CONFIG}
@@ -39,7 +39,7 @@ export HZN_EXCHANGE_URL="${HZN_SETUP_EXCHANGE:-none}"
 export HZN_ORG_ID="${HZN_SETUP_ORG:-none}"
 
 # start apache
-PID=$(apache_start HZN_EXCHANGE_APIKEY HZN_ORG_ID HZN_SETUP_DB HZN_SETUP_DB_USERNAME HZN_SETUP_DB_PASSWORD)
+PID=$(apache_start HZN_EXCHANGE_URL HZN_EXCHANGE_APIKEY HZN_ORG_ID HZN_SETUP_DB HZN_SETUP_DB_USERNAME HZN_SETUP_DB_PASSWORD)
 
 # create output file
 OUTPUT_FILE=$(mktemp)

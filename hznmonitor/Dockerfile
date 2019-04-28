@@ -28,6 +28,7 @@ COPY rootfs /
 CMD [ "/usr/bin/run.sh" ]
 
 # Build arguments
+ARG BUILD_ARCH
 ARG BUILD_DATE
 ARG BUILD_REF
 ARG BUILD_VERSION

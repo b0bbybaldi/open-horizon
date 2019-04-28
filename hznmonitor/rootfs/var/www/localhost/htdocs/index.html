@@ -7,89 +7,106 @@
 </head>
 
 <script>
-var hzncfg = new XMLHttpRequest();
-hzncfg.onreadystatechange = function() {
+var nodes = new XMLHttpRequest();
+nodes.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200 && this.responseText != null) {
     var jobj = JSON.parse(this.responseText);
+    nodeoutput.innerHTML += '<hr>';
     if (jobj != null) {
-      if (jobj["error"] != null) {
-        console.log(jobj.error);
-      } else if (jobj.config != null) {
-        config.innerHTML += '<hr>'
-        jobj.config.forEach(function(item,index) {
-          config.innerHTML += '<h2>Configuration ' + item.id + '</h2><div id="' + item.id + '"></div>';
-          var cfgreq = new XMLHttpRequest();
-          cfgreq.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200 && this.responseText != null) {
-              var jobj = JSON.parse(this.responseText);
-              if (jobj != null) {
-                if (jobj["error"] != null) {
-                  console.log(jobj.error);
-                } else if (jobj.nodes != null) {
-                  cid = document.getElementById(item.id);
-                  cid.innerHTML += '<h3>Nodes in configuration ' + item.id + '</h3>';
-                  jobj.nodes.forEach(function(node,index) {
-                    cid.innerHTML += '<p><b>id:</b> ' + node.id + ' [' + node.mac + ']';
-                    if (node.ipv4) {
-                      cid.innerHTML += '<i>ipv4</i>: ' + node.ipv4 + '&nbsp;';
-                      if (node.node != null) {
-                        cid.innerHTML += '<a href="/cgi-bin/hzn-exchange-nodes?id=' + node.node.name + '">' + node.node.name + '</a>&nbsp;';
-                        cid.innerHTML += '<a href="http://' + node.ipv4 + ':8080/">Video</a>&nbsp;';
-                        cid.innerHTML += '<a href="http://' + node.ipv4 + ':8081/">Ctrls</a>&nbsp;';
-                        cid.innerHTML += '<code> { node:' + node.node.id + ',name:' + node.node.name + ',state:' + node.node.configstate.state + ',updated:' + node.node.configstate.last_update_time + ' }</code>';
-                      } else {
-                        cid.innerHTML += ' <i>UNCONFIGURED</i>';
-                      }
-                      cid.innerHTML += '<p>';
-                    }
-                  });
-                  cid.innerHTML += '<hr>';
-                }
-              } else {
-                console.log('null JSON object');
-              }
-            } else {
-              console.log('null responseText');
-            }
-          }
-          cfgreq.open("GET","/cgi-bin/hzn-config?id=" + item.id, true);
-          cfgreq.send();
+      if (jobj["nodes"] != null) {
+        str = '<table><tr><th>Service</th><th>Last Heartbeat</th></tr>';
+        jobj["nodes"].forEach(function(item,index) {
+          str += '<tr><td>' + item.id + '</td><td>' + item.lastHeartbeat + '</td></tr>';
         });
-        config.innerHTML += '<br>';
+        str += '</table>';
+        nodeoutput.innerHTML += str;
       }
     }
+    nodeoutput.innerHTML += '<hr>';
   }
 }
-hzncfg.open("GET","/cgi-bin/hzn-config", true);
-hzncfg.send();
+nodes.open("GET","/cgi-bin/nodes", true);
+nodes.send();
 </script>
 
 <script>
-
-window.onload = function () {
-  rfr = document.referrer.split('/');
-  prot = rfr[0];
-  site = rfr[2].split(':');
-  port = site[1];
-  site = site[0];
-  cid = document.getElementById("threads");
-  cid.href = prot + "//" + site + ":8999/threads";
-  cid = document.getElementById("datasets");
-  cid.href = prot + "//" + site + ":7999/datasets";
-  cid = document.getElementById("lovelace");
-  cid.href = prot + "//" + site + ":8123/" + "lovelace";
+var services = new XMLHttpRequest();
+services.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200 && this.responseText != null) {
+    var jobj = JSON.parse(this.responseText);
+    serviceoutput.innerHTML += '<hr>';
+    if (jobj != null) {
+      if (jobj["services"] != null) {
+        str = '<table><tr><th>Service</th><th>Last Updated</th></tr>';
+        jobj["services"].forEach(function(item,index) {
+          str += '<tr><td>' + item.id + '</td><td>' + item.lastUpdated + '</td></tr>';
+        });
+        str += '</table>';
+        serviceoutput.innerHTML += str;
+      }
+    }
+    serviceoutput.innerHTML += '<hr>';
+  }
 }
+services.open("GET","/cgi-bin/services", true);
+services.send();
+</script>
 
+<script>
+var patterns = new XMLHttpRequest();
+patterns.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200 && this.responseText != null) {
+    var jobj = JSON.parse(this.responseText);
+    patternoutput.innerHTML += '<hr>';
+    if (jobj != null) {
+      if (jobj["patterns"] != null) {
+        str = '<table><tr><th>Pattern</th><th>Last Updated</th></tr>';
+        jobj["patterns"].forEach(function(item,index) {
+          str += '<tr><td>' + item.id + '</td><td>' + item.lastUpdated + '</td></tr>';
+        });
+        str += '</table>';
+        patternoutput.innerHTML += str;
+      }
+    }
+    patternoutput.innerHTML += '<hr>';
+  }
+}
+patterns.open("GET","/cgi-bin/patterns", true);
+patterns.send();
+</script>
+
+<script>
+var exchange = new XMLHttpRequest();
+exchange.onreadystatechange = function() {
+  if (this.readyState == 4 && this.exchange == 200 && this.responseText != null) {
+    var jobj = JSON.parse(this.responseText);
+    if (jobj != null) {
+      exchangeoutput.innerHTML += '<hr>Exchange Found<hr>';
+      // str += '<hr>';
+      // str += 'Message:' + jobj.msg + '<br>';
+      // str += 'Number of users:' + jobj.numberOfUsers + '<br>';
+      // str += 'Number of nodes:' + jobj.numberOfNodes + '<br>';
+      // str += 'Number of node agreements:' + jobj.numberOfNodeAgreements + '<br>';
+      // str += 'Number of node messages:' + jobj.numberOfNodeMsgs + '<br>';
+      // str += 'Number of agbot agreements:' + jobj.numberOfAgbotAgreements + '<br>';
+      // str += 'Number of agbot messages:' + jobj.numberOfAgbotMsgs + '<br>';
+      // str += 'DB schema verison:' + jobj.dbSchemaVersion + '<br>';
+      // str += '<hr>';
+      // exchangeoutput.innerHTML += str;
+    } else {
+      exchangeoutput.innerHTML += '<hr>No Exchange<hr>';
+    }
+  }
+}
+exchange.open("GET","/cgi-bin/exchange", true);
+exchange.send();
 </script>
 
 <body>
-<h1>Horizon Control</h1>
-<h2>Configurations</h2><div id="config"></div>
-<h3>Operations</h3><div id="operations"></div>
-<ul>
-<li><a id="threads" href="">Threads</a><div id="threads"></div></li>
-<li><a id="datasets" href="">Datasets</a><div id="datasets"></div></li>
-<li><a id="lovelace" href="">Lovelace</a><div id="lovelace"></div></li>
-</ul>
+<h1>Horizon Monitor</h1>
+<h2>Exchange</h2><div id="exchangeoutput"></div>
+<h2>Patterns</h2><div id="patternoutput"></div>
+<h2>Nodes</h2><div id="nodeoutput"></div>
+<h2>Services</h2><div id="serviceoutput"></div>
 </body>
 </html>
