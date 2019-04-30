@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###
-### THIS SCRIPT LISTS PATTERNS FOR THE ORGANIZATION 
+### THIS SCRIPT LISTS NODES FOR THE ORGANIZATION
 ###
 ### CONSUMES THE FOLLOWING ENVIRONMENT VARIABLES:
 ###
@@ -27,5 +27,8 @@ if [ -z "${HZN_ORG_ID:-}" ] || [ "${HZN_ORG_ID:-}" == "null" ]; then
   exit 1
 fi
 
-curl -sL -u "${HZN_ORG_ID}/iamapikey:${HZN_EXCHANGE_APIKEY}" "${HZN_EXCHANGE_URL%/}/orgs/${HZN_ORG_ID}/patterns" \
-  | jq '{"patterns":[.patterns|to_entries[]|.value.id=.key|.value]|sort_by(.lastUpdated)|reverse}'
+if [ ! -z "${1}" ]; then
+  ID="${1}"
+  curl -sL -u "${HZN_ORG_ID}/iamapikey:${HZN_EXCHANGE_APIKEY}" "${HZN_EXCHANGE_URL%/}/orgs/${HZN_ORG_ID}/nodes/${ID}/status" \
+    | jq '.={"status":.}' | jq '.org="'${HZN_ORG_ID}'"|.url="'${HZN_EXCHANGE_URL}'"'
+fi

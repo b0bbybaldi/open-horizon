@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ ! -z "${QUERY_STRING:-}" ]; then
+  node=$(echo "$QUERY_STRING" | sed 's/.*node=\([^&]*\).*/\1/')
+  if [ "${node}" = "${QUERY_STRING}" ]; then node=; fi
+fi
+export QUERY_STRING "node=${node:-}"
+
+echo "Content-Type: application/json; charset=utf-8"
+echo "Access-Control-Allow-Origin: *"
+echo "Cache-Control: no-cache"
+echo ""
+if [ ! -z "${node:-}" ]; then
+  ./bin/status.sh "${node}"
+else
+  echo '{"org":"'${HZN_ORG_ID}'","url":"'${HZN_EXCHANGE_URL}'","error":"not found","node":"'${node:-}'"}'
+fi

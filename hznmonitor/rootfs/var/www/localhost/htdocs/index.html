@@ -6,6 +6,10 @@
 <title>Horizon Control</title>
 </head>
 
+<!--
+PROCESS NODES
+--!>
+
 <script>
 var nodes = new XMLHttpRequest();
 nodes.onreadystatechange = function() {
@@ -13,13 +17,96 @@ nodes.onreadystatechange = function() {
     var jobj = JSON.parse(this.responseText);
     nodeoutput.innerHTML += '<hr>';
     if (jobj != null) {
-      if (jobj["nodes"] != null) {
-        str = '<table><tr><th>Service</th><th>Last Heartbeat</th></tr>';
+      if (jobj["nodes"].length > 0) {
+        var str = '<table><tr><th align="left">Info</th><th>Status</th><th>Pattern Details</th></tr>';
         jobj["nodes"].forEach(function(item,index) {
-          str += '<tr><td>' + item.id + '</td><td>' + item.lastHeartbeat + '</td></tr>';
-        });
+          str += '<tr valign="top"><td align="left">';
+	  str += '<table>'
+          str += '<tr><td align="right">Node:</td><td>' + item.name + '</td></tr>';
+          str += '<tr><td align="right">Pattern:</td><td>' + item.pattern + '</td></tr>';
+          str += '<tr><td align="right">Last Heartbeat:</td><td>' + item.lastHeartbeat + '</td></tr>';
+          str += '<tr><td align="right">Service count:</td><td>' + item.registeredServices.length + '</td></tr>';
+	  str += '</table>'
+          str += '</td><td>' + '<div id="status-' + item["name"] + '">' + 'unknown' + '</div>' + '</td><td>';
+	  console.log("division: status-" + item["name"]);
+          var svcs = item["registeredServices"];
+          if (svcs.length > 0) {
+            str += '<table border="1"><tr><th>URL</th><th>Agreements</th><th>Properties</th></tr>';
+            svcs.forEach(function(svc,index) {
+              str += '<tr valign="top"><td>' + svc["url"] + '</td><td align="center">' + svc["numAgreements"] + '</td><td>' 
+              props = svc["properties"];
+              if (props.length > 0) {
+                str += '<table>';
+                props.forEach(function(prop,index) {
+                  str += '<tr valign="top"><td>' + prop["name"] + '</td><td>' + prop["value"] + '</td></tr>';
+                });
+                str += '</table>';
+              }
+              str += '</td></tr>'
+            });
+            str += '</table>';
+          } else {
+ 	    str += 'unregistered';
+	  }
+          str += '</td></tr>'
+	});
         str += '</table>';
         nodeoutput.innerHTML += str;
+
+        // add node status
+        jobj["nodes"].forEach(function(item,index) {
+	  var name = item["name"];
+	  console.log("node: " + name);
+          if (name != null) {
+	    var nodestatus = new XMLHttpRequest();
+	    nodestatus.onreadystatechange = function() {
+	      if (this.readyState == 4 && this.status == 200 && this.responseText != null) {
+		var nodestate = JSON.parse(this.responseText);
+		if (nodestate != null) {
+		  var st = nodestate["status"];
+		  if (st != null) {
+	  	    console.log("status: non-null");
+	  	    var svcs = st["services"];
+		    if ( svcs.length > 0) {
+		      console.log("services: non-null");
+		      var str = '<table border="1"><tr><th>Service</th><th>Org</th><th>Version</th><th>Containers</th><th>State</th></tr>';
+		      svcs.forEach(function(svc,index) {
+		        var cs = svc["containerStatus"];
+		        str += '<tr><td>' + svc["serviceUrl"] + '</td><td>' + svc["orgid"] + '</td><td>' + svc["version"] + '</td><td>' + cs.length + '</td><td>';
+		        if (cs != null) {
+			  str += '<table>';
+			  cs.forEach(function(c,index) {
+			    str += '<tr><td>' + c.state + '</td><tr>';
+			  });
+			  str += '</table>';
+		        }
+		        str += '</td></tr>';
+		      });
+		      str += '</table>';
+		    } else {
+		      str = 'no services';
+	  	      console.log("warn: " + name + ': ' + str);
+		    }
+		  } else {
+ 		    str = 'not found';
+	  	    console.log("warn: " + name + ': ' + str);
+		  }
+	  	  console.log("finding: status-" + name);
+	          var elem = document.getElementById("status-" + name);
+		  if (elem != null) {
+	  	    console.log("updating: status-" + name);
+		    elem.innerHTML = str;
+		  } else {
+	  	    console.log("cannot find: status-" + name);
+		  }
+		}
+	      }
+	    }
+	    nodestatus.open("GET","/cgi-bin/status?node=" + name, true);
+	    console.log("GET: /cgi-bin/status?node=" + name);
+	    nodestatus.send();
+	  }
+        });
       }
     }
     nodeoutput.innerHTML += '<hr>';
@@ -29,6 +116,10 @@ nodes.open("GET","/cgi-bin/nodes", true);
 nodes.send();
 </script>
 
+<!--
+PROCESS SERVICES
+--!>
+
 <script>
 var services = new XMLHttpRequest();
 services.onreadystatechange = function() {
@@ -37,9 +128,9 @@ services.onreadystatechange = function() {
     serviceoutput.innerHTML += '<hr>';
     if (jobj != null) {
       if (jobj["services"] != null) {
-        str = '<table><tr><th>Service</th><th>Last Updated</th></tr>';
+        var str = '<table><tr><th>Service</th><th>Last Updated</th><th>Required Services</th></tr>';
         jobj["services"].forEach(function(item,index) {
-          str += '<tr><td>' + item.id + '</td><td>' + item.lastUpdated + '</td></tr>';
+          str += '<tr><td><a href="' + item["documentation"] + '">' + item.id + '</a></td><td>' + item.lastUpdated + '</td><td align="right">' + item["requiredServices"].length + '</td></tr>';
         });
         str += '</table>';
         serviceoutput.innerHTML += str;
@@ -52,6 +143,10 @@ services.open("GET","/cgi-bin/services", true);
 services.send();
 </script>
 
+<!--
+PROCESS PATTERNS
+--!>
+
 <script>
 var patterns = new XMLHttpRequest();
 patterns.onreadystatechange = function() {
@@ -59,13 +154,33 @@ patterns.onreadystatechange = function() {
     var jobj = JSON.parse(this.responseText);
     patternoutput.innerHTML += '<hr>';
     if (jobj != null) {
-      if (jobj["patterns"] != null) {
-        str = '<table><tr><th>Pattern</th><th>Last Updated</th></tr>';
-        jobj["patterns"].forEach(function(item,index) {
-          str += '<tr><td>' + item.id + '</td><td>' + item.lastUpdated + '</td></tr>';
+      pats = jobj["patterns"];
+      if (pats != null) {
+        var str = '<table><tr><th>Pattern</th><th>Last Updated</th><th>Services</th></tr>';
+        pats.forEach(function(pat,index) {
+          str += '<tr valign="top"><td>' + pat.id + '</td><td>' + pat.lastUpdated + '</td><td>';
+          svcs = pat["services"];
+          if (svcs != null) {
+	    str += '<table border="1"><tr><th>URL</th><th>ORG</th><th>ARCH</th><th>Versions</th></tr>';
+            svcs.forEach(function(svc,index) {
+	      str += '<tr valign="top"><td>' + svc["serviceUrl"] + '</td><td>' + svc["serviceOrgid"] + '</td><td>' + svc["serviceArch"] + '</td><td>';
+              vers = svc["serviceVersions"];
+              if (vers != null) {
+		str += '<table>';
+                vers.forEach(function(ver,index) {
+	          str += '<tr valign="top"><td>' + ver["version"] + '</td></tr>';
+                });
+		str += '</table>';
+	      }
+	      str += '</td></tr>'
+            });
+	    str += '</table>';
+	  }
+	  str += '</td></tr>';
         });
         str += '</table>';
         patternoutput.innerHTML += str;
+        console.log(str);
       }
     }
     patternoutput.innerHTML += '<hr>';
@@ -76,35 +191,36 @@ patterns.send();
 </script>
 
 <script>
-var exchange = new XMLHttpRequest();
-exchange.onreadystatechange = function() {
-  if (this.readyState == 4 && this.exchange == 200 && this.responseText != null) {
+var horizon = new XMLHttpRequest();
+horizon.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200 && this.responseText != null) {
     var jobj = JSON.parse(this.responseText);
+    horizonoutput.innerHTML += '<hr>';
     if (jobj != null) {
-      exchangeoutput.innerHTML += '<hr>Exchange Found<hr>';
-      // str += '<hr>';
-      // str += 'Message:' + jobj.msg + '<br>';
-      // str += 'Number of users:' + jobj.numberOfUsers + '<br>';
-      // str += 'Number of nodes:' + jobj.numberOfNodes + '<br>';
-      // str += 'Number of node agreements:' + jobj.numberOfNodeAgreements + '<br>';
-      // str += 'Number of node messages:' + jobj.numberOfNodeMsgs + '<br>';
-      // str += 'Number of agbot agreements:' + jobj.numberOfAgbotAgreements + '<br>';
-      // str += 'Number of agbot messages:' + jobj.numberOfAgbotMsgs + '<br>';
-      // str += 'DB schema verison:' + jobj.dbSchemaVersion + '<br>';
-      // str += '<hr>';
-      // exchangeoutput.innerHTML += str;
-    } else {
-      exchangeoutput.innerHTML += '<hr>No Exchange<hr>';
+      var str = '<table>';
+      str += '<tr><th align="right">Exchange</th><td>' + jobj["url"] + '</td></tr>';
+      str += '<tr><th align="right">Organization</th><td>' + jobj["org"] + '</td></tr>';
+      str += '<tr><th align="right">Message</th><td>' + jobj["msg"] + '</td></tr>';
+      str += '<tr><th align="right">Number of users</th><td>' + jobj["numberOfUsers"] + '</td></tr>';
+      str += '<tr><th align="right">Number of nodes</th><td>' + jobj["numberOfNodes"] + '</td></tr>';
+      str += '<tr><th align="right">Number of node agreements</th><td>' + jobj["numberOfNodeAgreements"] + '</td></tr>';
+      str += '<tr><th align="right">Number of node messages</th><td>' + jobj["numberOfNodeMsgs"] + '</td></tr>';
+      str += '<tr><th align="right">Number of agbot agreements</th><td>' + jobj["numberOfAgbotAgreements"] + '</td></tr>';
+      str += '<tr><th align="right">Number of agbot messages</th><td>' + jobj["numberOfAgbotMsgs"] + '</td></tr>';
+      str += '<tr><th align="right">DB schema verison</th><td>' + jobj["dbSchemaVersion"] + '</td></tr>';
+      str += '</table>';
+      horizonoutput.innerHTML += str;
     }
+    horizonoutput.innerHTML += '<hr>';
   }
 }
-exchange.open("GET","/cgi-bin/exchange", true);
-exchange.send();
+horizon.open("GET","/cgi-bin/exchange", true);
+horizon.send();
 </script>
 
 <body>
 <h1>Horizon Monitor</h1>
-<h2>Exchange</h2><div id="exchangeoutput"></div>
+<h2>Exchange</h2><div id="horizonoutput"></div>
 <h2>Patterns</h2><div id="patternoutput"></div>
 <h2>Nodes</h2><div id="nodeoutput"></div>
 <h2>Services</h2><div id="serviceoutput"></div>

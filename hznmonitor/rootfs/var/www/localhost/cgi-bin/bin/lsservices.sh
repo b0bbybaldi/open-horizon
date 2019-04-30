@@ -15,7 +15,7 @@ if [ -z $(command -v jq) ]; then
   exit 1
 fi
 
-if [ -z "${HZN_EXCHANGE_URL:-}" ]; then HZN_EXCHANGE_URL="https://alpha.edge-fabric.com/v1/"; fi
+if [ -z "${HZN_EXCHANGE_URL:-}" ]; then HZN_EXCHANGE_URL="https://alpha.edge-fabric.com/v1"; fi
 
 if [ -z "${HZN_EXCHANGE_APIKEY:-}" ] || [ "${HZN_EXCHANGE_APIKEY:-}" == "null" ]; then
   echo "*** ERROR $0 $$ -- invalid HZN_EXCHANGE_APIKEY" &> /dev/stderr
@@ -27,13 +27,5 @@ if [ -z "${HZN_ORG_ID:-}" ] || [ "${HZN_ORG_ID:-}" == "null" ]; then
   exit 1
 fi
 
-ALL=$(curl -sL -u "${HZN_ORG_ID}/iamapikey:${HZN_EXCHANGE_APIKEY}" "${HZN_EXCHANGE_URL}orgs/${HZN_ORG_ID}/services")
-ENTITYS=$(echo "${ALL}" | jq '{"services":[.services | objects | keys[]] | unique}' | jq -r '.services[]')  
-OUTPUT='{"services":['
-i=0; for ENTITY in ${ENTITYS}; do 
-  if [[ $i > 0 ]]; then OUTPUT="${OUTPUT}"','; fi
-  OUTPUT="${OUTPUT}"$(echo "${ALL}" | jq '.services."'"${ENTITY}"'"' | jq -c '.id="'"${ENTITY}"'"')
-  i=$((i+1))
-done 
-OUTPUT="${OUTPUT}"']}'
-echo "${OUTPUT}" | jq -c '.'
+curl -sL -u "${HZN_ORG_ID}/iamapikey:${HZN_EXCHANGE_APIKEY}" "${HZN_EXCHANGE_URL%/}/orgs/${HZN_ORG_ID}/services" \
+  | jq '{"services":[.services|to_entries[]|.value.id=.key|.value]|sort_by(.lastUpdated)|reverse}'
